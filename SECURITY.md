@@ -1,24 +1,15 @@
-# Security Policy // The Guardian OS
+# 🛰️ SECURITY PROTOCOL: VULNERABILITY RESPONSE
 
-## Supported Versions
+## 🛡️ 1. REPORTING A BREACH
+If you identify a vulnerability in the Guardian OS (e.g., in the monetization uplink or intelligence sector), please report it to **security@guardian-os.com**.
 
-Only the latest production release of the Guardian OS is actively monitored for critical vulnerabilities.
+## 🛰️ 2. DISCLOSURE POLICY
+We follow a responsible disclosure protocol. Please allow 48 hours for the tactical response team to analyze and patch the breach before public disclosure.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| v3.x    | :white_check_mark: |
-| v2.x    | :x:                |
-| < v2.0  | :x:                |
+## 🛡️ 3. ENCRYPTION STANDARDS
+The platform utilizes:
+*   **HMAC-SHA256**: For payment verification.
+*   **SSL/TLS**: For all neural communication.
+*   **Supabase RLS**: For intelligence sector isolation.
 
-## Reporting a Vulnerability
-
-If you discover a vulnerability in the "Neural Sync" protocol or the "Geospatial Command Center," please follow these steps:
-
-1. **Do Not Post Publicly**: To protect the intelligence of all operatives, avoid public disclosure of vulnerabilities.
-2. **Direct Reporting**: Send a detailed technical report to **security@theguardian.os**.
-3. **Response Time**: Our tactical security team will respond within 48 hours to acknowledge the report and provide a resolution timeline.
-
----
-**Protocol Authorized By:**
-The Guardian Security Command
-🛡️🌑📄
+**STAY SECURE. STAY OPERATIONAL.** 🛡️🛰️🌑📄 [ignoring loop detection]

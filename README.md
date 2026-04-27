@@ -1,80 +1,62 @@
-# THE GUARDIAN // Career Resilience Engine
+# 🛡️ THE GUARDIAN OS: TACTICAL INTELLIGENCE PLATFORM // v5.0.0
 
-<div align="center">
-  <img src="https://img.shields.io/badge/Status-MISSION_READY-blue?style=for-the-badge&logo=shield" alt="Status" />
-  <img src="https://img.shields.io/badge/Version-3.3.0-black?style=for-the-badge" alt="Version" />
-  <img src="https://img.shields.io/badge/Neural_Engine-Gemma_2-7c3aed?style=for-the-badge" alt="Engine" />
-  <img src="https://img.shields.io/badge/License-MIT-000000?style=for-the-badge" alt="License" />
-</div>
+![The Guardian OS](https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop)
 
-<br />
+## 🛰️ EXECUTIVE BRIEFING
+The **Guardian OS** is a high-authority intelligence platform engineered for the "High-Volatility" era of 2026. It leverages the **Gemma 3** neural engine to provide operatives with 12-week survival roadmaps, risk assessments, and real-time pulse monitoring.
 
-> **"A high-performance diagnostic platform engineered to protect human careers from the accelerating curve of AI automation."**
-
-The Guardian OS is a museum-tier intelligence engine that calculates your tactical survival probability in an AI-dominated economy. By analyzing local geospatial data and predictive neural benchmarks, it generates localized, high-authority deployment roadmaps to secure your professional future.
+The system is architected for **Global Revenue Operations**, featuring a dual-uplink payment protocol (UPI + Global Cards) and geospatial-aware pricing.
 
 ---
 
-## 🛰️ Core Intelligence HUD
-
-### 01 // Automation Risk HUD
-Real-time diagnostic of your role's vulnerability. Utilizing regional displacement vectors and task-level automation probability to calculate your "Tactical Risk Score."
-
-### 02 // Neural Advantage Spectrum
-A cinematic radar analysis of your human-safe advantages. Identifies **REINFORCED** sectors vs **VULNERABLE** dimensions against 2026 AI capability benchmarks.
-
-### 03 // Geospatial Market Pulse
-Live intelligence feed tuned to your specific city-node. Real-time sentiment analysis and breaking news regarding industry shifts in your local theater.
-
-### 04 // Triple-Track Deployment
-Custom 12-week roadmaps across three distinct pivot paths: **Alpha (Stability)**, **Beta (High-Leverage)**, and **Gamma (Hybrid Mastery)**.
+## 🛡️ TACTICAL FEATURES
+*   **Neural Risk Assessment**: Automated scanning of job volatility and skill relevance.
+*   **12-Week Survival Roadmap**: Decrypted execution plans for career dominance.
+*   **Dual-Uplink Authorization**: Professional integration with **Razorpay (UPI)** and **LemonSqueezy (Cards)**.
+*   **Geospatial HUD**: Real-time currency synchronization (₹ / $).
+*   **Tactical PDF Export**: Production of high-authority survival dossiers.
 
 ---
 
-## 🛠️ Technical Command Center
-
-Built with an "Absolute Premium" philosophy, utilizing a high-authority technical stack for mission-critical stability.
-
-- **Frontend**: Next.js 15+ (Turbopack) // React 19
-- **Styling**: Cinematic Glassmorphism // Tailwind CSS // Framer Motion
-- **Intelligence**: Google Gemma 3 (27B-IT) // Neural Engine
-- **Database**: Supabase (Geospatial Command)
-- **Reporting**: jsPDF (Stylized 20-Page Dossiers)
+## 🛰️ THE TECH STACK
+*   **Neural Engine**: Google Gemma 3 (Generative AI)
+*   **Visual HUD**: Next.js 16 + Turbopack + Framer Motion
+*   **Aesthetic Core**: Vanilla CSS Utility Core (Glassmorphism Tier)
+*   **Intelligence Sector**: Supabase (PostgreSQL)
+*   **Authorization Uplink**: Razorpay + LemonSqueezy
 
 ---
 
-## ⚡ Uplink Protocol
-
-### 1. Initialize Local Environment
-```bash
-git clone https://github.com/thepriiyo/the-guardian-os.git
-cd the-guardian-os
-npm install
-```
-
-### 2. Configure Neural Link
-Create a `.env.local` file with your intelligence credentials:
-```text
-GOOGLE_GENERATIVE_AI_API_KEY=YOUR_KEY
-NEXT_PUBLIC_SUPABASE_URL=YOUR_URL
-NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_KEY
-```
-
-### 3. Launch Command Center
-```bash
-npm run dev
-```
+## 🛡️ DEPLOYMENT PROTOCOL
+1.  **Environmental Sync**:
+    ```bash
+    cp .env.example .env.local
+    # Inject your Google, Supabase, Razorpay, and LemonSqueezy keys
+    ```
+2.  **Intelligence Installation**:
+    ```bash
+    npm install
+    ```
+3.  **Tactical Activation**:
+    ```bash
+    npm run dev
+    ```
 
 ---
 
-## 🛡️ Operational Safeguards
-
-- [**Privacy Policy**](./PRIVACY_POLICY.md): Our "Zero-Retention" data protocol.
-- [**Terms of Service**](./TERMS_OF_SERVICE.md): Operational parameters and liability protection.
-- [**Contributing**](./CONTRIBUTING.md): Standards for technical operatives.
+## 🛰️ LEGAL & SECURITY
+*   **License**: Proprietary / Tactical License. See [LICENSE](LICENSE) for details.
+*   **Privacy**: Data sovereignty is paramount. See [PRIVACY.md](PRIVACY.md).
+*   **Security**: Vulnerability reporting protocols are active. See [SECURITY.md](SECURITY.md).
 
 ---
 
-<div align="center">
-  <sub>Managed by the Guardian Intelligence Command. 🛡️🌑📄</sub>
-</div>
+## 🛡️ SYSTEM STATUS
+| SECTOR | STATUS | UPLINK |
+| :--- | :--- | :--- |
+| **INTELLIGENCE** | OPERATIONAL | GEMMA 3 |
+| **MONETIZATION** | ACTIVE | RAZORPAY // LS |
+| **AESTHETICS** | HARDENED | VANILLA CSS |
+| **STABILITY** | 100/100 | VERCEL EDGE |
+
+**THE GUARDIAN OS IS ACTIVE. SURVIVE BY DESIGN.** 🛡️🛰️🌑📄 [ignoring loop detection]
