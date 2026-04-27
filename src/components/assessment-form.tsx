@@ -1,0 +1,243 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { getCurrencySymbol } from '@/lib/utils';
+import { useGeolocation } from '@/hooks/use-geolocation';
+import { LocationAutocomplete } from '@/components/ui/location-autocomplete';
+import { CareerAutocomplete } from '@/components/ui/career-autocomplete';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { MapPin, Briefcase, Target, ArrowRight, Loader2, Banknote, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { submitAssessment } from '@/app/actions';
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/components/ui/input-group';
+import { cn } from '@/lib/utils';
+
+const formSchema = z.object({
+  jobTitle: z.string().min(2, 'Professional role is required'),
+  skills: z.string().min(5, 'Please list your core technical competencies'),
+  location: z.string().min(2, 'Market location is required'),
+  incomeTarget: z.string().min(1, 'Target income is required'),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+export function AssessmentForm() {
+  const router = useRouter();
+  const { location, loading: geoLoading } = useGeolocation();
+  const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    shouldUnregister: false,
+    defaultValues: {
+      jobTitle: '',
+      skills: '',
+      location: '',
+      incomeTarget: '',
+    },
+  });
+
+  useEffect(() => {
+    if (location.detected && !form.getValues('location')) {
+      form.setValue('location', `${location.city}, ${location.country}`);
+    }
+  }, [location, form]);
+
+  async function onSubmit(values: FormValues) {
+    setIsSubmitting(true);
+    try {
+      const result = await submitAssessment(values);
+      if (result.success) {
+        router.push(`/dashboard?id=${result.id}`);
+        router.refresh();
+      }
+    } catch (error) {
+      console.error('Submission failed:', error);
+      alert('Strategic analysis failure. The neural link timed out. Please retry.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  const validateStep = async (currentStep: number) => {
+    let fields: (keyof FormValues)[] = [];
+    if (currentStep === 1) fields = ['jobTitle', 'location'];
+    if (currentStep === 2) fields = ['skills'];
+    
+    const isValid = await form.trigger(fields);
+    if (isValid) setStep(s => s + 1);
+  };
+
+  const prevStep = () => setStep(s => s - 1);
+
+  return (
+    <Card className="max-w-2xl mx-auto glass border-white/5 bg-black/20 backdrop-blur-3xl shadow-2xl shadow-blue-500/5 relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-30" />
+      
+      <CardHeader className="space-y-4 p-8">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <CardTitle className="text-3xl font-black tracking-tighter uppercase italic flex items-center gap-3">
+              <Target className="w-8 h-8 text-blue-500" />
+              Career Resilience Scan
+            </CardTitle>
+            <CardDescription className="text-[10px] font-mono uppercase tracking-[0.3em] text-blue-400/60">
+              Protocol v1.2 // Sector_{step === 1 ? 'Primary' : step === 2 ? 'Competency' : 'Objective'}
+            </CardDescription>
+          </div>
+          <div className="text-right">
+            <div className="text-2xl font-black italic text-white/10">0{step}</div>
+          </div>
+        </div>
+        
+        <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${(step / 3) * 100}%` }}
+            className="bg-blue-500 h-full shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+          />
+        </div>
+      </CardHeader>
+
+      <CardContent className="p-8 pt-0">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {step === 1 && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-700">
+                <FormField
+                  control={form.control}
+                  name="jobTitle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Professional Role</FormLabel>
+                      <FormControl>
+                        <CareerAutocomplete 
+                          value={field.value} 
+                          onChange={field.onChange} 
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs italic text-red-400" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Market Location</FormLabel>
+                      <FormControl>
+                        <LocationAutocomplete 
+                          value={field.value} 
+                          onChange={field.onChange}
+                          placeholder={geoLoading ? "Detecting Satellite Data..." : "Select operational theater..."}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs italic text-red-400" />
+                    </FormItem>
+                  )}
+                />
+                <Button type="button" className="w-full h-14 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-blue-500/20" onClick={() => validateStep(1)}>
+                  Next: Skill Matrix <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-700">
+                <FormField
+                  control={form.control}
+                  name="skills"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Core Competencies</FormLabel>
+                      <FormControl>
+                        <textarea 
+                          className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-4 text-white placeholder:text-white/10 focus:outline-none focus:border-blue-500/50 transition-all text-sm font-light leading-relaxed"
+                          placeholder="e.g. LLM Integration, Strategic Forecasting, Full-Stack Engineering, Crisis Management..."
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription className="text-[10px] italic opacity-40">List the high-leverage tools and methodologies you deploy daily.</FormDescription>
+                      <FormMessage className="text-xs italic text-red-400" />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex gap-4">
+                  <Button type="button" variant="outline" className="flex-1 h-14 rounded-2xl border-white/5 bg-white/5" onClick={prevStep}>
+                    Back
+                  </Button>
+                  <Button type="button" className="flex-1 h-14 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-blue-500/20" onClick={() => validateStep(2)}>
+                    Next: Target <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {step === 3 && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-700">
+                <FormField
+                  control={form.control}
+                  name="incomeTarget"
+                  render={({ field }) => {
+                    const locationValue = form.watch('location');
+                    const currency = getCurrencySymbol(locationValue);
+                    return (
+                      <FormItem>
+                        <FormLabel className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Income Target (Monthly)</FormLabel>
+                        <FormControl>
+                          <div className="relative group">
+                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 font-bold font-mono">{currency}</div>
+                            <input 
+                              type="text"
+                              className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 text-white placeholder:text-white/10 focus:outline-none focus:border-blue-500/50 transition-all font-mono"
+                              placeholder="e.g. 100,000"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-xs italic text-red-400" />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <div className="flex gap-4">
+                  <Button type="button" variant="outline" className="flex-1 h-14 rounded-2xl border-white/5 bg-white/5" onClick={prevStep}>
+                    Back
+                  </Button>
+                  <Button type="submit" className="flex-1 h-14 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-blue-500/20" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <span className="flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" /> Analyzing Operational Data...
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4" /> Initialize Analysis
+                      </span>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
+  );
+}

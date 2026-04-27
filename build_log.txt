@@ -1,0 +1,40 @@
+
+> the-guardian@0.1.0 build
+> next build
+
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/apple/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/apple/.gemini/antigravity/scratch/the-guardian/package-lock.json
+
+▲ Next.js 16.2.4 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 5.9s
+  Running TypeScript ...
+Failed to type check.
+
+./src/components/dashboard-client.tsx:87:19
+Type error: Type '{ hidden: { opacity: number; y: number; }; show: { opacity: number; y: number; transition: { duration: number; ease: string; }; }; }' is not assignable to type 'Variants'.
+  Property 'show' is incompatible with index signature.
+    Type '{ opacity: number; y: number; transition: { duration: number; ease: string; }; }' is not assignable to type 'Variant'.
+      Type '{ opacity: number; y: number; transition: { duration: number; ease: string; }; }' is not assignable to type 'TargetAndTransition'.
+        Type '{ opacity: number; y: number; transition: { duration: number; ease: string; }; }' is not assignable to type '{ transition?: Transition<any> | undefined; transitionEnd?: ResolvedValues$1 | undefined; }'.
+          Types of property 'transition' are incompatible.
+            Type '{ duration: number; ease: string; }' is not assignable to type 'Transition<any> | undefined'.
+              Type '{ duration: number; ease: string; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+                Type '{ duration: number; ease: string; }' is not assignable to type 'ValueAnimationTransition<any>'.
+                  Types of property 'ease' are incompatible.
+                    Type 'string' is not assignable to type 'Easing | Easing[] | undefined'.
+
+  [90m85 |[0m     >
+  [90m86 |[0m       {[90m/* HUD Header */[0m}
+[31m[1m>[0m [90m87 |[0m       <motion.div variants={item} className=[32m"flex flex-col md:flex-row md:items-center jus...[0m
+  [90m   |[0m                   [31m[1m^[0m
+  [90m88 |[0m         <div className=[32m"space-y-1"[0m>
+  [90m89 |[0m           <div className=[32m"inline-flex items-center gap-2 text-[10px] font-mono text-blue-4...[0m
+  [90m90 |[0m             <span className=[32m"w-2 h-2 rounded-full bg-blue-500 animate-pulse"[0m /> [33mDiagnostic.[0m..
+Next.js build worker exited with code: 1 and signal: null
