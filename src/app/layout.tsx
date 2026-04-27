@@ -34,6 +34,14 @@ export default function RootLayout({
         <Script id="scroll-restoration" strategy="afterInteractive">
           {`history.scrollRestoration = "manual"`}
         </Script>
+        <Script 
+          src="https://app.lemonsqueezy.com/js/lemon.js" 
+          strategy="afterInteractive"
+        />
+        <Script 
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="lazyOnload"
+        />
         <Scene />
         <header className="border-b border-white/5 bg-black/40 backdrop-blur-xl sticky top-0 z-50">
           <div className="container mx-auto px-4 h-16 flex items-center justify-between">

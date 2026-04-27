@@ -36,6 +36,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 declare global {
   interface Window {
     LemonSqueezy: any;
+    Razorpay: any;
   }
 }
 
@@ -67,27 +68,6 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
     }
     return () => clearInterval(timer);
   }, [isGenerating, timeLeft]);
-
-  // LemonSqueezy Script Loader
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://app.lemonsqueezy.com/js/lemon.js';
-    script.async = true;
-    script.onload = () => {
-      if (window.LemonSqueezy) {
-        window.LemonSqueezy.Setup({
-          eventHandler: (event: any) => {
-            console.log('LemonSqueezy Event:', event);
-          }
-        });
-      }
-    };
-    document.body.appendChild(script);
-    
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
 
   // Monetization Logic
   const visibleRoadmap = isUnlocked ? roadmap : roadmap.slice(0, 4);
@@ -127,15 +107,15 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
     }
   };
 
-  const baseAmount = 29.00;
-  const finalAmount = Math.max(0, baseAmount * (1 - discount / 100));
-
   const getCurrencyData = (location: string) => {
-    const isUS = location.toLowerCase().includes('usa') || location.toLowerCase().includes('united states') || location.toLowerCase().includes('us');
-    return isUS ? { symbol: '$', amount: '2.49', code: 'USD' } : { symbol: '₹', amount: '200', code: 'INR' };
+    const isIndia = location.toLowerCase().includes('india') || location.toLowerCase().includes('in');
+    // Base Price Anchor: 200 INR / ~2.49 USD
+    return isIndia ? { symbol: '₹', amount: 200, code: 'INR' } : { symbol: '$', amount: 2.49, code: 'USD' };
   };
 
   const pricing = getCurrencyData(assessment.location);
+  const baseAmount = pricing.amount;
+  const finalAmount = Math.max(0, baseAmount * (1 - discount / 100));
 
   const container = {
     hidden: { opacity: 0 },
@@ -408,34 +388,87 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
 
                     <div className="pt-4 space-y-4 w-full max-w-sm">
                       <div className="flex items-center justify-between px-2 text-[10px] font-mono uppercase tracking-widest">
-                        <span className="text-white/40">Total Amount</span>
+                        <span className="text-white/40">Authorization Fee</span>
                         <span className="text-white text-lg font-black italic">
-                          {pricing.symbol}{finalAmount.toFixed(2)}
+                          ₹{(200 * (1 - discount / 100)).toFixed(0)} / ${(2.49 * (1 - discount / 100)).toFixed(2)}
                         </span>
                       </div>
 
-                      <Button 
-                        className="w-full rounded-2xl py-8 bg-blue-600 hover:bg-blue-500 font-black text-xl shadow-[0_0_50px_-15px_rgba(59,130,246,0.5)] group"
-                        onClick={() => {
-                          if (finalAmount === 0) {
-                            setIsUnlocked(true);
-                          } else {
-                            // REAL LEMON SQUEEZY CHECKOUT
-                            if (window.LemonSqueezy) {
-                              const checkoutUrl = process.env.NEXT_PUBLIC_LEMON_SQUEEZY_CHECKOUT_URL || '#';
-                              window.LemonSqueezy.Url.Open(checkoutUrl + `?checkout[custom][assessment_id]=${assessment.id}`);
+                      <div className="space-y-3">
+                        <Button 
+                          className="w-full rounded-2xl py-6 bg-blue-600 hover:bg-blue-500 font-black text-lg shadow-[0_0_50px_-15px_rgba(59,130,246,0.5)] group flex flex-col items-center h-auto"
+                          onClick={async () => {
+                            if (finalAmount === 0) {
+                              setIsUnlocked(true);
                             } else {
-                              alert("PAYMENT UPLINK OFFLINE. Please retry.");
+                              // PROFESSIONAL RAZORPAY STANDARD CHECKOUT
+                              if (window.Razorpay) {
+                                try {
+                                  const orderResponse = await fetch('/api/razorpay/create-order', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                      amount: Math.round(200 * (1 - discount / 100)) * 100,
+                                      currency: "INR",
+                                      receipt: `rcpt_${assessment.id.slice(0, 10)}`
+                                    }),
+                                  });
+                                  const orderData = await orderResponse.json();
+                                  if (orderData.error) throw new Error(orderData.error);
+
+                                  const options = {
+                                    key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                                    amount: orderData.amount,
+                                    currency: orderData.currency,
+                                    name: "The Guardian OS",
+                                    description: "Tactical Dossier Authorization (UPI)",
+                                    order_id: orderData.id,
+                                    handler: async function(response: any) {
+                                      const verifyResponse = await fetch('/api/razorpay/verify-payment', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ ...response, assessment_id: assessment.id }),
+                                      });
+                                      const verifyData = await verifyResponse.json();
+                                      if (verifyData.success) setIsUnlocked(true);
+                                      else alert("VERIFICATION FAILURE: " + verifyData.error);
+                                    },
+                                    prefill: { email: "operative@guardian-os.com" },
+                                    theme: { color: "#2563eb" }
+                                  };
+                                  const rzp = new window.Razorpay(options);
+                                  rzp.open();
+                                } catch (err: any) {
+                                  alert("TACTICAL UPLINK ERROR: " + err.message);
+                                }
+                              }
                             }
-                          }
-                        }}
-                      >
-                        {finalAmount === 0 ? (
-                          <span className="flex items-center gap-3"><Shield className="w-6 h-6 text-white" /> Authorize Free Access</span>
-                        ) : (
-                          <span className="flex items-center gap-3"><CreditCard className="w-6 h-6 text-white" /> Authorize & Pay</span>
-                        )}
-                      </Button>
+                          }}
+                        >
+                          <span className="flex items-center gap-3"><Shield className="w-5 h-5" /> Authorize via UPI</span>
+                          <span className="text-[9px] font-mono uppercase tracking-[0.2em] opacity-50 font-normal">GPay // PhonePe // Netbanking</span>
+                        </Button>
+
+                        <Button 
+                          variant="outline"
+                          className="w-full rounded-2xl py-6 border-white/10 bg-white/5 hover:bg-white/10 font-black text-lg group flex flex-col items-center h-auto"
+                          onClick={() => {
+                            if (finalAmount === 0) {
+                              setIsUnlocked(true);
+                            } else {
+                              if (window.LemonSqueezy) {
+                                const checkoutUrl = process.env.NEXT_PUBLIC_LEMON_SQUEEZY_CHECKOUT_URL || '#';
+                                window.LemonSqueezy.Url.Open(checkoutUrl + `?checkout[custom][assessment_id]=${assessment.id}`);
+                              } else {
+                                alert("PAYMENT UPLINK OFFLINE. Please retry.");
+                              }
+                            }
+                          }}
+                        >
+                          <span className="flex items-center gap-3"><CreditCard className="w-5 h-5" /> Authorize via Global Cards</span>
+                          <span className="text-[9px] font-mono uppercase tracking-[0.2em] opacity-50 font-normal">VISA // Mastercard // PayPal</span>
+                        </Button>
+                      </div>
                       
                       <div className="flex items-center justify-center gap-4 text-[9px] font-mono text-white/20 uppercase tracking-[0.2em]">
                         <span className="flex items-center gap-1.5"><Shield className="w-3 h-3" /> SSL Encrypted</span>
