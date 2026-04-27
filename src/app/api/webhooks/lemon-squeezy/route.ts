@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     if (assessmentId) {
       console.log(`[LEMON_SQUEEZY_WEBHOOK] Authorizing Access for Assessment: ${assessmentId}`);
       
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('assessments')
         .update({ is_unlocked: true })
         .eq('id', assessmentId);

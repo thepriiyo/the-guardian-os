@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/lib/supabase';
 import crypto from 'crypto';
 import { supabase } from '@/lib/supabase';
 
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
     if (isAuthentic) {
       // PROCEED WITH FULFILLMENT
       if (assessment_id) {
-        const { error } = await supabase
+        const { error } = await supabaseAdmin
           .from('assessments')
           .update({ is_unlocked: true })
           .eq('id', assessment_id);
