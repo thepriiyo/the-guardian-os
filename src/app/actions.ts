@@ -64,3 +64,14 @@ export async function validateAccessCode(code: string) {
   }
   return { success: false, message: 'Invalid Intelligence Access Code' };
 }
+
+export async function checkUnlockStatus(id: string) {
+  const { data, error } = await supabase
+    .from('assessments')
+    .select('is_unlocked')
+    .eq('id', id)
+    .single();
+
+  if (error || !data) return false;
+  return data.is_unlocked;
+}

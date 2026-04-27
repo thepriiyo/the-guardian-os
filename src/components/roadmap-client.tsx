@@ -18,20 +18,26 @@ import {
   FileText,
   Gift,
   Ticket,
-  ShieldCheck,
-  XCircle
+  Shield,
+  X,
+  Loader2
 } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Assessment, RoadmapWeek, RoadmapTask } from '@/types';
 import { generateTacticalPDF } from '@/lib/pdf-generator';
-import { validateAccessCode } from '@/app/actions';
+import { validateAccessCode, checkUnlockStatus } from '@/app/actions';
 import { getTacticalReportAction } from '@/app/actions/report';
 import { useState, useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+
+declare global {
+  interface Window {
+    LemonSqueezy: any;
+  }
+}
 
 export default function RoadmapClient({ assessment }: { assessment: Assessment }) {
   const report = assessment.report_data;
@@ -62,9 +68,36 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
     return () => clearInterval(timer);
   }, [isGenerating, timeLeft]);
 
+  // LemonSqueezy Script Loader
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://app.lemonsqueezy.com/js/lemon.js';
+    script.async = true;
+    document.body.appendChild(script);
+    
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   // Monetization Logic
   const visibleRoadmap = isUnlocked ? roadmap : roadmap.slice(0, 4);
   const showPaywall = !isUnlocked;
+
+  // Unlock Polling
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (!isUnlocked && !showPaywall) {
+       interval = setInterval(async () => {
+         const unlocked = await checkUnlockStatus(assessment.id);
+         if (unlocked) {
+           setIsUnlocked(true);
+           clearInterval(interval);
+         }
+       }, 3000);
+    }
+    return () => clearInterval(interval);
+  }, [isUnlocked, assessment.id, showPaywall]);
 
   const handleValidateCode = async () => {
     if (!accessCode) return;
@@ -342,7 +375,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                         </div>
                       )}
 
-                      {error && <div className="text-[10px] font-mono text-red-400 mt-2 flex items-center justify-center gap-2 uppercase"><XCircle className="w-3 h-3" /> {error}</div>}
+                      {error && <div className="text-[10px] font-mono text-red-400 mt-2 flex items-center justify-center gap-2 uppercase"><X className="w-3 h-3" /> {error}</div>}
 
                       <div className="flex items-center gap-3 pt-2">
                         <Checkbox 
@@ -378,21 +411,25 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                           if (finalAmount === 0) {
                             setIsUnlocked(true);
                           } else {
-                            console.log("PAYMENT_GATEWAY_INITIALIZED");
-                            alert(`SECURE UPLINK ESTABLISHED\n\nFinal Amount: ${pricing.symbol}${finalAmount.toFixed(2)}\n\n(Mock Payment Success: Operative Authorized)`);
-                            setIsUnlocked(true);
+                            // REAL LEMON SQUEEZY CHECKOUT
+                            if (window.LemonSqueezy) {
+                              const checkoutUrl = process.env.NEXT_PUBLIC_LEMON_SQUEEZY_CHECKOUT_URL || '#';
+                              window.LemonSqueezy.Url.Open(checkoutUrl + `?checkout[custom][assessment_id]=${assessment.id}`);
+                            } else {
+                              alert("PAYMENT UPLINK OFFLINE. Please retry.");
+                            }
                           }
                         }}
                       >
                         {finalAmount === 0 ? (
-                          <span className="flex items-center gap-3"><ShieldCheck className="w-6 h-6 text-white" /> Authorize Free Access</span>
+                          <span className="flex items-center gap-3"><Shield className="w-6 h-6 text-white" /> Authorize Free Access</span>
                         ) : (
                           <span className="flex items-center gap-3"><CreditCard className="w-6 h-6 text-white" /> Authorize & Pay</span>
                         )}
                       </Button>
                       
                       <div className="flex items-center justify-center gap-4 text-[9px] font-mono text-white/20 uppercase tracking-[0.2em]">
-                        <span className="flex items-center gap-1.5"><ShieldCheck className="w-3 h-3" /> SSL Encrypted</span>
+                        <span className="flex items-center gap-1.5"><Shield className="w-3 h-3" /> SSL Encrypted</span>
                         <span className="w-1 h-1 rounded-full bg-white/10" />
                         <span className="flex items-center gap-1.5"><Zap className="w-3 h-3" /> 2026 Ready</span>
                       </div>
