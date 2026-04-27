@@ -121,9 +121,15 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
 
   const pricing = getCurrencyData(assessment.location);
   const baseAmount = pricing.amount;
+  
+  // Hard-coded conversion for fixed discounts: 199 INR = ~2.48 USD
+  const fixedDiscount = discountType === 'fixed' 
+    ? (pricing.code === 'INR' ? discount : 2.48) 
+    : 0;
+
   const finalAmount = discountType === 'percentage' 
-    ? Math.max(0, baseAmount * (1 - discount / 100))
-    : Math.max(0, baseAmount - discount);
+    ? Math.max(0.01, baseAmount * (1 - discount / 100))
+    : Math.max(0.01, baseAmount - fixedDiscount);
 
   const container = {
     hidden: { opacity: 0 },
@@ -406,7 +412,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                       <div className="flex items-center justify-between px-2 text-[10px] font-mono uppercase tracking-widest">
                         <span className="text-white/40">Authorization Fee</span>
                         <span className="text-white text-lg font-black italic">
-                          ₹{finalAmount.toFixed(0)} / ${((finalAmount) / 80).toFixed(2)}
+                          {pricing.symbol}{finalAmount.toFixed(pricing.code === 'INR' ? 0 : 2)}
                         </span>
                       </div>
 
