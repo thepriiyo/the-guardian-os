@@ -116,42 +116,67 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-2xl flex items-center justify-center p-6"
+            className="fixed inset-0 z-[100] bg-[#020617]/95 backdrop-blur-3xl flex items-center justify-center p-6"
           >
-            <div className="max-w-2xl w-full space-y-12 text-center relative">
-              <div className="absolute -inset-20 bg-blue-500/10 blur-[120px] rounded-full animate-pulse" />
+            <div className="max-w-xl w-full space-y-12 text-center relative">
+              <div className="absolute -inset-40 bg-blue-500/5 blur-[160px] rounded-full animate-pulse pointer-events-none" />
               
               <div className="relative flex flex-col items-center">
-                 <div className="w-32 h-32 border-2 border-blue-500/20 rounded-full flex items-center justify-center mb-8 relative">
-                    <div className="absolute inset-0 border-t-2 border-blue-500 rounded-full animate-spin" />
+                 <div className="w-40 h-40 border border-blue-500/10 rounded-full flex items-center justify-center mb-10 relative">
+                    <motion.div 
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                      className="absolute inset-0 border-t border-blue-500/40 rounded-full"
+                    />
+                    <motion.div 
+                      animate={{ rotate: -360 }}
+                      transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                      className="absolute inset-4 border-b border-blue-500/20 rounded-full"
+                    />
                     <Zap className="w-12 h-12 text-blue-500 animate-pulse" />
                  </div>
                  
-                 <div className="space-y-4">
-                    <div className="text-[10px] font-mono text-blue-400 uppercase tracking-[0.5em] animate-pulse">
-                      Establishing // Secure_Gemma_Link
+                 <div className="space-y-6">
+                    <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-blue-500/5 border border-blue-500/10">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping" />
+                      <span className="text-[10px] font-mono text-blue-400 uppercase tracking-[0.5em]">Establishing // Neural_Payload_Uplink</span>
                     </div>
-                    <h2 className="text-5xl font-black italic uppercase tracking-tighter text-white">
-                      Generating Intelligence <span className="text-blue-500">Payload.</span>
+                    <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-white">
+                      Decrypting <span className="text-blue-500">Sector.</span>
                     </h2>
-                    <p className="text-muted-foreground font-light text-lg max-w-md mx-auto">
-                      Calculating 20-page tactical dossier based on 2026 market benchmarks and regional displacement vectors.
+                    <p className="text-muted-foreground font-light text-lg max-w-sm mx-auto leading-relaxed">
+                      Compiling 20-page tactical dossier using regional geospatial data and 2026 AI displacement benchmarks.
                     </p>
                  </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-12 border-t border-white/5">
+              <div className="space-y-4 max-w-xs mx-auto">
+                <div className="flex justify-between text-[9px] font-mono text-white/30 uppercase tracking-widest mb-1">
+                  <span>Processing Dossier</span>
+                  <span className="text-blue-500 animate-pulse">Running Scan...</span>
+                </div>
+                <div className="h-0.5 bg-white/5 w-full rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: "0%" }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 8, ease: "easeInOut" }}
+                    className="h-full bg-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.5)]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-8 pt-12 border-t border-white/5 opacity-50">
                  <div className="space-y-1">
-                    <div className="text-[9px] font-mono text-white/20 uppercase tracking-widest">Neural_Confidence</div>
-                    <div className="text-xl font-bold italic">98.4%</div>
+                    <div className="text-[8px] font-mono text-white/20 uppercase tracking-widest">Neural_Sync</div>
+                    <div className="text-lg font-bold italic">99.9%</div>
                  </div>
                  <div className="space-y-1">
-                    <div className="text-[9px] font-mono text-white/20 uppercase tracking-widest">Dossier_Depth</div>
-                    <div className="text-xl font-bold italic">20 PAGES</div>
+                    <div className="text-[8px] font-mono text-white/20 uppercase tracking-widest">Payload</div>
+                    <div className="text-lg font-bold italic">20 PAGES</div>
                  </div>
                  <div className="space-y-1">
-                    <div className="text-[9px] font-mono text-white/20 uppercase tracking-widest">Protocol_Status</div>
-                    <div className="text-xl font-bold italic text-blue-500 animate-pulse">ENCRYPTING</div>
+                    <div className="text-[8px] font-mono text-white/20 uppercase tracking-widest">Status</div>
+                    <div className="text-lg font-bold italic text-blue-500 animate-pulse uppercase">Active</div>
                  </div>
               </div>
             </div>
