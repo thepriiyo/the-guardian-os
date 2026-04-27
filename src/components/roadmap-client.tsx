@@ -23,13 +23,26 @@ import { cn } from '@/lib/utils';
 import { Assessment, RoadmapWeek, RoadmapTask } from '@/types';
 import { generateTacticalPDF } from '@/lib/pdf-generator';
 import { getTacticalReportAction } from '@/app/actions/report';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 
 export default function RoadmapClient({ assessment }: { assessment: Assessment }) {
   const report = assessment.report_data;
   const roadmap = report?.roadmap || [];
   const [isGenerating, setIsGenerating] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(20);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isGenerating && timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft((prev) => Math.max(0, prev - 1));
+      }, 1000);
+    } else if (!isGenerating) {
+      setTimeLeft(20);
+    }
+    return () => clearInterval(timer);
+  }, [isGenerating, timeLeft]);
   
   // Monetization Logic: Only show first 4 weeks
   const visibleRoadmap = roadmap.slice(0, 4);
@@ -144,9 +157,16 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                     <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-white">
                       Decrypting <span className="text-blue-500">Sector.</span>
                     </h2>
-                    <p className="text-muted-foreground font-light text-lg max-w-sm mx-auto leading-relaxed">
-                      Compiling 20-page tactical dossier using regional geospatial data and 2026 AI displacement benchmarks.
-                    </p>
+                    <div className="flex flex-col items-center gap-2">
+                      <p className="text-muted-foreground font-light text-lg max-w-sm mx-auto leading-relaxed">
+                        Compiling 20-page tactical dossier using regional geospatial data.
+                      </p>
+                      <div className="px-4 py-2 rounded-xl bg-blue-500/10 border border-blue-500/20 inline-block">
+                        <span className="text-blue-400 font-mono text-sm tracking-widest uppercase">
+                          Estimated Time Remaining: <span className="text-white font-bold">{timeLeft}s</span>
+                        </span>
+                      </div>
+                    </div>
                  </div>
               </div>
 
