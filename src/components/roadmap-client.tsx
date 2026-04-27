@@ -52,6 +52,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
   const [accessCode, setAccessCode] = useState('');
   const [isValidating, setIsValidating] = useState(false);
   const [discount, setDiscount] = useState(0);
+  const [discountType, setDiscountType] = useState<'percentage' | 'fixed'>('percentage');
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [noCoupon, setNoCoupon] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -96,7 +97,8 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
       const result = await validateAccessCode(accessCode);
       if (result.success) {
         setDiscount(result.discount!);
-        if (result.discount === 100) setIsUnlocked(true);
+        setDiscountType(result.discountType as 'percentage' | 'fixed');
+        if (result.discountType === 'percentage' && result.discount === 100) setIsUnlocked(true);
       } else {
         setError(result.message!);
       }
@@ -115,7 +117,9 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
 
   const pricing = getCurrencyData(assessment.location);
   const baseAmount = pricing.amount;
-  const finalAmount = Math.max(0, baseAmount * (1 - discount / 100));
+  const finalAmount = discountType === 'percentage' 
+    ? Math.max(0, baseAmount * (1 - discount / 100))
+    : Math.max(0, baseAmount - discount);
 
   const container = {
     hidden: { opacity: 0 },
@@ -385,12 +389,20 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                         </label>
                       </div>
                     </div>
+                    {discount > 0 && (
+                      <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 w-fit mx-auto mb-2 animate-pulse">
+                        <Gift className="w-3 h-3 text-green-400" />
+                        <span className="text-[10px] font-mono text-green-400 uppercase tracking-widest">
+                          {discountType === 'percentage' ? `-${discount}%` : `₹${discount}`} Intelligence Discount Applied
+                        </span>
+                      </div>
+                    )}
 
                     <div className="pt-4 space-y-4 w-full max-w-sm">
                       <div className="flex items-center justify-between px-2 text-[10px] font-mono uppercase tracking-widest">
                         <span className="text-white/40">Authorization Fee</span>
                         <span className="text-white text-lg font-black italic">
-                          ₹{(200 * (1 - discount / 100)).toFixed(0)} / ${(2.49 * (1 - discount / 100)).toFixed(2)}
+                          ₹{finalAmount.toFixed(0)} / ${((finalAmount) / 80).toFixed(2)}
                         </span>
                       </div>
 
@@ -398,7 +410,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                         <Button 
                           className="w-full rounded-2xl py-6 bg-blue-600 hover:bg-blue-500 font-black text-lg shadow-[0_0_50px_-15px_rgba(59,130,246,0.5)] group flex flex-col items-center h-auto"
                           onClick={async () => {
-                            if (finalAmount === 0) {
+                            if (finalAmount <= 0) {
                               setIsUnlocked(true);
                             } else {
                               // PROFESSIONAL RAZORPAY STANDARD CHECKOUT
@@ -408,7 +420,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
                                     body: JSON.stringify({
-                                      amount: Math.round(200 * (1 - discount / 100)) * 100,
+                                      amount: Math.max(1, Math.round(finalAmount)) * 100, // Fixed: Use global finalAmount
                                       currency: "INR",
                                       receipt: `rcpt_${assessment.id.slice(0, 10)}`
                                     }),

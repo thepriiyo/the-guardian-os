@@ -51,16 +51,23 @@ export async function submitAssessment(formData: {
 }
 
 export async function validateAccessCode(code: string) {
-  const codes: Record<string, number> = {
-    'GUARDIAN20': 20,
-    'SECURITY40': 40,
-    'NEURAL50': 50,
-    'ABSOLUTE100': 100,
+  const codes: Record<string, { type: 'percentage' | 'fixed', value: number }> = {
+    'GUARDIAN20': { type: 'percentage', value: 20 },
+    'SECURITY40': { type: 'percentage', value: 40 },
+    'NEURAL50': { type: 'percentage', value: 50 },
+    'TACTICAL80': { type: 'percentage', value: 80 },
+    'SURVIVAL90': { type: 'percentage', value: 90 },
+    'ABSOLUTE100': { type: 'percentage', value: 100 },
+    'LOYALTY199': { type: 'fixed', value: 199 }
   };
 
-  const discount = codes[code.toUpperCase()];
-  if (discount) {
-    return { success: true, discount };
+  const codeData = codes[code.toUpperCase()];
+  if (codeData) {
+    return { 
+      success: true, 
+      discount: codeData.value,
+      discountType: codeData.type 
+    };
   }
   return { success: false, message: 'Invalid Intelligence Access Code' };
 }
