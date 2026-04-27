@@ -37,7 +37,7 @@ Built with an "Absolute Premium" philosophy, utilizing a high-authority technica
 
 - **Frontend**: Next.js 15+ (Turbopack) // React 19
 - **Styling**: Cinematic Glassmorphism // Tailwind CSS // Framer Motion
-- **Intelligence**: Google Gemini 2.0 Flash (Neural Engine)
+- **Intelligence**: Google Gemma 3 (27B-IT) // Neural Engine
 - **Database**: Supabase (Geospatial Command)
 - **Reporting**: jsPDF (Stylized 20-Page Dossiers)
 
