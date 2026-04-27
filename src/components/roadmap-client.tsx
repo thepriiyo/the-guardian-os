@@ -70,7 +70,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
           <div className="inline-flex items-center gap-2 text-[10px] font-mono text-blue-400 uppercase tracking-[0.3em]">
             <Target className="w-3 h-3" /> Strategic // Deployment // Map
           </div>
-          <h1 className="text-4xl md:text-7xl font-black tracking-tighter uppercase italic bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tighter uppercase italic bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">
             Tactical Roadmap
           </h1>
           <p className="text-muted-foreground font-light text-lg">Your 12-week survival execution plan for <span className="text-white font-bold">{assessment.job_title}</span>.</p>
@@ -169,11 +169,11 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                   <div className="absolute top-0 left-0 w-1 h-full bg-blue-500/20 group-hover:bg-blue-500 transition-colors" />
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 p-8 pb-4">
                     <div className="flex items-center gap-6">
-                      <div className="text-4xl font-black italic text-white/10 group-hover:text-blue-500/20 transition-colors">
+                      <div className="text-2xl sm:text-4xl font-black italic text-white/10 group-hover:text-blue-500/20 transition-colors">
                         W{week.week < 10 ? `0${week.week}` : week.week}
                       </div>
                       <div>
-                        <CardTitle className="text-2xl font-bold tracking-tight uppercase italic">{week.title}</CardTitle>
+                        <CardTitle className="text-lg sm:text-2xl font-bold tracking-tight uppercase italic">{week.title}</CardTitle>
                         <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mt-1">Phase {Math.floor(i / 4) + 1} // Active_Objective</div>
                       </div>
                     </div>
@@ -181,7 +181,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                       {week.type}
                     </Badge>
                   </CardHeader>
-                  <CardContent className="p-8 pt-0 pl-24">
+                  <CardContent className="p-5 sm:p-8 pt-0 pl-12 sm:pl-24">
                     <p className="text-muted-foreground mb-8 leading-relaxed font-light text-lg">{week.description}</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {week.tasks.map((task, j) => (

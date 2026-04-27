@@ -89,7 +89,7 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
           <div className="inline-flex items-center gap-2 text-[10px] font-mono text-blue-400 uppercase tracking-[0.3em] mb-2">
             <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" /> Diagnostics // Active_Session
           </div>
-          <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter uppercase italic bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent">
             {assessment.job_title}
           </h1>
           <div className="flex items-center gap-3 text-muted-foreground font-light">

@@ -93,8 +93,8 @@ export function AssessmentForm() {
       <CardHeader className="space-y-4 p-8">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <CardTitle className="text-3xl font-black tracking-tighter uppercase italic flex items-center gap-3">
-              <Target className="w-8 h-8 text-blue-500" />
+            <CardTitle className="text-xl sm:text-3xl font-black tracking-tighter uppercase italic flex items-center gap-3">
+              <Target className="w-6 h-6 sm:w-8 h-8 text-blue-500" />
               Career Resilience Scan
             </CardTitle>
             <CardDescription className="text-[10px] font-mono uppercase tracking-[0.3em] text-blue-400/60">
@@ -115,7 +115,7 @@ export function AssessmentForm() {
         </div>
       </CardHeader>
 
-      <CardContent className="p-8 pt-0">
+      <CardContent className="p-5 sm:p-8 pt-0">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {step === 1 && (

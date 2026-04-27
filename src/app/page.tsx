@@ -22,7 +22,7 @@ export default function Home() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/5 border border-blue-500/10 text-blue-400 text-xs font-mono tracking-[0.2em] uppercase">
             <Zap className="w-3 h-3 animate-pulse" /> Initialize // Secure_Connection
           </div>
-          <h1 className="text-6xl md:text-[10rem] font-black tracking-tighter leading-none bg-gradient-to-b from-white via-white to-white/20 bg-clip-text text-transparent">
+          <h1 className="text-5xl sm:text-7xl md:text-[10rem] font-black tracking-tighter leading-none bg-gradient-to-b from-white via-white to-white/20 bg-clip-text text-transparent">
             THE GUARDIAN
           </h1>
           <p className="max-w-3xl mx-auto text-lg md:text-2xl text-muted-foreground/80 font-light tracking-wide leading-relaxed">
@@ -38,7 +38,7 @@ export default function Home() {
       </section>
 
       {/* 2. Tactical Intelligence Stage */}
-      <section className="min-h-screen py-32 relative z-20 bg-gradient-to-b from-transparent via-[#020617]/80 to-transparent">
+      <section className="min-h-screen py-16 md:py-32 relative z-20 bg-gradient-to-b from-transparent via-[#020617]/80 to-transparent">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-32 space-y-8">
             <motion.div
