@@ -412,7 +412,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                       <div className="flex items-center justify-between px-2 text-[10px] font-mono uppercase tracking-widest">
                         <span className="text-white/40">Authorization Fee</span>
                         <span className="text-white text-lg font-black italic">
-                          {pricing.symbol}{finalAmount.toFixed(pricing.code === 'INR' ? 0 : 2)}
+                          ₹{Math.max(1, 200 - (discountType === 'percentage' ? (200 * discount / 100) : (discount === 199 ? 199 : 0)))} / ${Math.max(0.01, 2.49 - (discountType === 'percentage' ? (2.49 * discount / 100) : (discount === 199 ? 2.48 : 0))).toFixed(2)}
                         </span>
                       </div>
 
@@ -426,11 +426,18 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                               // PROFESSIONAL RAZORPAY STANDARD CHECKOUT
                               if (window.Razorpay) {
                                 try {
+                                  // FORCE INR PRICING FOR UPI UPLINK
+                                  const upiBase = 200;
+                                  const upiDiscount = discountType === 'percentage' 
+                                    ? upiBase * (discount / 100) 
+                                    : (discount === 199 ? 199 : 0);
+                                  const upiFinal = Math.max(1, upiBase - upiDiscount);
+
                                   const orderResponse = await fetch('/api/razorpay/create-order', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
                                     body: JSON.stringify({
-                                      amount: Math.max(1, Math.round(finalAmount)) * 100, // Fixed: Use global finalAmount
+                                      amount: Math.round(upiFinal) * 100,
                                       currency: "INR",
                                       receipt: `rcpt_${assessment.id.slice(0, 10)}`
                                     }),
@@ -485,7 +492,13 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                             if (finalAmount === 0) {
                               setIsUnlocked(true);
                             } else {
-                              if (window.LemonSqueezy) {
+                                // FORCE USD PRICING FOR GLOBAL UPLINK
+                                const lsBase = 2.49;
+                                const lsDiscount = discountType === 'percentage' 
+                                  ? lsBase * (discount / 100) 
+                                  : (discount === 199 ? 2.48 : 0);
+                                const lsFinal = Math.max(0.01, lsBase - lsDiscount);
+                                
                                 const checkoutUrl = process.env.NEXT_PUBLIC_LEMON_SQUEEZY_CHECKOUT_URL || '#';
                                 // Pass the discount code to LemonSqueezy if one is applied
                                 const discountParam = accessCode ? `&checkout[discount_code]=${accessCode}` : '';
