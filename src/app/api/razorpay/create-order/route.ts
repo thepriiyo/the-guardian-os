@@ -38,7 +38,9 @@ export async function POST(req: Request) {
       currency: order.currency,
     });
   } catch (error: any) {
+    // Surface the exact Razorpay rejection message
+    const errorMessage = error.error?.description || error.message || 'Failed to create order';
     console.error('RAZORPAY_ORDER_ERROR:', error);
-    return NextResponse.json({ error: error.message || 'Failed to create order' }, { status: 500 });
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
