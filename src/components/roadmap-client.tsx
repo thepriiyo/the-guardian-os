@@ -422,62 +422,61 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                           onClick={async () => {
                             if (finalAmount <= 0) {
                               setIsUnlocked(true);
-                            } else {
-                              // PROFESSIONAL RAZORPAY STANDARD CHECKOUT
-                              if (window.Razorpay) {
-                                try {
-                                  // FORCE INR PRICING FOR UPI UPLINK
-                                  const upiBase = 200;
-                                  const upiDiscount = discountType === 'percentage' 
-                                    ? upiBase * (discount / 100) 
-                                    : (discount === 199 ? 199 : 0);
-                                  const upiFinal = Math.max(1, upiBase - upiDiscount);
+                              return;
+                            }
+                            
+                            if (!window.Razorpay) {
+                              alert("PAYMENT UPLINK OFFLINE. Please retry.");
+                              return;
+                            }
 
-                                  const orderResponse = await fetch('/api/razorpay/create-order', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                      amount: Math.round(upiFinal) * 100,
-                                      currency: "INR",
-                                      receipt: `rcpt_${assessment.id.slice(0, 10)}`
-                                    }),
-                                  });
-                                  const orderData = await orderResponse.json();
-                                  if (orderData.error) throw new Error(orderData.error);
+                            try {
+                              const upiBase = 200;
+                              const upiDiscount = discountType === 'percentage' 
+                                ? upiBase * (discount / 100) 
+                                : (discount === 199 ? 199 : 0);
+                              const upiFinal = Math.max(1, upiBase - upiDiscount);
 
-                                  const options = {
-                                    key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-                                    amount: orderData.amount,
-                                    currency: orderData.currency,
-                                    name: "The Guardian OS",
-                                    description: "Tactical Dossier Authorization (UPI)",
-                                    order_id: orderData.id,
-                                    handler: async function(response: any) {
-                                      try {
-                                        const verifyResponse = await fetch('/api/razorpay/verify-payment', {
-                                          method: 'POST',
-                                          headers: { 'Content-Type': 'application/json' },
-                                          body: JSON.stringify({ ...response, assessment_id: assessment.id }),
-                                        });
-                                        const verifyData = await verifyResponse.json();
-                                        if (verifyData.success) {
-                                          setIsUnlocked(true);
-                                        } else {
-                                          alert(`VERIFICATION FAILED: ${verifyData.error || 'Unknown Error'}. Assessment ID: ${assessment.id}`);
-                                        }
-                                      } catch (err: any) {
-                                        alert(`CRITICAL UPLINK ERROR: ${err.message}`);
-                                      }
-                                    },
-                                    prefill: { email: "operative@guardian-os.com" },
-                                    theme: { color: "#2563eb" }
-                                  };
-                                  const rzp = new window.Razorpay(options);
-                                  rzp.open();
-                                } catch (err: any) {
-                                  alert("TACTICAL UPLINK ERROR: " + err.message);
-                                }
-                              }
+                              const orderResponse = await fetch('/api/razorpay/create-order', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  amount: Math.round(upiFinal) * 100,
+                                  currency: "INR",
+                                  receipt: `rcpt_${assessment.id.slice(0, 10)}`
+                                }),
+                              });
+                              const orderData = await orderResponse.json();
+                              if (orderData.error) throw new Error(orderData.error);
+
+                              const options = {
+                                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                                amount: orderData.amount,
+                                currency: orderData.currency,
+                                name: "The Guardian OS",
+                                description: "Tactical Dossier Authorization (UPI)",
+                                order_id: orderData.id,
+                                handler: async function(response: any) {
+                                  try {
+                                    const verifyResponse = await fetch('/api/razorpay/verify-payment', {
+                                      method: 'POST',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ ...response, assessment_id: assessment.id }),
+                                    });
+                                    const verifyData = await verifyResponse.json();
+                                    if (verifyData.success) setIsUnlocked(true);
+                                    else alert(`VERIFICATION FAILED: ${verifyData.error}`);
+                                  } catch (err: any) {
+                                    alert(`CRITICAL UPLINK ERROR: ${err.message}`);
+                                  }
+                                },
+                                prefill: { email: "operative@guardian-os.com" },
+                                theme: { color: "#2563eb" }
+                              };
+                              const rzp = new window.Razorpay(options);
+                              rzp.open();
+                            } catch (err: any) {
+                              alert("TACTICAL UPLINK ERROR: " + err.message);
                             }
                           }}
                         >
@@ -489,23 +488,17 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                           variant="outline"
                           className="w-full rounded-2xl py-6 border-white/10 bg-white/5 hover:bg-white/10 font-black text-lg group flex flex-col items-center h-auto"
                           onClick={() => {
-                            if (finalAmount === 0) {
+                            if (finalAmount <= 0) {
                               setIsUnlocked(true);
+                              return;
+                            }
+
+                            if (window.LemonSqueezy) {
+                              const checkoutUrl = process.env.NEXT_PUBLIC_LEMON_SQUEEZY_CHECKOUT_URL || '#';
+                              const discountParam = accessCode ? `&checkout[discount_code]=${accessCode}` : '';
+                              window.LemonSqueezy.Url.Open(checkoutUrl + `?checkout[custom][assessment_id]=${assessment.id}${discountParam}`);
                             } else {
-                                // FORCE USD PRICING FOR GLOBAL UPLINK
-                                const lsBase = 2.49;
-                                const lsDiscount = discountType === 'percentage' 
-                                  ? lsBase * (discount / 100) 
-                                  : (discount === 199 ? 2.48 : 0);
-                                const lsFinal = Math.max(0.01, lsBase - lsDiscount);
-                                
-                                const checkoutUrl = process.env.NEXT_PUBLIC_LEMON_SQUEEZY_CHECKOUT_URL || '#';
-                                // Pass the discount code to LemonSqueezy if one is applied
-                                const discountParam = accessCode ? `&checkout[discount_code]=${accessCode}` : '';
-                                window.LemonSqueezy.Url.Open(checkoutUrl + `?checkout[custom][assessment_id]=${assessment.id}${discountParam}`);
-                              } else {
-                                alert("PAYMENT UPLINK OFFLINE. Please retry.");
-                              }
+                              alert("PAYMENT UPLINK OFFLINE. Please retry.");
                             }
                           }}
                         >
