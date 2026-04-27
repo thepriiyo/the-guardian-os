@@ -74,20 +74,24 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
   const visibleRoadmap = isUnlocked ? roadmap : roadmap.slice(0, 4);
   const showPaywall = !isUnlocked;
 
-  // Unlock Polling
+  // Unlock Polling Protocol: Continuously check DB if currently locked
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (!isUnlocked && !showPaywall) {
-       interval = setInterval(async () => {
-         const unlocked = await checkUnlockStatus(assessment.id);
-         if (unlocked) {
-           setIsUnlocked(true);
-           clearInterval(interval);
-         }
-       }, 3000);
+    
+    if (!isUnlocked) {
+      interval = setInterval(async () => {
+        const unlocked = await checkUnlockStatus(assessment.id);
+        if (unlocked) {
+          setIsUnlocked(true);
+          clearInterval(interval);
+        }
+      }, 3000);
     }
-    return () => clearInterval(interval);
-  }, [isUnlocked, assessment.id, showPaywall]);
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isUnlocked, assessment.id]);
 
   const handleValidateCode = async () => {
     if (!accessCode) return;
