@@ -32,6 +32,7 @@ const formSchema = z.object({
   skills: z.string().min(5, 'Please list your core technical competencies'),
   location: z.string().min(2, 'Market location is required'),
   incomeTarget: z.string().min(1, 'Target income is required'),
+  email: z.string().email('Valid operational email is required'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -50,6 +51,7 @@ export function AssessmentForm() {
       skills: '',
       location: '',
       incomeTarget: '',
+      email: '',
     },
   });
 
@@ -216,6 +218,25 @@ export function AssessmentForm() {
                       </FormItem>
                     );
                   }}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Intelligence Uplink (Email)</FormLabel>
+                      <FormControl>
+                        <input 
+                          type="email"
+                          className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-white placeholder:text-white/10 focus:outline-none focus:border-blue-500/50 transition-all font-mono"
+                          placeholder="operative@guardian-os.com"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription className="text-[10px] italic opacity-40">Your survival dossier will be dispatched here.</FormDescription>
+                      <FormMessage className="text-xs italic text-red-400" />
+                    </FormItem>
+                  )}
                 />
                 <div className="flex gap-4">
                   <Button type="button" variant="outline" className="flex-1 h-14 rounded-2xl border-white/5 bg-white/5" onClick={prevStep}>

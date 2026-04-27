@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { supabaseAdmin } from '@/lib/supabase';
+import { sendAuthorizationEmail } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -40,6 +41,21 @@ export async function POST(req: NextRequest) {
       if (error) {
         console.error('[LEMON_SQUEEZY_WEBHOOK] Supabase Update Error:', error);
         return new NextResponse('Internal Error', { status: 500 });
+      }
+
+      // TRIGGER AUTOMATED DISPATCH
+      try {
+        const { data: meta } = await supabaseAdmin
+          .from('assessments')
+          .select('email, job_title')
+          .eq('id', assessmentId)
+          .single();
+
+        if (meta?.email) {
+          await sendAuthorizationEmail(meta.email, assessmentId, meta.job_title);
+        }
+      } catch (emailErr) {
+        console.error('[LEMON_SQUEEZY_EMAIL_ERROR]:', emailErr);
       }
     }
   }
