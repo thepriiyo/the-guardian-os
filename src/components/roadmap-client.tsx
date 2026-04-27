@@ -73,6 +73,15 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
     const script = document.createElement('script');
     script.src = 'https://app.lemonsqueezy.com/js/lemon.js';
     script.async = true;
+    script.onload = () => {
+      if (window.LemonSqueezy) {
+        window.LemonSqueezy.Setup({
+          eventHandler: (event: any) => {
+            console.log('LemonSqueezy Event:', event);
+          }
+        });
+      }
+    };
     document.body.appendChild(script);
     
     return () => {
