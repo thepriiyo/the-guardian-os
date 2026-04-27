@@ -440,14 +440,21 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                                     description: "Tactical Dossier Authorization (UPI)",
                                     order_id: orderData.id,
                                     handler: async function(response: any) {
-                                      const verifyResponse = await fetch('/api/razorpay/verify-payment', {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({ ...response, assessment_id: assessment.id }),
-                                      });
-                                      const verifyData = await verifyResponse.json();
-                                      if (verifyData.success) setIsUnlocked(true);
-                                      else alert("VERIFICATION FAILURE: " + verifyData.error);
+                                      try {
+                                        const verifyResponse = await fetch('/api/razorpay/verify-payment', {
+                                          method: 'POST',
+                                          headers: { 'Content-Type': 'application/json' },
+                                          body: JSON.stringify({ ...response, assessment_id: assessment.id }),
+                                        });
+                                        const verifyData = await verifyResponse.json();
+                                        if (verifyData.success) {
+                                          setIsUnlocked(true);
+                                        } else {
+                                          alert(`VERIFICATION FAILED: ${verifyData.error || 'Unknown Error'}. Assessment ID: ${assessment.id}`);
+                                        }
+                                      } catch (err: any) {
+                                        alert(`CRITICAL UPLINK ERROR: ${err.message}`);
+                                      }
                                     },
                                     prefill: { email: "operative@guardian-os.com" },
                                     theme: { color: "#2563eb" }
