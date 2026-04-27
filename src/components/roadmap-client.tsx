@@ -458,7 +458,9 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                             } else {
                               if (window.LemonSqueezy) {
                                 const checkoutUrl = process.env.NEXT_PUBLIC_LEMON_SQUEEZY_CHECKOUT_URL || '#';
-                                window.LemonSqueezy.Url.Open(checkoutUrl + `?checkout[custom][assessment_id]=${assessment.id}`);
+                                // Pass the discount code to LemonSqueezy if one is applied
+                                const discountParam = accessCode ? `&checkout[discount_code]=${accessCode}` : '';
+                                window.LemonSqueezy.Url.Open(checkoutUrl + `?checkout[custom][assessment_id]=${assessment.id}${discountParam}`);
                               } else {
                                 alert("PAYMENT UPLINK OFFLINE. Please retry.");
                               }
