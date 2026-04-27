@@ -49,3 +49,18 @@ export async function submitAssessment(formData: {
   
   return { success: true, id: newAssessment?.id };
 }
+
+export async function validateAccessCode(code: string) {
+  const codes: Record<string, number> = {
+    'GUARDIAN20': 20,
+    'SECURITY40': 40,
+    'NEURAL50': 50,
+    'ABSOLUTE100': 100,
+  };
+
+  const discount = codes[code.toUpperCase()];
+  if (discount) {
+    return { success: true, discount };
+  }
+  return { success: false, message: 'Invalid Intelligence Access Code' };
+}

@@ -22,20 +22,49 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Assessment, RoadmapWeek, RoadmapTask } from '@/types';
 import { generateTacticalPDF } from '@/lib/pdf-generator';
+import { validateAccessCode } from '@/app/actions';
 import { getTacticalReportAction } from '@/app/actions/report';
 import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Gift, Ticket, ShieldCheck, XCircle } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function RoadmapClient({ assessment }: { assessment: Assessment }) {
   const report = assessment.report_data;
   const roadmap = report?.roadmap || [];
   const [isGenerating, setIsGenerating] = useState(false);
+  const [accessCode, setAccessCode] = useState('');
+  const [isValidating, setIsValidating] = useState(false);
+  const [discount, setDiscount] = useState(0);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [noCoupon, setNoCoupon] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
-  // Monetization Logic: Only show first 4 weeks
-  const visibleRoadmap = roadmap.slice(0, 4);
-  
-  // Force show the paywall to encourage upgrading to full 12 weeks
-  const showPaywall = true;
+  // Monetization Logic: Only show first 4 weeks if not unlocked
+  const visibleRoadmap = isUnlocked ? roadmap : roadmap.slice(0, 4);
+  const showPaywall = !isUnlocked;
+
+  const handleValidateCode = async () => {
+    if (!accessCode) return;
+    setIsValidating(true);
+    setError(null);
+    try {
+      const result = await validateAccessCode(accessCode);
+      if (result.success) {
+        setDiscount(result.discount!);
+        if (result.discount === 100) setIsUnlocked(true);
+      } else {
+        setError(result.message!);
+      }
+    } catch (e) {
+      setError('Communication Failure');
+    } finally {
+      setIsValidating(false);
+    }
+  };
+
+  const baseAmount = 29.00;
+  const finalAmount = Math.max(0, baseAmount * (1 - discount / 100));
 
   const getCurrencyData = (location: string) => {
     const isUS = location.toLowerCase().includes('usa') || location.toLowerCase().includes('united states') || location.toLowerCase().includes('us');
@@ -76,33 +105,39 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
           <p className="text-muted-foreground font-light text-lg">Your 12-week survival execution plan for <span className="text-white font-bold">{assessment.job_title}</span>.</p>
         </div>
         <div className="flex flex-col md:flex-row items-center gap-4">
-          <Button 
-            disabled={isGenerating}
-            className="rounded-full bg-blue-600 hover:bg-blue-500 px-8 py-6 font-bold shadow-[0_0_30px_-10px_rgba(59,130,246,0.5)] flex items-center gap-2 group min-w-[260px]"
-            onClick={async () => {
-              setIsGenerating(true);
-              try {
-                const aiReport = await getTacticalReportAction(assessment);
-                await generateTacticalPDF(assessment, aiReport);
-              } catch (e) {
-                console.error(e);
-                alert("Failed to synchronize with Gemma. Using standard metrics payload.");
-                await generateTacticalPDF(assessment);
-              } finally {
-                setIsGenerating(false);
-              }
-            }}
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" /> Synchronizing Neural Link...
-              </>
-            ) : (
-              <>
-                <Download className="w-4 h-4 group-hover:animate-bounce" /> Download Stylized PDF Report
-              </>
-            )}
-          </Button>
+          {isUnlocked ? (
+            <Button 
+              disabled={isGenerating}
+              className="rounded-full bg-blue-600 hover:bg-blue-500 px-8 py-6 font-bold shadow-[0_0_30px_-10px_rgba(59,130,246,0.5)] flex items-center gap-2 group min-w-[260px]"
+              onClick={async () => {
+                setIsGenerating(true);
+                try {
+                  const aiReport = await getTacticalReportAction(assessment);
+                  await generateTacticalPDF(assessment, aiReport);
+                } catch (e) {
+                  console.error(e);
+                  alert("Failed to synchronize with Gemma. Using standard metrics payload.");
+                  await generateTacticalPDF(assessment);
+                } finally {
+                  setIsGenerating(false);
+                }
+              }}
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" /> Synchronizing Neural Link...
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4 group-hover:animate-bounce" /> Download Stylized PDF Report
+                </>
+              )}
+            </Button>
+          ) : (
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-mono uppercase tracking-widest animate-pulse">
+              <Lock className="w-3 h-3" /> Intelligence Payload Locked
+            </div>
+          )}
           <Link href={`/dashboard?id=${assessment.id}`} className={cn(buttonVariants({ variant: "outline" }), "rounded-full bg-white/5 border-white/10 hover:bg-white/10 px-8 py-6")}>
             <ArrowLeft className="w-4 h-4 mr-2" /> Back to HUD
           </Link>
@@ -229,53 +264,108 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
             {showPaywall && (
               <motion.div variants={item} className="relative group pt-10">
                 <div className="absolute inset-0 bg-blue-500/10 blur-3xl -z-10 animate-pulse" />
-                <Card className="glass border-dashed border-white/20 bg-white/[0.02] overflow-hidden rounded-[2.5rem] relative min-h-[400px] flex flex-col justify-center">
-                  <div className="absolute inset-0 backdrop-blur-xl z-10" />
-                  
-                  <div className="absolute inset-0 z-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500 via-transparent to-transparent" />
-
-                  {/* Ghost Content (Safari Fix: Explicit content to ensure blur visibility) */}
-                  <div className="absolute top-0 left-0 w-full h-full p-8 opacity-5 z-0 flex flex-col justify-between">
-                    <div className="flex justify-between items-start">
-                       <div className="w-24 h-24 bg-white/20 rounded-full" />
-                       <div className="w-32 h-4 bg-white/20 rounded-full" />
-                    </div>
-                    <div className="space-y-4">
-                       <div className="w-full h-4 bg-white/20 rounded-full" />
-                       <div className="w-3/4 h-4 bg-white/20 rounded-full" />
-                    </div>
-                  </div>
-                  
+                <Card className="glass border-white/20 bg-black/40 overflow-hidden rounded-[2.5rem] relative min-h-[500px] flex flex-col justify-center border-2 shadow-2xl">
                   {/* Paywall Overlay */}
                   <div className="relative z-30 flex flex-col items-center justify-center p-10 text-center space-y-8">
                     <div className="relative">
-                      <div className="absolute -inset-4 bg-blue-500/20 blur-2xl rounded-full animate-ping" />
-                      <div className="w-24 h-24 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 relative z-10 shadow-[0_0_50px_-10px_rgba(59,130,246,0.5)]">
-                        <Lock className="w-10 h-10 text-blue-500" />
+                      <div className="w-20 h-20 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20 relative z-10">
+                        <Lock className="w-8 h-8 text-blue-500" />
                       </div>
                     </div>
 
                     <div className="space-y-3">
-                      <h3 className="text-4xl font-black tracking-tighter uppercase italic text-white leading-none">Unlock Full Intelligence</h3>
-                      <p className="text-muted-foreground max-w-sm mx-auto font-light leading-relaxed text-lg">
-                        Upgrade to access the complete 12-week roadmap and your 20-page <span className="text-white font-bold italic underline underline-offset-4 decoration-blue-500/50">Stylized Tactical Report</span>.
+                      <h3 className="text-3xl font-black tracking-tighter uppercase italic text-white leading-none">Unlock Tactical Access</h3>
+                      <p className="text-muted-foreground max-w-sm mx-auto font-light leading-relaxed">
+                        Authorize intelligence transfer to reveal the full 12-week deployment strategy and download your 20-page dossier.
                       </p>
                     </div>
 
-                    <div className="pt-6">
+                    {/* Gift Card HUD */}
+                    <div className="w-full max-w-sm space-y-4 bg-white/5 p-6 rounded-3xl border border-white/5">
+                      <div className="flex items-center justify-between text-[10px] font-mono text-white/40 uppercase tracking-widest mb-2">
+                        <span>Intelligence Access Code</span>
+                        {discount > 0 && <span className="text-blue-400">-{discount}% Applied</span>}
+                      </div>
+                      
+                      {!noCoupon ? (
+                        <div className="flex gap-2">
+                          <div className="relative flex-1">
+                            <Ticket className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                            <Input 
+                              placeholder="Enter Code..." 
+                              value={accessCode}
+                              onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
+                              className="bg-black/40 border-white/10 pl-10 h-12 rounded-xl focus:border-blue-500/50 transition-all font-mono"
+                            />
+                          </div>
+                          <Button 
+                            variant="secondary" 
+                            className="h-12 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold"
+                            onClick={handleValidateCode}
+                            disabled={isValidating || !accessCode}
+                          >
+                            {isValidating ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Apply'}
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="h-12 flex items-center justify-center text-[10px] font-mono text-white/20 border border-white/5 rounded-xl bg-white/[0.02]">
+                          Direct Authorization Protocol Active
+                        </div>
+                      )}
+
+                      {error && <div className="text-[10px] font-mono text-red-400 mt-2 flex items-center justify-center gap-2 uppercase"><XCircle className="w-3 h-3" /> {error}</div>}
+
+                      <div className="flex items-center gap-3 pt-2">
+                        <Checkbox 
+                          id="no-coupon" 
+                          checked={noCoupon} 
+                          onCheckedChange={(checked) => {
+                            setNoCoupon(!!checked);
+                            if (checked) {
+                              setAccessCode('');
+                              setDiscount(0);
+                              setError(null);
+                            }
+                          }}
+                          className="border-white/20 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
+                        />
+                        <label htmlFor="no-coupon" className="text-[10px] font-mono text-white/40 uppercase tracking-widest cursor-pointer select-none">
+                          I don't have an access code
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="pt-4 space-y-4 w-full max-w-sm">
+                      <div className="flex items-center justify-between px-2 text-[10px] font-mono uppercase tracking-widest">
+                        <span className="text-white/40">Total Amount</span>
+                        <span className="text-white text-lg font-black italic">
+                          {pricing.symbol}{finalAmount.toFixed(2)}
+                        </span>
+                      </div>
+
                       <Button 
-                        className="rounded-full px-12 py-9 bg-blue-600 hover:bg-blue-500 font-bold text-2xl shadow-[0_0_60px_-15px_rgba(59,130,246,0.6)] hover:scale-105 transition-all duration-500 flex items-center gap-4 group"
+                        className="w-full rounded-2xl py-8 bg-blue-600 hover:bg-blue-500 font-black text-xl shadow-[0_0_50px_-15px_rgba(59,130,246,0.5)] group"
                         onClick={() => {
-                          console.log("PAYMENT_GATEWAY_INITIALIZED");
-                          alert("INITIALIZING SECURE PAYMENT GATEWAY...\n\nTransaction ID: SEC_" + Math.random().toString(36).substring(7).toUpperCase() + "\nAmount: " + pricing.symbol + pricing.amount);
+                          if (finalAmount === 0) {
+                            setIsUnlocked(true);
+                          } else {
+                            console.log("PAYMENT_GATEWAY_INITIALIZED");
+                            alert(`SECURE UPLINK ESTABLISHED\n\nFinal Amount: ${pricing.symbol}${finalAmount.toFixed(2)}\n\n(Mock Payment Success: Operative Authorized)`);
+                            setIsUnlocked(true);
+                          }
                         }}
                       >
-                        <Unlock className="w-6 h-6 group-hover:rotate-12 transition-transform" /> Get Full Access for {pricing.symbol}{pricing.amount}
+                        {finalAmount === 0 ? (
+                          <span className="flex items-center gap-3"><ShieldCheck className="w-6 h-6 text-white" /> Authorize Free Access</span>
+                        ) : (
+                          <span className="flex items-center gap-3"><CreditCard className="w-6 h-6 text-white" /> Authorize & Pay</span>
+                        )}
                       </Button>
-                      <div className="mt-6 flex items-center justify-center gap-6 text-[11px] font-mono text-white/30 uppercase tracking-[0.3em]">
-                        <span className="flex items-center gap-2"><CreditCard className="w-4 h-4 text-blue-500/50" /> Secure Checkout</span>
-                        <span className="w-1 h-1 rounded-full bg-white/20" />
-                        <span className="flex items-center gap-2"><FileText className="w-4 h-4 text-blue-500/50" /> 20-Page PDF</span>
+                      
+                      <div className="flex items-center justify-center gap-4 text-[9px] font-mono text-white/20 uppercase tracking-[0.2em]">
+                        <span className="flex items-center gap-1.5"><ShieldCheck className="w-3 h-3" /> SSL Encrypted</span>
+                        <span className="w-1 h-1 rounded-full bg-white/10" />
+                        <span className="flex items-center gap-1.5"><Zap className="w-3 h-3" /> 2026 Ready</span>
                       </div>
                     </div>
                   </div>
