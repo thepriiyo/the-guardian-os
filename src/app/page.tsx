@@ -119,10 +119,10 @@ export default function Home() {
             <div className="space-y-6">
               <h4 className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/30">Intelligence & Legal</h4>
               <nav className="flex flex-col gap-3">
+                <Link href="/blog" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Intelligence Briefings</Link>
                 <Link href="/legal" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Privacy Policy</Link>
                 <Link href="/legal" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Terms of Service</Link>
                 <Link href="/legal" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Security Protocol</Link>
-                <Link href="/legal" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Tactical License</Link>
               </nav>
             </div>
 
