@@ -32,6 +32,7 @@ import { getTacticalReportAction } from '@/app/actions/report';
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+import { GlobalPaywallCTA } from '@/components/global-paywall-cta';
 
 declare global {
   interface Window {
@@ -202,6 +203,13 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
         </div>
       </motion.div>
 
+      {/* Top Paywall CTA */}
+      {!isUnlocked && (
+        <motion.div variants={item}>
+          <GlobalPaywallCTA assessmentId={assessment.id} />
+        </motion.div>
+      )}
+
       {/* Scanning HUD Overlay */}
       <AnimatePresence>
         {isGenerating && (
@@ -327,7 +335,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
 
             {/* Blurred Week 5 Paywall */}
             {showPaywall && (
-              <motion.div variants={item} className="relative group pt-10">
+              <motion.div variants={item} className="relative group pt-10" id="paywall">
                 <div className="absolute inset-0 bg-blue-500/10 blur-3xl -z-10 animate-pulse" />
                 <Card className="glass border-white/20 bg-black/40 overflow-hidden rounded-[2.5rem] relative min-h-[500px] flex flex-col justify-center border-2 shadow-2xl">
                   {/* Paywall Overlay */}

@@ -54,6 +54,7 @@ export interface Assessment {
   location: string;
   risk_score: number;
   report_data: ReportData;
+  is_unlocked?: boolean;
 }
 
 export interface MarketPulse {

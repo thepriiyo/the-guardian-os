@@ -14,6 +14,7 @@ import { getMarketPulse } from '@/lib/ai';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { GlobalPaywallCTA } from '@/components/global-paywall-cta';
 
 export const dynamic = 'force-dynamic';
 
@@ -79,6 +80,10 @@ export default async function PulsePage({
         </div>
       </div>
 
+      {!assessment.is_unlocked && (
+        <GlobalPaywallCTA assessmentId={assessment.id} />
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Sentiment Analysis Card */}
         <Card className="lg:col-span-1 glass border-white/10 overflow-hidden group">
@@ -131,6 +136,12 @@ export default async function PulsePage({
           </div>
         </div>
       </div>
+
+      {!assessment.is_unlocked && (
+        <div className="pt-8">
+          <GlobalPaywallCTA assessmentId={assessment.id} />
+        </div>
+      )}
     </div>
   );
 }
