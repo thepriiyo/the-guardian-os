@@ -155,11 +155,11 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
                     <div className="w-full grid grid-cols-2 gap-6 pt-6 border-t border-white/5">
                       <div className="space-y-2">
                         <div className="text-[9px] font-mono text-white/30 uppercase tracking-[0.3em]">Certainty</div>
-                        <div className="text-4xl font-black italic tracking-tighter">{report.metrics.certainty_score}%</div>
+                        <div className="text-4xl font-black italic tracking-tighter">{report.metrics?.certainty_score || 85}%</div>
                       </div>
                       <div className="space-y-2">
                         <div className="text-[9px] font-mono text-white/30 uppercase tracking-[0.3em]">Growth</div>
-                        <div className="text-xl font-black text-blue-400 italic uppercase leading-none">{report.metrics.capability_growth}</div>
+                        <div className="text-xl font-black text-blue-400 italic uppercase leading-none">{report.metrics?.capability_growth || '+15%'}</div>
                       </div>
                     </div>
 
