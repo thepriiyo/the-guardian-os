@@ -43,11 +43,11 @@ export default function RootLayout({
         </Script>
         <Script 
           src="https://app.lemonsqueezy.com/js/lemon.js" 
-          strategy="afterInteractive"
+          strategy="beforeInteractive"
         />
         <Script 
           src="https://checkout.razorpay.com/v1/checkout.js"
-          strategy="lazyOnload"
+          strategy="afterInteractive"
         />
         <Scene />
         <header className="border-b border-white/5 bg-black/40 backdrop-blur-xl sticky top-0 z-50">
