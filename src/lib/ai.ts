@@ -113,12 +113,14 @@ export async function getMarketPulse(location: string, role: string) {
     You have access to Google Search. Use it to find the latest 2026 breaking news and hiring trends for ${role} in ${location}.
     
     Tasks:
-    1. Scan for the most recent career news (24h-7d) for ${role} in ${location}.
-    2. Identify 3 real, active hiring firms or strategic nodes in that region.
-    3. Synthesize a Market Pulse report based on these real-time search results.
+    1. Scan for the most relevant and recent career news for ${role} in ${location}. 
+    2. If specific local news is sparse, expand the search to regional or national trends impacting that role.
+    3. Identify 3 real, active hiring firms, recruiters, or strategic agencies relevant to this sector.
+    4. Synthesize a high-density Market Pulse report.
 
     [STRICT_URL_PROTOCOL]
-    - EVERY URL and link MUST be a direct result from your search.
+    - EVERY URL and link MUST be a direct, functional result.
+    - If a specific article URL is not found, construct a targeted LinkedIn or Google News search URL.
     - NEVER use example.com.
 
     Return ONLY a JSON object:
@@ -141,7 +143,7 @@ export async function getMarketPulse(location: string, role: string) {
       tools: {
         googleSearch: google.tools.googleSearch({}),
       },
-      toolChoice: 'required', // Force it to search for real news
+      toolChoice: 'auto', 
       prompt: prompt,
       abortSignal: AbortSignal.timeout(90000), // 90s timeout
     });
