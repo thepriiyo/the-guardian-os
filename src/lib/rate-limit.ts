@@ -5,13 +5,13 @@ export async function checkRateLimit(action: string, limit: number = 3) {
   // ARCHITECT BYPASS: No limits in development mode
   if (process.env.NODE_ENV === 'development') return { allowed: true };
 
-  const forwarded = (await headers()).get('x-forwarded-for');
-  const ip = forwarded ? forwarded.split(',')[0] : 'unknown';
-  
-  // ARCHITECT BYPASS: Explicit Admin IP exemption
-  if (process.env.ADMIN_IP && ip === process.env.ADMIN_IP) return { allowed: true };
-  
   try {
+    const headerList = await headers();
+    const forwarded = headerList.get('x-forwarded-for');
+    const ip = forwarded ? forwarded.split(',')[0] : 'unknown';
+    
+    // ARCHITECT BYPASS: Explicit Admin IP exemption
+    if (process.env.ADMIN_IP && ip === process.env.ADMIN_IP) return { allowed: true };
     // Standard tactical timeout for DB check
     const { data, error } = await Promise.race([
       supabaseAdmin
