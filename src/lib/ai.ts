@@ -89,24 +89,23 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
       prompt: prompt,
-      abortSignal: AbortSignal.timeout(90000), // 90s timeout
+      abortSignal: AbortSignal.timeout(60000), // 60s tactical timeout
     });
 
-    console.log('AI Response received length:', text.length);
+    if (!text) throw new Error('EMPTY_NEURAL_RESPONSE');
 
     try {
       const cleanedText = text.replace(/```json|```/g, '').trim();
-      return JSON.parse(cleanedText);
+      const parsed = JSON.parse(cleanedText);
+      if (!parsed.risk_score) throw new Error('INVALID_PAYLOAD_STRUCTURE');
+      return parsed;
     } catch (parseError) {
-      console.error('AI JSON Parse Error. Raw text snippet:', text.slice(0, 500));
-      throw new Error('Intelligence payload was malformed. Please retry the scan.');
+      console.error('AI JSON Parse Error:', text.slice(0, 500));
+      throw new Error('Intelligence payload was malformed. Please retry.');
     }
   } catch (e: any) {
     console.error('AI Generation Error:', e);
-    if (e.name === 'AbortError' || e.message?.includes('timeout')) {
-      throw new Error('The neural link timed out due to high complexity. Please try a simpler role or retry.');
-    }
-    throw e;
+    throw new Error(e.message || 'Strategic analysis failure. The neural link timed out.');
   }
 }
 

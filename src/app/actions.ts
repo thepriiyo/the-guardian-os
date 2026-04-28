@@ -13,47 +13,46 @@ export async function submitAssessment(formData: {
   location: string;
   incomeTarget: string;
 }) {
-  const rateLimit = await checkRateLimit('assessment', 3);
-  if (!rateLimit.allowed) {
-    throw new Error(rateLimit.message);
+  try {
+    const rateLimit = await checkRateLimit('assessment', 3);
+    if (!rateLimit.allowed) {
+      throw new Error(rateLimit.message);
+    }
+    
+    const report = await getRiskReport(
+      formData.jobTitle,
+      formData.skills,
+      formData.location
+    );
+
+    if (!report) {
+      throw new Error('Neural engine returned empty intelligence.');
+    }
+
+    // Save to Supabase
+    const { data: newAssessment, error } = await supabase
+      .from('assessments')
+      .insert([{
+        job_title: formData.jobTitle,
+        skills: formData.skills,
+        location: formData.location,
+        risk_score: Math.round(Number(report.risk_score)),
+        report_data: report
+      }])
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Intelligence storage failed: ${error.message}`);
+    }
+
+    revalidatePath('/dashboard', 'layout');
+
+    return { success: true, id: newAssessment.id };
+  } catch (e: any) {
+    console.error('CRITICAL_ACTION_FAILURE:', e);
+    throw new Error(e.message || 'The neural link encountered a catastrophic error. Please retry.');
   }
-  console.log('STEP 1: Starting AI Generation with Gemma 3...');
-  const report = await getRiskReport(
-    formData.jobTitle,
-    formData.skills,
-    formData.location
-  );
-
-  if (!report) {
-    console.error('STEP 2 FAIL: AI report generation returned null');
-    throw new Error('Failed to generate risk report');
-  }
-
-  console.log('STEP 2 SUCCESS: AI Report generated. Saving to Supabase...');
-
-  // Save to Supabase
-  const { data: newAssessment, error } = await supabase
-    .from('assessments')
-    .insert([{
-      job_title: formData.jobTitle,
-      skills: formData.skills,
-      location: formData.location,
-      risk_score: Math.round(Number(report.risk_score)),
-      report_data: report
-    }])
-    .select()
-    .single();
-
-  if (error) {
-    console.error('STEP 3 FAIL: Supabase save error:', error);
-    throw new Error(`Intelligence storage failed: ${error.message}`);
-  }
-  
-  console.log('STEP 3 SUCCESS: Assessment saved with ID:', newAssessment?.id);
-
-  revalidatePath('/dashboard', 'layout');
-  
-  return { success: true, id: newAssessment?.id };
 }
 
 export async function validateAccessCode(code: string) {
