@@ -13,46 +13,36 @@ export async function submitAssessment(formData: {
   location: string;
   incomeTarget: string;
 }) {
-  try {
-    const rateLimit = await checkRateLimit('assessment', 3);
-    if (!rateLimit.allowed) {
-      throw new Error(rateLimit.message);
-    }
-    
-    const report = await getRiskReport(
-      formData.jobTitle,
-      formData.skills,
-      formData.location
-    );
+  const report = await getRiskReport(
+    formData.jobTitle,
+    formData.skills,
+    formData.location
+  );
 
-    if (!report) {
-      throw new Error('Neural engine returned empty intelligence.');
-    }
-
-    // Save to Supabase
-    const { data: newAssessment, error } = await supabase
-      .from('assessments')
-      .insert([{
-        job_title: formData.jobTitle,
-        skills: formData.skills,
-        location: formData.location,
-        risk_score: Math.round(Number(report.risk_score)),
-        report_data: report
-      }])
-      .select()
-      .single();
-
-    if (error) {
-      throw new Error(`Intelligence storage failed: ${error.message}`);
-    }
-
-    // revalidatePath('/dashboard', 'layout'); // Bypassed: Can cause server render collisions during redirect
-
-    return { success: true, id: newAssessment.id };
-  } catch (e: any) {
-    console.error('CRITICAL_ACTION_FAILURE:', e);
-    return { success: false, error: e.message || 'The neural link encountered a catastrophic error. Please retry.' };
+  if (!report) {
+    throw new Error('Neural engine returned empty intelligence.');
   }
+
+  // Save to Supabase
+  const { data: newAssessment, error } = await supabase
+    .from('assessments')
+    .insert([{
+      job_title: formData.jobTitle,
+      skills: formData.skills,
+      location: formData.location,
+      risk_score: Math.round(Number(report.risk_score)),
+      report_data: report
+    }])
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(`Intelligence storage failed: ${error.message}`);
+  }
+
+  revalidatePath('/dashboard', 'layout');
+
+  return { success: true, id: newAssessment?.id };
 }
 
 export async function validateAccessCode(code: string) {

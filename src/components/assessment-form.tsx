@@ -142,23 +142,16 @@ export function AssessmentForm() {
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
-    const email = (document.getElementById('crm-email') as HTMLInputElement)?.value;
     
     try {
       const result = await submitAssessment(values);
       if (result.success) {
-        if (email && email.includes('@')) {
-          await captureLead(email, result.id);
-        }
         router.push(`/dashboard?id=${result.id}`);
         router.refresh();
-      } else {
-        alert(result.error || 'Strategic analysis failure. The neural link timed out. Please retry.');
       }
     } catch (error: any) {
       console.error('Submission failed:', error);
-      alert(error.message || 'Strategic analysis failure. The neural link timed out. Please retry.');
-    } finally {
+      alert('Strategic analysis failure. The neural link timed out. Please retry.');
       setIsSubmitting(false);
     }
   }
