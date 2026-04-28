@@ -3,6 +3,7 @@
 import { AssessmentForm } from '@/components/assessment-form';
 import { Shield, Zap, TrendingUp, Globe, ChevronDown, Cpu, Lock, MapPin } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import Link from 'next/link';
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -102,11 +103,58 @@ export default function Home() {
       </section>
 
       {/* 4. Depth Footer Section */}
-      <section className="h-[50vh] flex items-center justify-center pointer-events-none opacity-[0.02]">
-        <div className="text-[20rem] font-black italic tracking-tighter uppercase leading-none select-none">
-          GUARDIAN
+      <footer className="relative z-20 py-20 border-t border-white/5 bg-[#020617]">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+            <div className="space-y-6">
+              <div className="text-2xl font-black tracking-tighter uppercase italic">
+                GUARDIAN<span className="text-blue-500">OS</span>
+              </div>
+              <p className="text-sm text-muted-foreground font-light leading-relaxed max-w-xs">
+                A high-performance diagnostic engine protecting your career from the accelerating curve of AI automation.
+              </p>
+            </div>
+            
+            <div className="space-y-6">
+              <h4 className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/30">System Sectors</h4>
+              <nav className="flex flex-col gap-3">
+                <Link href="/dashboard" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Operational Overview</Link>
+                <Link href="/dashboard/roadmap" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Tactical Roadmap</Link>
+                <Link href="/dashboard/pulse" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Market Pulse</Link>
+              </nav>
+            </div>
+
+            <div className="space-y-6">
+              <h4 className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/30">Intelligence & Legal</h4>
+              <nav className="flex flex-col gap-3">
+                <Link href="/legal" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Privacy Policy</Link>
+                <Link href="/legal" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Terms of Service</Link>
+                <Link href="/legal" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Security Protocol</Link>
+                <Link href="/legal" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Tactical License</Link>
+              </nav>
+            </div>
+
+            <div className="space-y-6">
+              <h4 className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/30">Command Center</h4>
+              <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10">
+                <div className="text-[10px] font-mono text-blue-400 mb-1">STATUS: OPERATIONAL</div>
+                <div className="text-[9px] text-white/30 uppercase tracking-widest">Neural Link: Gemma 3</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center justify-between pt-12 border-t border-white/5 gap-8">
+            <div className="text-[10px] font-mono text-white/20 uppercase tracking-widest">
+              © 2026 THE GUARDIAN OS // ENGINEERED BY PRIIYO
+            </div>
+            <div className="flex items-center gap-6">
+              <Shield className="w-4 h-4 text-white/10" />
+              <Lock className="w-4 h-4 text-white/10" />
+              <Globe className="w-4 h-4 text-white/10" />
+            </div>
+          </div>
         </div>
-      </section>
+      </footer>
     </div>
   );
 }

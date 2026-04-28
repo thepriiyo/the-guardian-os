@@ -58,7 +58,14 @@ export function Sidebar() {
           );
         })}
       </div>
-      <div className="p-4 border-t border-white/10">
+      <div className="p-4 border-t border-white/10 space-y-4">
+        <Link 
+          href="/legal" 
+          className="flex items-center gap-3 px-3 py-2 text-[9px] font-mono text-white/20 uppercase tracking-widest hover:text-blue-400 transition-colors group"
+        >
+          <ShieldAlert className="w-3 h-3 group-hover:animate-pulse" />
+          Legal Protocol
+        </Link>
         <div className="flex items-center gap-3 px-3 py-2 bg-blue-500/5 rounded-lg border border-blue-500/10">
           <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
           <span className="text-[10px] font-mono text-blue-400 uppercase tracking-widest">System Guard Active</span>
