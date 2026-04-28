@@ -58,13 +58,16 @@ export function LocationAutocomplete({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <div 
-          className={cn(
-            "w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-6 flex items-center justify-between cursor-pointer hover:bg-white/10 transition-all group relative overflow-hidden",
-            open && "border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.1)]"
-          )}
-        >
+      <DialogTrigger 
+        render={
+          <div 
+            className={cn(
+              "w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-6 flex items-center justify-between cursor-pointer hover:bg-white/10 transition-all group relative overflow-hidden",
+              open && "border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.1)]"
+            )}
+          />
+        }
+      >
           <div className="flex items-center gap-3 overflow-hidden">
             <MapPin className={cn(
               "w-5 h-5 transition-colors shrink-0",
@@ -84,7 +87,6 @@ export function LocationAutocomplete({
               animate={{ opacity: 1 }}
             />
           )}
-        </div>
       </DialogTrigger>
       
       <DialogContent className="sm:max-w-md bg-[#020617]/95 backdrop-blur-3xl border-white/10 p-0 overflow-hidden rounded-3xl shadow-2xl shadow-blue-500/10">
