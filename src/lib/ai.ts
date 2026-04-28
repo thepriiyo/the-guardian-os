@@ -169,13 +169,23 @@ export async function getMarketPulse(location: string, role: string) {
     [2026_REAL_TIME_INTEL_PROTOCOL]
     You have access to Google Search. Use it to find the latest 2026 breaking news and hiring trends for ${role} in ${location}.
     
+    [SEARCH_VECTORS]
+    - Query 1: "${role} ${location} hiring trends news after:2025-01-01"
+    - Query 2: "${role} automation impact news 2026"
+    - Query 3: "${role} certifications 2026 ${location}"
+
     Tasks:
-    1. Scan for the most recent career news (24h-7d) for ${role} in ${location}.
-    2. Identify 3 real, active hiring firms or strategic nodes in that region.
-    3. Synthesize a Market Pulse report based on these real-time search results.
+    1. Scan for the most relevant and recent career news. 
+    2. STRICT_DATE_CONSTRAINT: Discard any result older than 2025. Every news item MUST be from 2025 or 2026.
+    3. Identify EXACTLY 5 high-authority "Breaking News" items.
+    4. Identify 3 real, active hiring firms or strategic nodes in ${location}.
+    5. Synthesize a high-density Market Pulse report.
 
     [STRICT_URL_PROTOCOL]
-    - EVERY URL and link MUST be a direct result from your search.
+    - EVERY URL MUST BE FUNCTIONAL. 
+    - [ZERO_HALLUCINATION_POLICY]: DO NOT invent, predict, or format URLs.
+    - COPY the direct URL exactly as returned by the search tool.
+    - If a specific article URL is missing or looks volatile, use a verified LinkedIn Job Search or Google News query URL instead.
     - NEVER use example.com.
 
     Return ONLY a JSON object:
@@ -183,7 +193,12 @@ export async function getMarketPulse(location: string, role: string) {
       "sentiment": "string (Caution/Bullish/Volatile/Stable)",
       "sentiment_summary": "string",
       "news": [
-        {"title": "string", "summary": "string", "time": "string", "url": "string"}
+        {
+          "title": "string", 
+          "summary": "string", 
+          "date": "string (e.g. April 28, 2026)", 
+          "url": "string"
+        }
       ],
       "hiring_firms": [
         {"name": "string", "link": "string"}
