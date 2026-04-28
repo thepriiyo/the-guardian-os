@@ -1,3 +1,5 @@
+'use client';
+
 import { HeroSection, TacticalIntro, AssessmentStage } from '@/components/home-client';
 import { Shield, Globe, Cpu, Lock, MapPin } from 'lucide-react';
 import Link from 'next/link';
