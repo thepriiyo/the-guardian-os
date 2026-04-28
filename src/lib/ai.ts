@@ -98,28 +98,22 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
 }
 
 export async function getMarketPulse(location: string, role: string) {
-  const groundingIntel = `
-    [2026_MARKET_GROUNDING_DATA]
-    - AI Hiring in India: LinkedIn reports 59.5% YoY growth in AI engineering.
-    - Kolkata Hub: Bengal Silicon Valley (₹30,000 Cr investment) for AI/GCC expansion.
-    - Restructuring: IT firms (Oracle, Meta) shifting to AI-native models; high demand for AI agents and model deployment.
-    - Sources: Financial Express, Economic Times, LiveMint, LinkedIn Talent Insights.
-  `;
-
   const prompt = `
     Generate 3 "Breaking News" items and 3 "Strategic Hiring Nodes" (hiring_firms) for a career strategist dashboard.
+    [DYNAMIC_TARGET_PARAMETERS]
     Location: ${location}
     Role Context: ${role}
     
-    [GROUNDING_INTEL]
-    ${groundingIntel}
-
     [STRICT_URL_PROTOCOL]
-    - Use REAL, HIGH-AUTHORITY URLs from trusted sources (Financial Express, Economic Times, LinkedIn).
-    - If a specific article URL is unknown, construct a precise LinkedIn or Google News search URL for the user:
-      e.g., "https://www.linkedin.com/search/results/content/?keywords=AI+hiring+${location}+${role}"
-    - NEVER use "example.com" or generic "news.com" placeholders.
-    - Every "link" and "url" MUST be a functional destination.
+    - Use REAL, HIGH-AUTHORITY URLs from trusted news sources (Financial Express, Economic Times, LinkedIn, Reuters, etc.) relevant to ${location}.
+    - If a specific article URL is unknown for this region, construct a precise LinkedIn or Google News search URL for the user:
+      e.g., "https://www.linkedin.com/search/results/content/?keywords=AI+hiring+${location.replace(/\s+/g, '+')}+${role.replace(/\s+/g, '+')}"
+    - NEVER use "example.com" or generic placeholders. Every link MUST be a functional destination.
+
+    [INTELLIGENCE_CRITERIA]
+    - Analyze the unique intersection of ${role} and ${location}. 
+    - Report on specific AI adoption trends, local tech hub investments, or regulatory shifts in that exact region.
+    - If the user is in a non-tech hub, report on the nearest major tech influence or remote-hiring trends impacting that sector.
 
     Return ONLY a JSON object:
     {
