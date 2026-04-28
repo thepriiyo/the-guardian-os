@@ -1,60 +1,71 @@
-# 🛡️ THE GUARDIAN OS: TACTICAL INTELLIGENCE PLATFORM // v6.0.0
-**STATUS**: NEURAL_HARDENING_DEPLOYED
+# 🛡️ THE GUARDIAN OS: TACTICAL_INTELLIGENCE_PORTAL
+**ARCHITECT**: PRIIYO // **VERSION**: v6.0.0 // **STATUS**: NEURAL_HARDENING_ACTIVE
 
-![The Guardian OS](https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop)
-
-## 🛰️ EXECUTIVE BRIEFING
-The **Guardian OS** is a production-grade career resilience engine designed for the high-volatility 2026 market. It leverages the **Gemma 3** neural engine with **Google Search Grounding** to provide operatives with 12-week survival roadmaps, real-time market pulse monitoring, and high-fidelity tactical dossiers.
-
-The system is architected for **Museum-Tier Aesthetics** and **Zero-Storage Privacy**, ensuring total data sovereignty for every operative.
+<div align="center">
+  <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" alt="The Guardian OS Header" width="100%" />
+  <p><i>"A high-performance career defense engine protecting the human delta against the curve of AI automation."</i></p>
+</div>
 
 ---
 
-## 🛡️ MISSION-CRITICAL FEATURES
-*   **Portal-based Command HUDs**: Cinematic, distraction-free selection interfaces for Career and Location theaters.
-*   **Neural Skill Mapping**: Autonomous identification of 2026-critical technical competencies based on professional role.
-*   **Temporal Lockdown (Phase 3)**: Intelligence core strictly grounded in 2025-2026 data nodes with verifiable timestamps.
-*   **Dual-Uplink Authorization**: Production integration with **Razorpay (UPI)** and **LemonSqueezy (Global Cards)**.
-*   **Tactical PDF Export**: 20-page high-density survival dossiers for off-grid execution.
+## 🛰️ EXECUTIVE_BRIEFING
+The **Guardian OS** is a production-grade diagnostic ecosystem designed for the high-volatility 2026 labor market. It leverages the **Google Gemma 3** neural engine with **Real-Time Search Grounding** to provide operatives with:
+
+*   **Alpha-Tier Roadmaps**: 12-week survival deployment strategies.
+*   **Market Pulse HUDs**: Real-time intelligence nodes filtered by 2025-2026 benchmarks.
+*   **High-Density Dossiers**: 20-page tactical PDF reports for off-grid career execution.
+
+The platform is architected with a **Zero-Storage Buffer**, ensuring absolute data sovereignty.
 
 ---
 
-## 🛰️ THE TECH STACK
-*   **Neural Engine**: Google Gemma 3 (27B-IT) // Google Search Grounding.
-*   **Frontend**: Next.js 16 (Turbopack) // Framer Motion // Base UI.
-*   **Aesthetics**: Vanilla CSS Utility Core // Glassmorphism // High-Contrast HUD.
-*   **Sector Data**: Supabase (PostgreSQL) // Zero-Storage Session Logic.
-*   **Monetization**: Razorpay (India Sector) // LemonSqueezy (Global Sector).
+## 🛡️ MISSION_CRITICAL_SECTORS
+
+### 1. THE COMMAND HUD (`src/components/ui/`)
+Cinematic, portal-based selection interfaces powered by **Base UI** and **Framer Motion**. These HUDs eliminate viewport overflow and provide a distraction-free selection experience for Career and Location theaters.
+
+### 2. NEURAL_SKILL_MAPPING (`src/app/actions.ts`)
+An autonomous agentic engine that identifies and maps 6 high-leverage 2026 competencies to your professional profile, ensuring your skill matrix is calibrated for the automation era.
+
+### 3. TEMPORAL_LOCKDOWN_V2 (`src/lib/ai.ts`)
+A hardened intelligence protocol that enforces a strict `after:2025-01-01` search constraint, ensuring all Market Pulse data is verifiable and relevant to the current industrial shift.
 
 ---
 
-## 🛡️ DEPLOYMENT PROTOCOL
-1.  **Environmental Sync**:
-    ```bash
-    cp .env.example .env.local
-    # Inject Google, Supabase, Razorpay, and LemonSqueezy keys
-    ```
-2.  **Tactical Activation**:
-    ```bash
-    npm install
-    npm run dev
-    ```
+## 🛰️ TECHNICAL_SPECIFICATIONS
+| SECTOR | SPECIFICATION |
+| :--- | :--- |
+| **Neural Core** | Google Gemma 3 (27B-IT) |
+| **Grounding** | Real-Time Google Search Integration |
+| **Framework** | Next.js 16 (Turbopack) // React 19 |
+| **Aesthetics** | Vanilla CSS Utility Core // Glassmorphism |
+| **Monetization** | Razorpay (UPI) // LemonSqueezy (Global) |
+| **Security** | SSL/TLS 1.3 // Supabase RLS // Zero-Storage |
 
 ---
 
-## 🛰️ LEGAL & SECURITY
-*   **Privacy**: Zero-storage policy. See [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
-*   **Terms**: Proprietary / Tactical License. See [TERMS_OF_SERVICE.md](TERMS_OF_SERVICE.md).
-*   **Security**: Vulnerability reporting protocols are active. See [SECURITY.md](SECURITY.md).
+## 🛡️ DEPLOYMENT_PROTOCOLS
+
+### 1. Initialize Intelligence Uplink
+```bash
+cp .env.example .env.local
+# Inject GEMMA_API_KEY, RAZORPAY_KEY, and LEMONSQUEEZY_SECRET
+```
+
+### 2. Activate Neural Engine
+```bash
+npm install
+npm run dev
+```
 
 ---
 
-## 🛡️ SYSTEM STATUS
-| SECTOR | STATUS | UPLINK |
-| :--- | :--- | :--- |
-| **INTELLIGENCE** | HARDENED | GEMMA 3 + GROUNDING |
-| **SELECTION HUD** | PORTAL-BASED | BASE UI |
-| **MONETIZATION** | ACTIVE | RAZORPAY // LS |
-| **STABILITY** | 100/100 | VERCEL EDGE |
+## 🛰️ STRATEGIC_ARCHIVES
+*   **[MISSION_LOG.md](MISSION_LOG.md)**: Historical deployment logs and tactical evolution.
+*   **[WALKTHROUGH.md](WALKTHROUGH.md)**: Full system navigation and operative briefing.
+*   **[PROJECT_REPORT.md](PROJECT_REPORT.md)**: Deep-dive technical architecture and risk logic.
+*   **[PRIVACY_POLICY.md](PRIVACY_POLICY.md)**: The Absolute Zero Data Retention protocol.
 
-**THE GUARDIAN OS IS ACTIVE. SURVIVE BY DESIGN.** 🛡️🛰️🌑📄
+---
+
+**STAY SECURE. SURVIVE BY DESIGN.** 🛡️🛰️🌑📄

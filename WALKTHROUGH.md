@@ -1,57 +1,47 @@
-# Tactical Roadmap Fulfillment: Update v5.9.2
+# 🛰️ WALKTHROUGH: THE_GUARDIAN_OS
+**PROTOCOL**: v6.0.0 // **CLEARANCE**: TACTICAL_OPERATIVE // **ARCHITECT**: PRIIYO
 
-The system architecture has been updated with two major conversion-optimized UI features on the `main` production branch. Both features are designed to eliminate friction in the post-scan monetization funnel.
+---
 
-## 1. Immediate Post-Unlock Download Card
-**Objective:** Eliminate the friction of forcing operatives to scroll upwards to locate their dossier after authorizing access.
+## 🛡️ 1. THE COMMAND HUD: INITIALIZATION
+Your journey begins at the **Primary Diagnostic Node**. We've engineered a cinematic, portal-based selection experience to eliminate friction.
 
-**Implementation:**
-- Injected a dynamic, high-visibility "Tactical Access Granted" card directly below the Roadmap List in `src/components/roadmap-client.tsx`.
-- This card mirrors the primary download functionality but only renders when the system confirms `isUnlocked === true`.
-- **Result:** The exact moment the paywall dissolves, the operative is presented with a cinematic success state and a massive **Download Stylized PDF Report** button exactly where their cursor is positioned.
+*   **Sector Selection**: Use the **Portal HUDs** for Careers and Locations. These are distraction-free interfaces that utilize **Base UI Portals** to ensure zero viewport clipping.
+*   **Neural Mapping**: As you select your role, the **Neural Skill Mapping** engine autonomously identifies 6 survival-focused technical competencies for the 2026 market. Toggle your proficiency matrix to initialize the scan.
 
-## 2. Global Paywall Navigation CTAs
-**Objective:** Provide persistent, omni-present paths for the user to navigate to the payment gateway, regardless of which dashboard sector they are viewing.
+---
 
-**Implementation:**
-- Engineered a reusable `GlobalPaywallCTA` component featuring high-contrast cinematic lighting and urgency-driven copy.
-- Injected this banner into the top and bottom of the **Overview** (`DashboardClient`), **Roadmap** (`RoadmapClient`), and **Market Pulse** (`PulsePage`) sectors.
-- Configured conditional rendering tied to `!assessment.is_unlocked`.
-- Established a `#paywall` anchor link to ensure clicking the banner instantly smooth-scrolls the user to the exact payment node.
-- **Result:** Continuous, non-intrusive conversion pressure across the entire platform that instantly vanishes the moment payment is confirmed.
+## 🛰️ 2. AUTOMATION_SCAN: THE HUD OVERVIEW
+Once authorized, you enter the **Operational HUD**. This is your command center for career resilience.
 
-## 4. Portal-based Command HUDs
-**Objective:** Resolve viewport clipping and provide a cinematic, distraction-free selection experience.
+*   **Risk Gauging**: A real-time probability engine calculates your automation risk based on **Gemma 3** predictive modeling.
+*   **Human Delta Radar**: A high-fidelity radar chart visualizes the "Human Unique" proficiency gap—areas where your creativity, social intelligence, and strategic logic outperform AI.
 
-**Implementation:**
-- Replaced inline dropdowns with `Dialog`-based Portal HUDs for **Professional Role** and **Market Location**.
-- Uses `framer-motion` for glassmorphism-themed, full-screen selection interfaces.
-- **Result:** Zero parent-container overflow issues; the UI feels premium, state-of-the-art, and optimized for power-user interaction.
+---
 
-## 5. Neural Intelligence & Temporal Lockdown
-**Objective:** Deliver high-density, real-time 2026 intelligence with verifiable source integrity.
+## 🛡️ 3. MARKET_PULSE: REAL-TIME INTELLIGENCE
+The **Market Pulse** sector delivers high-density intelligence nodes hardened by our **Temporal Lockdown** protocol.
 
-**Implementation:**
-- **Temporal Lockdown:** AI core now strictly filters for 2025-2026 data using hardened search operators (`after:2025-01-01`).
-- **Intelligence Density:** Expanded the Market Pulse feed to **5 high-authority nodes** with verifiable blue monospace timestamps.
-- **Link Hardening:** Implemented a "Zero-Hallucination" URL protocol that mandates exact link extraction and provides high-authority search fallbacks (LinkedIn/Google News) to eliminate 404 errors.
-- **Result:** Operatives receive the most current, verifiable industry intelligence in a high-density dossier format.
+*   **Verifiable Intel**: 5 high-authority nodes per scan, strictly filtered for 2025-2026 data.
+*   **Zero-Hallucination Links**: Every intelligence node is backed by a verifiable source (LinkedIn, Google News) with exact URL extraction.
 
-## 6. Neural Skill Mapping
-**Objective:** Automate the identification of 2026-critical technical competencies.
+---
 
-**Implementation:**
-- Engineered a background neural scan that triggers immediately upon role selection.
-- Suggests **6 survival-focused skills** calibrated for 2026 industry shifts.
-- Provides a toggle-based interface for rapid, high-authority skill matrix construction.
-- **Result:** Frictionless onboarding; operatives can identify their survival path in seconds.
+## 🛰️ 4. TACTICAL_DEPLOYMENT: THE 12-WEEK ROADMAP
+The core of your survival strategy is the **12-Week Pivot Roadmap**.
 
-## 3. Surgical Cleanup
-- **UI:** Removed the obsolete "Intelligence Uplink" email field from the onboarding flow (`src/components/assessment-form.tsx`), streamlining the process.
-- **Backend:** Permanently purged residual Nodemailer/Resend import logic from the Razorpay and LemonSqueezy webhooks to prevent critical Vercel build failures.
+*   **Vector Selection**: Choose between Alpha, Beta, or Gamma career pivot paths.
+*   **Execution Plan**: A week-by-week, task-oriented deployment strategy designed to bridge your current role to high-leverage 2026 opportunities.
+*   **PDF Archive**: Export your entire strategy as a **20-page Super-Massive Tactical Dossier** for off-grid career execution.
 
-> [!TIP]
-> The complete integration is now live on the `main` branch. Vercel is currently deploying these optimizations to the production server.
+---
 
-> [!IMPORTANT]
-> The Guardian OS has reached a stable, production-grade maturity state. All systems are synchronized on the `main` branch and build-verified for Vercel deployment. 🛡️🛰️🌑📄
+## 🛡️ 5. MONETIZATION & UPLINK
+Accessing high-density intelligence requires a tactical authorization.
+
+*   **Dual-Uplink**: Secure authorization via **Razorpay (UPI)** for the India sector and **LemonSqueezy (Cards)** for global operatives.
+*   **Hardened Scripts**: Payment uplinks utilize `beforeInteractive` loading strategies to ensure zero-latency authorization.
+
+---
+**WALKTHROUGH_COMPLETE.** 🛡️🛰️🌑📄
+**STAY SECURE. SURVIVE BY DESIGN.**

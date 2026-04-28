@@ -1,60 +1,53 @@
-# PROJECT_REPORT // THE_GUARDIAN
-**VERSION**: 1.1.0 // NEURAL_HARDENING_DEPLOYED
-**MISSION**: CAREER_AUTOMATION_DEFENSE
+# PROJECT_REPORT: THE_GUARDIAN_OS
+**VERSION**: v6.0.0 // **PROTOCOL**: NEURAL_HARDENING_V3 // **ARCHITECT**: PRIIYO
 
 ---
 
-## 1. STRATEGIC OVERVIEW
-**The Guardian** is a high-authority diagnostic engine designed to protect professionals from the accelerating curve of AI automation. It operates as a cinematic, data-driven "Tactical Command Center" for career resilience.
+## 🛰️ 1. STRATEGIC_OVERVIEW
+**The Guardian** is a high-authority diagnostic engine protecting professionals from the accelerating curve of AI automation. It operates as a cinematic, data-driven "Tactical Command Center" for career resilience.
 
-### CORE PURPOSE:
-To transform the anxiety of AI displacement into a structured, 12-week tactical pivot strategy, providing users with a 20-page "Super-Massive Intelligence Dossier" (PDF) and real-time 2026 market intelligence.
-
----
-
-## 2. THE HOOKS & CORNERS (ARCHITECTURE)
-
-### A. THE DIAGNOSTIC CORE (`src/components/assessment-form.tsx`)
-*   **Neural Selection HUDs**: Portal-based, cinematic selection interfaces for Careers and Locations that eliminate viewport clipping.
-*   **Neural Skill Mapping**: Autonomously suggests 6 high-authority 2026-critical skills based on the identified role.
-
-### B. AUTOMATION_SCAN // PHASE 1 (`src/components/dashboard-client.tsx`)
-*   **Risk Gauging**: A real-time probability engine (Risk Score %) calculating the likelihood of role automation within 5 years.
-*   **LLM Benchmarks**: Predictive modeling based on current and projected AI capability breakthroughs.
-
-### C. NEURAL_SPECTRUM // PHASE 2 (`src/components/charts/radar-chart.tsx`)
-*   **Human-Unique Delta**: Visualizes the gap between AI proficiency and Human advantage across 6 dimensions: Creativity, Social, Physical, Strategy, Logic, and Empathy.
-
-### D. MARKET_PULSE // PHASE 3 (`src/app/dashboard/pulse/page.tsx`)
-*   **Temporal Lockdown**: Intelligence core strictly filters for 2025-2026 data.
-*   **Intelligence Density**: 5 high-authority intelligence nodes per scan with verifiable blue monospace timestamps.
-*   **Link Hardening**: Zero-hallucination URL extraction protocol with high-authority fallbacks (LinkedIn/Google News).
-
-### E. PIVOT_VECTORS (`src/components/dashboard-client.tsx`)
-*   **Alpha, Beta, Gamma Paths**: Identifies three high-leverage career alternatives with live Demand/Salary HUDs.
-
-### F. THE 12-WEEK DEPLOYMENT (`src/components/roadmap-client.tsx`)
-*   **Tactical Roadmap**: A week-by-week execution plan reconstructed by Gemma-3-27b-it to ensure a complete deployment cycle.
-
-### G. SUPER-MASSIVE TACTICAL DOSSIER (`src/lib/pdf-generator.ts`)
-*   **20-Page Payload**: A high-density PDF report featuring Chapter-based Risk Metrics, Pivot vectors, and the full 12-week printed roadmap.
+### CORE OBJECTIVE:
+To transform the uncertainty of AI displacement into a structured, 12-week tactical pivot strategy, providing operatives with a 20-page "Super-Massive Intelligence Dossier" (PDF) and real-time 2026 market intelligence.
 
 ---
 
-## 3. TECHNICAL STACK // INTEL_SPEC
-*   **Framework**: Next.js 16 (Turbopack) // React 19.
-*   **AI Engine**: Google Generative AI (Model: `gemma-3-27b-it`).
-*   **Grounding**: Real-time Google Search integration for Market Pulse.
-*   **UI/UX**: Vanilla CSS + Framer Motion + Base UI (Headless primitives).
+## 🛡️ 2. SYSTEM_ARCHITECTURE // THE_CORNERS
+
+### A. THE SELECTION PORTAL (`src/components/ui/`)
+*   **Portal HUDs**: Migrated to a headless portal pattern (Base UI) to resolve viewport clipping and overflow issues in the Career and Location sectors.
+*   **Cinematic Motion**: Integrated Framer Motion for high-fidelity glassmorphism transitions.
+
+### B. NEURAL_MAPPING_ENGINE (`src/app/actions.ts`)
+*   **Skill Identification**: An agentic server action that autonomously maps 6 high-authority survival skills to any identified professional role.
+*   **Real-Time Suggestions**: Utilizes Gemma 3 to identify the "Human Delta"—the proficiency gap where humans maintain a strategic advantage over AI.
+
+### C. TEMPORAL_LOCKDOWN_PROTOCOL (`src/lib/ai.ts`)
+*   **2026 Calibration**: Enforced a strict `after:2025-01-01` constraint on all search queries.
+*   **Zero-Hallucination Extraction**: Mandated exact source URL extraction with high-authority fallbacks to LinkedIn and Google News.
+*   **Intelligence Density**: Increased Market Pulse nodes to 5 verifiable items per scan.
+
+### D. TACTICAL_DOSSIER_PAYLOAD (`src/lib/pdf-generator.ts`)
+*   **20-Page Payload**: A massive high-density PDF featuring:
+    *   **Chapter 1**: Local Economic Geospatial Risks.
+    *   **Chapter 2**: Automation Delta & Human Proficiency Radar.
+    *   **Chapter 3**: Alpha, Beta, & Gamma Pivot Vectors.
+    *   **Chapter 4**: The 12-Week Deployment Roadmap.
 
 ---
 
-## 4. RECENT EVOLUTION // LOGS
-*   **v1.1.0**: Deployed "Neural Hardening" phase. Portal-based HUDs, 2026 Temporal Lockdown, and Neural Skill Mapping integrated.
-*   **v1.0.0**: Production-ready release with 20-page PDF Dossier and Paywall synchronization.
-*   **Refinement**: Migrated triggers to Base UI `render` prop pattern for TypeScript build stability.
+## 🛰️ 3. MONETIZATION_UPLINKS
+The platform implements a dual-authorization sector for global resilience:
+*   **India Sector**: Razorpay UPI integration for high-fidelity regional authorization.
+*   **Global Sector**: LemonSqueezy card integration with `beforeInteractive` script hardening for zero-latency authorization.
 
 ---
-**REPORT_GENERATED_BY**: ANTIGRAVITY_COMMAND_CENTER
-**STATUS**: MISSION_CRITICAL
-**DATE**: 2026-04-28
+
+## 🛡️ 4. DATA_SOVEREIGNTY_PROTOCOL
+*   **Zero-Storage Buffer**: All intelligence dossiers are processed in-memory.
+*   **Session Purge**: Assessment data is automatically purged from the active buffer post-generation.
+*   **Supabase RLS**: Hardened Row-Level Security ensures total sector isolation.
+
+---
+**REPORT_AUTHORIZED_BY**: PRIIYO_COMMAND
+**DATE**: April 28, 2026
+**STATUS**: DEPLOYED // HARDENED
