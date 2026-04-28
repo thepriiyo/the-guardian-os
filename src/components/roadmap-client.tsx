@@ -295,7 +295,6 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
       {/* Roadmap Content */}
       <div className="max-w-4xl mx-auto space-y-6">
         {isUnlocked ? (
-          {/* Post-Unlock Immediate Download Access */}
           <motion.div variants={item} className="pt-10 pb-10">
             <Card className="glass border-green-500/20 bg-green-500/5 overflow-hidden rounded-[2.5rem] relative flex flex-col justify-center border-2 shadow-2xl shadow-green-500/5 min-h-[500px]">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-50" />
