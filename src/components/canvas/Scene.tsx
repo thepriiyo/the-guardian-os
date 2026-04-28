@@ -11,29 +11,30 @@ function GuardianCore({ scroll }: { scroll: number }) {
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
-    meshRef.current.rotation.x = Math.cos(time / 4) / 2 + (scroll * 2);
-    meshRef.current.rotation.y = Math.sin(time / 2) / 2 + (scroll * 5);
+    meshRef.current.rotation.x = Math.cos(time / 4) / 2 + (scroll * 10);
+    meshRef.current.rotation.y = Math.sin(time / 2) / 2 + (scroll * 15);
     
-    // Dynamic position based on scroll
-    meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, scroll * 5, 0.1);
-    meshRef.current.position.z = THREE.MathUtils.lerp(meshRef.current.position.z, scroll * -10, 0.1);
+    // Dynamic position based on scroll - more dramatic
+    meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, scroll * 15, 0.05);
+    meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, scroll * -5, 0.05);
+    meshRef.current.position.z = THREE.MathUtils.lerp(meshRef.current.position.z, scroll * -25, 0.05);
     
     // Distort increases as we 'dive' deeper
-    setDistort(0.4 + (scroll * 0.6));
+    setDistort(0.4 + (scroll * 1.2));
   });
 
   return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-      <Sphere ref={meshRef} args={[1, 128, 128]} scale={2}>
+    <Float speed={5} rotationIntensity={2} floatIntensity={2}>
+      <Sphere ref={meshRef} args={[1, 256, 256]} scale={2}>
         <MeshDistortMaterial
           color="#3b82f6"
-          speed={2}
+          speed={4}
           distort={distort}
           radius={1}
-          metalness={0.9}
-          roughness={0.1}
-          emissive="#1e40af"
-          emissiveIntensity={0.5 + (scroll * 2)}
+          metalness={1}
+          roughness={0}
+          emissive="#2563eb"
+          emissiveIntensity={0.8 + (scroll * 4)}
         />
       </Sphere>
     </Float>
@@ -55,8 +56,9 @@ function Particles({ scroll }: { scroll: number }) {
   
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
-    points.current.rotation.y = time * 0.05 + (scroll * 2);
-    points.current.position.z = scroll * 20;
+    points.current.rotation.y = time * 0.02 + (scroll * 5);
+    points.current.position.y = scroll * -20;
+    points.current.position.z = scroll * 50;
   });
 
   return (
@@ -90,10 +92,10 @@ export default function Scene() {
   return (
     <div className="fixed inset-0 -z-10 bg-[#020617]">
       <Canvas dpr={[1, 2]}>
-        <PerspectiveCamera makeDefault position={[0, 0, 8 - (scroll * 4)]} fov={75} />
-        <ambientLight intensity={0.4} />
-        <pointLight position={[10, 10, 10]} intensity={2} color="#60a5fa" />
-        <spotLight position={[-10, 10, 20]} angle={0.15} penumbra={1} intensity={3} color="#3b82f6" />
+        <PerspectiveCamera makeDefault position={[0, 0, 10 - (scroll * 8)]} fov={75} />
+        <ambientLight intensity={0.6} />
+        <pointLight position={[10, 10, 10]} intensity={3} color="#60a5fa" />
+        <spotLight position={[-20, 20, 40]} angle={0.2} penumbra={1} intensity={5} color="#3b82f6" />
         <GuardianCore scroll={scroll} />
         <Particles scroll={scroll} />
         <Grid />
