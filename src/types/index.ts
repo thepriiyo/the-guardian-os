@@ -52,15 +52,10 @@ export interface ReportData {
     threat_level: string;
     logs: string[];
   };
-  metrics?: {
-    capability_growth: string;
-    certainty_score: number;
-    demand_growth: string;
-  };
   pivot_paths: PivotPath[];
   local_networking: NetworkingGroup[];
   roadmap: RoadmapWeek[];
-  metrics: MarketMetrics;
+  metrics?: MarketMetrics;
 }
 
 export interface Assessment {
