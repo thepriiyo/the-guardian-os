@@ -62,6 +62,18 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
           "capability_growth": "string (e.g. +12%/Mo)",
           "certainty_score": number (0-100),
           "demand_growth": "string (e.g. +24% YoY)"
+        },
+        "geospatial_metrics": {
+          "exposure_rating": number,
+          "region_status": "string (e.g. High-Density Integration Hub)",
+          "pivot_window": "string (e.g. 08-12 Months)",
+          "market_volatility": "string (e.g. Critical)",
+          "local_insight": "1-sentence regional AI impact insight"
+        },
+        "radar_metrics": {
+          "safe_percentage": number,
+          "threat_level": "string (e.g. Critical/Moderate/Elevated)",
+          "logs": ["string (4 unique 2026-era threat logs)"]
         }
       }
 
