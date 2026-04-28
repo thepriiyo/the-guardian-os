@@ -109,18 +109,23 @@ export async function getMarketPulse(location: string, role: string) {
   `;
 
   const prompt = `
-    [2026_REAL_TIME_INTEL_PROTOCOL]
-    You have access to Google Search. Use it to find the latest 2026 breaking news and hiring trends for ${role} in ${location}.
+    [2026_REAL_TIME_INTEL_PROTOCOL] // TEMPORAL_LOCKDOWN_ACTIVE
+    You have access to Google Search. Use it to find the latest 2025-2026 breaking news and hiring trends for ${role} in ${location}.
     
+    [SEARCH_VECTORS]
+    - Query 1: "${role} ${location} hiring trends news after:2025-01-01"
+    - Query 2: "${role} automation impact news 2026"
+    - Query 3: "${role} certifications 2026 ${location}"
+
     Tasks:
-    1. Scan for the most relevant and recent career news for ${role} in ${location}. 
-    2. If specific local news is sparse, expand the search to regional or national trends impacting that role.
-    3. Identify 3 real, active hiring firms, recruiters, or strategic agencies relevant to this sector.
-    4. Synthesize a high-density Market Pulse report.
+    1. Scan for the most relevant and recent career news. 
+    2. STRICT_DATE_CONSTRAINT: Discard any result older than 2025. Every news item MUST be from 2025 or 2026.
+    3. Identify EXACTLY 5 high-authority "Breaking News" items.
+    4. Identify 3 real, active hiring firms or strategic nodes in ${location}.
+    5. Synthesize a high-density Market Pulse report.
 
     [STRICT_URL_PROTOCOL]
     - EVERY URL and link MUST be a direct, functional result.
-    - If a specific article URL is not found, construct a targeted LinkedIn or Google News search URL.
     - NEVER use example.com.
 
     Return ONLY a JSON object:
@@ -128,7 +133,12 @@ export async function getMarketPulse(location: string, role: string) {
       "sentiment": "string (Caution/Bullish/Volatile/Stable)",
       "sentiment_summary": "string",
       "news": [
-        {"title": "string", "summary": "string", "time": "string", "url": "string"}
+        {
+          "title": "string", 
+          "summary": "string", 
+          "date": "string (e.g. April 28, 2026)", 
+          "url": "string"
+        }
       ],
       "hiring_firms": [
         {"name": "string", "link": "string"}

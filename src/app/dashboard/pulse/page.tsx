@@ -163,8 +163,8 @@ export default async function PulsePage({
                     <p className="text-muted-foreground text-sm leading-relaxed font-light mb-6 flex-1">
                       {news.summary}
                     </p>
-                    <div className="flex items-center justify-between pt-4 border-t border-white/5 opacity-50 text-[10px] font-mono uppercase tracking-widest mt-auto">
-                      <span>{news.source || "Guardian Intel"}</span>
+                    <div className="flex items-center justify-between pt-4 border-t border-white/5 opacity-60 text-[10px] font-mono uppercase tracking-widest mt-auto">
+                      <span className="text-blue-400">{news.date || news.time || "April 2026"}</span>
                       <ArrowUpRight className="w-3 h-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                     </div>
                   </CardContent>
