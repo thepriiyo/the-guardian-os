@@ -1,29 +1,30 @@
-# 🛡️ THE GUARDIAN OS: TACTICAL INTELLIGENCE PLATFORM // v5.0.0
+# 🛡️ THE GUARDIAN OS: TACTICAL INTELLIGENCE PLATFORM // v6.0.0
+**STATUS**: NEURAL_HARDENING_DEPLOYED
 
 ![The Guardian OS](https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop)
 
 ## 🛰️ EXECUTIVE BRIEFING
-The **Guardian OS** is a high-authority intelligence platform engineered for the "High-Volatility" era of 2026. It leverages the **Gemma 3** neural engine to provide operatives with 12-week survival roadmaps, risk assessments, and real-time pulse monitoring.
+The **Guardian OS** is a production-grade career resilience engine designed for the high-volatility 2026 market. It leverages the **Gemma 3** neural engine with **Google Search Grounding** to provide operatives with 12-week survival roadmaps, real-time market pulse monitoring, and high-fidelity tactical dossiers.
 
-The system is architected for **Global Revenue Operations**, featuring a dual-uplink payment protocol (UPI + Global Cards) and geospatial-aware pricing.
+The system is architected for **Museum-Tier Aesthetics** and **Zero-Storage Privacy**, ensuring total data sovereignty for every operative.
 
 ---
 
-## 🛡️ TACTICAL FEATURES
-*   **Neural Risk Assessment**: Automated scanning of job volatility and skill relevance.
-*   **12-Week Survival Roadmap**: Decrypted execution plans for career dominance.
-*   **Dual-Uplink Authorization**: Professional integration with **Razorpay (UPI)** and **LemonSqueezy (Cards)**.
-*   **Geospatial HUD**: Real-time currency synchronization (₹ / $).
-*   **Tactical PDF Export**: Production of high-authority survival dossiers.
+## 🛡️ MISSION-CRITICAL FEATURES
+*   **Portal-based Command HUDs**: Cinematic, distraction-free selection interfaces for Career and Location theaters.
+*   **Neural Skill Mapping**: Autonomous identification of 2026-critical technical competencies based on professional role.
+*   **Temporal Lockdown (Phase 3)**: Intelligence core strictly grounded in 2025-2026 data nodes with verifiable timestamps.
+*   **Dual-Uplink Authorization**: Production integration with **Razorpay (UPI)** and **LemonSqueezy (Global Cards)**.
+*   **Tactical PDF Export**: 20-page high-density survival dossiers for off-grid execution.
 
 ---
 
 ## 🛰️ THE TECH STACK
-*   **Neural Engine**: Google Gemma 3 (Generative AI)
-*   **Visual HUD**: Next.js 16 + Turbopack + Framer Motion
-*   **Aesthetic Core**: Vanilla CSS Utility Core (Glassmorphism Tier)
-*   **Intelligence Sector**: Supabase (PostgreSQL)
-*   **Authorization Uplink**: Razorpay + LemonSqueezy
+*   **Neural Engine**: Google Gemma 3 (27B-IT) // Google Search Grounding.
+*   **Frontend**: Next.js 16 (Turbopack) // Framer Motion // Base UI.
+*   **Aesthetics**: Vanilla CSS Utility Core // Glassmorphism // High-Contrast HUD.
+*   **Sector Data**: Supabase (PostgreSQL) // Zero-Storage Session Logic.
+*   **Monetization**: Razorpay (India Sector) // LemonSqueezy (Global Sector).
 
 ---
 
@@ -31,22 +32,19 @@ The system is architected for **Global Revenue Operations**, featuring a dual-up
 1.  **Environmental Sync**:
     ```bash
     cp .env.example .env.local
-    # Inject your Google, Supabase, Razorpay, and LemonSqueezy keys
+    # Inject Google, Supabase, Razorpay, and LemonSqueezy keys
     ```
-2.  **Intelligence Installation**:
+2.  **Tactical Activation**:
     ```bash
     npm install
-    ```
-3.  **Tactical Activation**:
-    ```bash
     npm run dev
     ```
 
 ---
 
 ## 🛰️ LEGAL & SECURITY
-*   **License**: Proprietary / Tactical License. See [LICENSE](LICENSE) for details.
-*   **Privacy**: Data sovereignty is paramount. See [PRIVACY.md](PRIVACY.md).
+*   **Privacy**: Zero-storage policy. See [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
+*   **Terms**: Proprietary / Tactical License. See [TERMS_OF_SERVICE.md](TERMS_OF_SERVICE.md).
 *   **Security**: Vulnerability reporting protocols are active. See [SECURITY.md](SECURITY.md).
 
 ---
@@ -54,9 +52,9 @@ The system is architected for **Global Revenue Operations**, featuring a dual-up
 ## 🛡️ SYSTEM STATUS
 | SECTOR | STATUS | UPLINK |
 | :--- | :--- | :--- |
-| **INTELLIGENCE** | OPERATIONAL | GEMMA 3 |
+| **INTELLIGENCE** | HARDENED | GEMMA 3 + GROUNDING |
+| **SELECTION HUD** | PORTAL-BASED | BASE UI |
 | **MONETIZATION** | ACTIVE | RAZORPAY // LS |
-| **AESTHETICS** | HARDENED | VANILLA CSS |
 | **STABILITY** | 100/100 | VERCEL EDGE |
 
-**THE GUARDIAN OS IS ACTIVE. SURVIVE BY DESIGN.** 🛡️🛰️🌑📄 [ignoring loop detection]
+**THE GUARDIAN OS IS ACTIVE. SURVIVE BY DESIGN.** 🛡️🛰️🌑📄
