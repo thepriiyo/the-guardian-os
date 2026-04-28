@@ -218,12 +218,42 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <DimensionTile icon={<Lightbulb className="w-4 h-4" />} title="Creativity" desc="Ideation & solving." score={report.replacement_map.find(m => m.subject === 'Creativity')?.A || 50} />
-                  <DimensionTile icon={<Users className="w-4 h-4" />} title="Social" desc="Negotiation." score={report.replacement_map.find(m => m.subject === 'Social')?.A || 50} />
-                  <DimensionTile icon={<Zap className="w-4 h-4" />} title="Physical" desc="Dexterity." score={report.replacement_map.find(m => m.subject === 'Physical')?.A || 50} />
-                  <DimensionTile icon={<Target className="w-4 h-4" />} title="Strategy" desc="Decision-making." score={report.replacement_map.find(m => m.subject === 'Strategy')?.A || 50} />
-                  <DimensionTile icon={<FileCode className="w-4 h-4" />} title="Logic" desc="Automation." score={report.replacement_map.find(m => m.subject === 'Logic')?.A || 50} />
-                  <DimensionTile icon={<Heart className="w-4 h-4" />} title="Empathy" desc="Intelligence." score={report.replacement_map.find(m => m.subject === 'Empathy')?.A || 50} />
+                  <DimensionTile 
+                    icon={<Lightbulb className="w-4 h-4" />} 
+                    title="Creativity" 
+                    desc="Ideation & solving." 
+                    score={Array.isArray(report.replacement_map) ? (report.replacement_map.find(m => m.subject === 'Creativity')?.A || 50) : 50} 
+                  />
+                  <DimensionTile 
+                    icon={<Users className="w-4 h-4" />} 
+                    title="Social" 
+                    desc="Negotiation." 
+                    score={Array.isArray(report.replacement_map) ? (report.replacement_map.find(m => m.subject === 'Social')?.A || 50) : 50} 
+                  />
+                  <DimensionTile 
+                    icon={<Zap className="w-4 h-4" />} 
+                    title="Physical" 
+                    desc="Dexterity." 
+                    score={Array.isArray(report.replacement_map) ? (report.replacement_map.find(m => m.subject === 'Physical')?.A || 50) : 50} 
+                  />
+                  <DimensionTile 
+                    icon={<Target className="w-4 h-4" />} 
+                    title="Strategy" 
+                    desc="Decision-making." 
+                    score={Array.isArray(report.replacement_map) ? (report.replacement_map.find(m => m.subject === 'Strategy')?.A || 50) : 50} 
+                  />
+                  <DimensionTile 
+                    icon={<FileCode className="w-4 h-4" />} 
+                    title="Logic" 
+                    desc="Automation." 
+                    score={Array.isArray(report.replacement_map) ? (report.replacement_map.find(m => m.subject === 'Logic')?.A || 50) : 50} 
+                  />
+                  <DimensionTile 
+                    icon={<Heart className="w-4 h-4" />} 
+                    title="Empathy" 
+                    desc="Intelligence." 
+                    score={Array.isArray(report.replacement_map) ? (report.replacement_map.find(m => m.subject === 'Empathy')?.A || 50) : 50} 
+                  />
                 </div>
 
                 <div className="mt-8 pt-4 border-t border-white/5 flex items-center justify-between">
@@ -244,7 +274,7 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
 
       {/* Pivot Paths HUD */}
       <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-        {report.pivot_paths.map((path, idx) => (
+        {(report.pivot_paths || []).map((path, idx) => (
           <Card key={idx} className="glass border-white/5 hover:border-blue-500/30 transition-all duration-700 group cursor-pointer overflow-hidden rounded-[2rem]">
             <div className="absolute top-0 left-0 w-full h-1 bg-blue-500/10 group-hover:bg-blue-500 transition-colors" />
             <CardContent className="p-8">
