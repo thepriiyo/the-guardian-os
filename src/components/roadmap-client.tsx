@@ -29,7 +29,7 @@ import { Assessment, RoadmapWeek, RoadmapTask } from '@/types';
 import { generateTacticalPDF } from '@/lib/pdf-generator';
 import { validateAccessCode, checkUnlockStatus } from '@/app/actions';
 import { getTacticalReportAction } from '@/app/actions/report';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { GlobalPaywallCTA } from '@/components/global-paywall-cta';
@@ -54,7 +54,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
   const [isValidating, setIsValidating] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [discountType, setDiscountType] = useState<'percentage' | 'fixed'>('percentage');
-  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(!!assessment.is_unlocked);
   const [noCoupon, setNoCoupon] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -93,6 +93,24 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
       if (interval) clearInterval(interval);
     };
   }, [isUnlocked, assessment.id]);
+
+  // Auto-scroll to download card upon new unlock
+  const initialLoadRef = useRef(true);
+  useEffect(() => {
+    if (initialLoadRef.current) {
+      initialLoadRef.current = false;
+      return;
+    }
+    
+    if (isUnlocked) {
+      setTimeout(() => {
+        const element = document.getElementById('download-card');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 300);
+    }
+  }, [isUnlocked]);
 
   const handleValidateCode = async () => {
     if (!accessCode) return;
@@ -294,55 +312,10 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
 
       {/* Roadmap Content */}
       <div className="max-w-4xl mx-auto space-y-6">
-        {isUnlocked ? (
-          <motion.div variants={item} className="pt-10 pb-10">
-            <Card className="glass border-green-500/20 bg-green-500/5 overflow-hidden rounded-[2.5rem] relative flex flex-col justify-center border-2 shadow-2xl shadow-green-500/5 min-h-[500px]">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-50" />
-              <CardContent className="p-10 flex flex-col items-center text-center space-y-6">
-                <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center border border-green-500/20">
-                  <Unlock className="w-6 h-6 text-green-400" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-3xl md:text-5xl font-black tracking-tighter uppercase italic text-white">Tactical Access Granted</h3>
-                  <p className="text-muted-foreground font-light max-w-md mx-auto text-lg">
-                    Your 12-week survival strategy is now fully decrypted. Download your complete 20-page tactical dossier for offline execution.
-                  </p>
-                </div>
-                <Button 
-                  disabled={isGenerating}
-                  className="rounded-full bg-blue-600 hover:bg-blue-500 px-12 py-8 font-black text-xl shadow-[0_0_50px_-15px_rgba(59,130,246,0.5)] flex items-center gap-3 group mt-4 w-full sm:w-auto"
-                  onClick={async () => {
-                    setIsGenerating(true);
-                    try {
-                      const aiReport = await getTacticalReportAction(assessment);
-                      await generateTacticalPDF(assessment, aiReport);
-                    } catch (e) {
-                      console.error(e);
-                      alert("Failed to synchronize with Gemma. Using standard metrics payload.");
-                      await generateTacticalPDF(assessment);
-                    } finally {
-                      setIsGenerating(false);
-                    }
-                  }}
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="w-6 h-6 animate-spin" /> Synchronizing Neural Link...
-                    </>
-                  ) : (
-                    <>
-                      <Download className="w-6 h-6 group-hover:animate-bounce" /> Download Stylized PDF Report
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ) : (
-          visibleRoadmap.length > 0 ? (
-            <>
-              {visibleRoadmap.map((week, i) => (
-                <motion.div key={i} variants={item}>
+        {visibleRoadmap.length > 0 ? (
+          <>
+            {visibleRoadmap.map((week, i) => (
+              <motion.div key={i} variants={item}>
                 <Card className="glass border-white/5 hover:border-blue-500/30 transition-all duration-500 group overflow-hidden relative">
                   <div className="absolute top-0 left-0 w-1 h-full bg-blue-500/20 group-hover:bg-blue-500 transition-colors" />
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 p-8 pb-4">
@@ -570,13 +543,59 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                 </Card>
               </motion.div>
             )}
+            {/* Post-Unlock Immediate Download Access */}
+            {isUnlocked && (
+              <motion.div variants={item} className="pt-10 pb-10" id="download-card">
+                <Card className="glass border-green-500/20 bg-green-500/5 overflow-hidden rounded-[2.5rem] relative flex flex-col justify-center border-2 shadow-2xl shadow-green-500/5">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-50" />
+                  <CardContent className="p-10 flex flex-col items-center text-center space-y-6">
+                    <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center border border-green-500/20">
+                      <Unlock className="w-6 h-6 text-green-400" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-2xl font-black tracking-tighter uppercase italic text-white">Tactical Access Granted</h3>
+                      <p className="text-muted-foreground font-light max-w-md mx-auto">
+                        Your 12-week survival strategy is now fully decrypted. Download your complete 20-page tactical dossier for offline execution.
+                      </p>
+                    </div>
+                    <Button 
+                      disabled={isGenerating}
+                      className="rounded-full bg-blue-600 hover:bg-blue-500 px-10 py-8 font-black text-lg shadow-[0_0_30px_-10px_rgba(59,130,246,0.5)] flex items-center gap-3 group mt-4 w-full sm:w-auto"
+                      onClick={async () => {
+                        setIsGenerating(true);
+                        try {
+                          const aiReport = await getTacticalReportAction(assessment);
+                          await generateTacticalPDF(assessment, aiReport);
+                        } catch (e) {
+                          console.error(e);
+                          alert("Failed to synchronize with Gemma. Using standard metrics payload.");
+                          await generateTacticalPDF(assessment);
+                        } finally {
+                          setIsGenerating(false);
+                        }
+                      }}
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" /> Synchronizing Neural Link...
+                        </>
+                      ) : (
+                        <>
+                          <Download className="w-5 h-5 group-hover:animate-bounce" /> Download Stylized PDF Report
+                        </>
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
             </>
           ) : (
             <div className="text-center py-20 border-2 border-dashed border-white/5 rounded-[3rem]">
               <div className="text-muted-foreground font-mono text-xs uppercase tracking-widest">No Tactical Data Found</div>
             </div>
           )
-        )}
+        }
       </div>
     </motion.div>
   );
