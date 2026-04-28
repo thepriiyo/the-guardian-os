@@ -18,16 +18,17 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
     4. List 2 local networking groups or physical locations (e.g., coworking hubs, physical institutes) where they can find mentors for this pivot.
     [STRICT_MATH_PROTOCOL]
     - Automation Risk = (Neural Delta / Human Resilience Factor) * Geospatial Exposure Multiplier.
-    - Neural Delta = AI_Benchmark (88) - User_Logic_Score.
-    - Human Resilience Factor = User_Empathy_Score / 100.
-    - Resulting risk_score MUST be linked to these variables.
+    - Neural Delta = AI_2026_Enterprise_Benchmark (Logic: 92, Strategy: 88, Creativity: 65) - User_Logic_Score.
+    - Human Resilience Factor = (User_Empathy_Score + User_Adaptability_Score) / 200.
+    - Resulting risk_score MUST be linked to these 2026-calibrated variables.
+    - [EFFICIENCY_PARADOX_WEIGHT]: If the role involves high data-repetition, add 8.5% to risk_score to account for Agentic AI workflow automation.
 
     [NEURAL_DELTA_INSIGHT_LOGIC]
     - Compare User_Score against AI_2026_Benchmarks:
-      Logic(88), Strategy(80), Empathy(25), Social(45), Creativity(55), Physical(30).
+      Logic(92), Strategy(88), Empathy(28), Social(48), Creativity(65), Physical(35).
     - If User_Score > Benchmark: tag = "REINFORCED".
     - If User_Score < Benchmark: tag = "VULNERABLE".
-    - Provide a 1-sentence "insight" explaining the delta.
+    - Provide a 1-sentence "insight" explaining the delta in the context of 2026 Agentic AI capabilities.
 
       Return ONLY a JSON object:
       {
@@ -98,6 +99,15 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
 }
 
 export async function getMarketPulse(location: string, role: string) {
+  const groundingIntel = `
+    [2026_MARKET_GROUNDING_DATA]
+    - AI Hiring: Surge in Agentic AI design and AI Governance roles.
+    - Efficiency Paradox: Automation of routine data-heavy tasks leading to role-restructuring.
+    - Talent War: High premiums for "Human-AI Collaboration Specialists".
+    - Standards: ISO/IEC 42001 (AI Management System) and EU AI Act compliance are now hiring baselines.
+    - Sources: LinkedIn AI Labour Market Report 2026, MIT Technology Review, Global Tech Council.
+  `;
+
   const prompt = `
     Generate 3 "Breaking News" items and 3 "Strategic Hiring Nodes" (hiring_firms) for a career strategist dashboard.
     [DYNAMIC_TARGET_PARAMETERS]
@@ -173,10 +183,13 @@ export async function generateFullReport(jobTitle: string, location: string, ass
       ${chapters.map(c => `- ${c.id}: ${c.title}`).join('\n')}
       
       [STRICT_LINK_REQUIREMENT]
-      - Pivot Blueprints MUST include hyper-link payloads to real 2026 certifications (NALA, ACEDS, IILP).
-      - [GAMMA_HARDENING]: The Gamma Roadmap MUST include at least one Regulatory Certification link specific to ${location}.
-      - [GEOSPATIAL_HUB_MAPPING]: For Chapter 09, search for the actual 'Chamber of Commerce' in ${location} and the primary Industry-Specific hub within a 50km radius.
-      - [MARKET_PULSE]: Chapter 12 MUST include 2026-specific insight regarding regional laws (e.g. West Bengal Land Reforms Act if in Kolkata).
+      - Pivot Blueprints MUST include hyper-link payloads to real 2026 certifications:
+        - Technical: AWS Certified Machine Learning Specialty, Google Professional ML Engineer.
+        - Strategic: DeepLearning.AI AI For Everyone, MIT Applied AI.
+        - Governance: ISO/IEC 42001 Lead Auditor, IAPP Certified AI Governance Professional (AIGP).
+      - [GAMMA_HARDENING]: The Gamma Roadmap MUST include at least one High-Authority Certification link specific to ${location}.
+      - [GEOSPATIAL_HUB_MAPPING]: For Chapter 09, search for the actual 'Chamber of Commerce' or 'Innovation Hub' in ${location} and the primary Industry-Specific hub within a 50km radius.
+      - [MARKET_PULSE]: Chapter 12 MUST include 2026-specific insight regarding regional laws (e.g., EU AI Act, India's DPDP Act) as applicable to ${location}.
 
       Return ONLY a JSON array of exactly 4 objects. Content MUST be high-density (500+ words).
       [
