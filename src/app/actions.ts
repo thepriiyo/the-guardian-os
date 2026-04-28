@@ -115,10 +115,16 @@ export async function fetchSkillSuggestions(role: string) {
 }
 
 export async function getAssessmentCount() {
-  const { count, error } = await supabase
-    .from('assessments')
-    .select('*', { count: 'exact', head: true });
-
-  if (error) return 127; // Default fallback for museum-tier aesthetic
-  return (count || 0) + 127; // Adding base seed for social proof
+  try {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return 127; // Baseline social proof if offline
+    
+    const { count, error } = await supabase
+      .from('assessments')
+      .select('*', { count: 'exact', head: true });
+    
+    if (error) return 127;
+    return (count || 0) + 127;
+  } catch (e) {
+    return 127;
+  }
 }
