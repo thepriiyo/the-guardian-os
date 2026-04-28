@@ -79,7 +79,7 @@ export function MarketPulseHUD({ location, role, onSentimentChange }: { location
           >
             <div className="flex justify-between items-start mb-2">
               <h4 className="text-sm font-bold uppercase tracking-tight group-hover:text-blue-400 transition-colors">{item.title}</h4>
-              <span className="text-[9px] font-mono text-white/20 uppercase whitespace-nowrap ml-4">{item.time}</span>
+              <span className="text-[9px] font-mono text-white/20 uppercase whitespace-nowrap ml-4">{item.date}</span>
             </div>
             <p className="text-[11px] text-white/40 leading-relaxed line-clamp-2">{item.summary}</p>
           </motion.div>

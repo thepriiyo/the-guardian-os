@@ -23,7 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin, Briefcase, Target, ArrowRight, Loader2, Banknote, Sparkles } from 'lucide-react';
-import { submitAssessment, fetchSkillSuggestions } from '@/app/actions';
+import { submitAssessment, fetchSkillSuggestions, captureLead } from '@/app/actions';
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/components/ui/input-group';
 import { cn } from '@/lib/utils';
 
@@ -128,9 +128,14 @@ export function AssessmentForm() {
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
+    const email = (document.getElementById('crm-email') as HTMLInputElement)?.value;
+    
     try {
       const result = await submitAssessment(values);
       if (result.success) {
+        if (email && email.includes('@')) {
+          await captureLead(email, result.id);
+        }
         router.push(`/dashboard?id=${result.id}`);
         router.refresh();
       }
@@ -293,31 +298,45 @@ export function AssessmentForm() {
 
               {step === 3 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-700">
-                  <FormField
-                    control={form.control}
-                    name="incomeTarget"
-                    render={({ field }) => {
-                      const locationValue = form.watch('location');
-                      const currency = getCurrencySymbol(locationValue);
-                      return (
-                        <FormItem>
-                          <FormLabel className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Income Target (Monthly)</FormLabel>
-                          <FormControl>
-                            <div className="relative group">
-                              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 font-bold font-mono">{currency}</div>
-                              <input 
-                                type="text"
-                                className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 text-white placeholder:text-white/10 focus:outline-none focus:border-blue-500/50 transition-all font-mono"
-                                placeholder="e.g. 100,000"
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-xs italic text-red-400" />
-                        </FormItem>
-                      );
-                    }}
-                  />
+                  <div className="space-y-6">
+                    <FormField
+                      control={form.control}
+                      name="incomeTarget"
+                      render={({ field }) => {
+                        const locationValue = form.watch('location');
+                        const currency = getCurrencySymbol(locationValue);
+                        return (
+                          <FormItem>
+                            <FormLabel className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Income Target (Monthly)</FormLabel>
+                            <FormControl>
+                              <div className="relative group">
+                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 font-bold font-mono">{currency}</div>
+                                <input 
+                                  type="text"
+                                  className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 text-white placeholder:text-white/10 focus:outline-none focus:border-blue-500/50 transition-all font-mono"
+                                  placeholder="e.g. 100,000"
+                                  {...field}
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage className="text-xs italic text-red-400" />
+                          </FormItem>
+                        );
+                      }}
+                    />
+
+                    <div className="space-y-3 pt-4 border-t border-white/5">
+                      <FormLabel className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Optional Tactical Updates (Email)</FormLabel>
+                      <input 
+                        id="crm-email"
+                        type="email"
+                        className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-4 text-white placeholder:text-white/20 focus:outline-none focus:border-blue-500/50 transition-all text-sm font-light"
+                        placeholder="your@intel-node.com"
+                      />
+                      <p className="text-[9px] text-white/20 italic">No account required. We only send critical career volatility alerts.</p>
+                    </div>
+                  </div>
+
                   <div className="flex gap-4">
                     <Button type="button" variant="outline" className="flex-1 h-14 rounded-2xl border-white/5 bg-white/5" onClick={prevStep}>
                       Back

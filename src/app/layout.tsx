@@ -3,8 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Shield } from "lucide-react";
 import Link from 'next/link';
-import Scene from "@/components/canvas/Scene";
 import Script from "next/script";
+import { SceneWrapper } from "@/components/canvas/scene-wrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -114,7 +114,7 @@ export default function RootLayout({
             })
           }}
         />
-        <Scene />
+        <SceneWrapper />
         <header className="border-b border-white/5 bg-black/40 backdrop-blur-xl sticky top-0 z-50">
           <div className="container mx-auto px-4 h-16 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
@@ -122,12 +122,12 @@ export default function RootLayout({
               <span className="font-black tracking-tighter text-xl uppercase italic">THE GUARDIAN</span>
             </Link>
             <div className="flex items-center gap-6">
-              <nav className="hidden md:flex items-center gap-6 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+              <nav className="flex items-center gap-4 md:gap-6 text-[9px] md:text-[10px] font-mono uppercase tracking-[0.1em] md:tracking-[0.2em] text-muted-foreground">
                 <Link href="/blog" className="hover:text-blue-500 transition-colors">Briefings</Link>
                 <Link href="/legal" className="hover:text-blue-500 transition-colors">Legal</Link>
               </nav>
-              <div className="text-[10px] px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono uppercase tracking-widest">
-                GUARDIAN_OS v6.0
+              <div className="hidden sm:block text-[10px] px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono uppercase tracking-widest">
+                GUARDIAN_OS v6.1
               </div>
             </div>
           </div>

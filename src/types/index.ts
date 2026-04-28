@@ -40,6 +40,18 @@ export interface ReportData {
   risk_score: number;
   analysis_summary: string;
   replacement_map: ReplacementMetric[];
+  geospatial_metrics: {
+    exposure_rating: number;
+    region_status: string;
+    pivot_window: string;
+    market_volatility: string;
+    local_insight: string;
+  };
+  radar_metrics: {
+    safe_percentage: number;
+    threat_level: string;
+    logs: string[];
+  };
   pivot_paths: PivotPath[];
   local_networking: NetworkingGroup[];
   roadmap: RoadmapWeek[];

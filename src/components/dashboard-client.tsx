@@ -40,7 +40,7 @@ import { RiskGauge } from '@/components/charts/risk-gauge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { Assessment } from '@/types';
+import { Assessment, ReportData } from '@/types';
 import { IntelligenceTooltip } from '@/components/ui/intelligence-tooltip';
 import { useState, useEffect } from 'react';
 import { IncomeBridgeChart } from '@/components/charts/income-bridge-chart';
@@ -101,9 +101,22 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
           </div>
         </div>
         
-        <div className="flex flex-col items-end gap-1">
-          <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest opacity-50">Local_Risk_Index</div>
-          <div className="text-6xl font-black italic text-red-500">{report.risk_score}%</div>
+        <div className="flex flex-col items-end gap-4">
+          <div className="flex flex-col items-end gap-1">
+            <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest opacity-50">Local_Risk_Index</div>
+            <div className="text-6xl font-black italic text-red-500">{report.risk_score}%</div>
+          </div>
+          
+          <Button 
+            onClick={() => {
+              const text = `My AI Career Risk Score is ${report.risk_score}% on The Guardian OS. 🛰️\n\nInitialize your tactical survival scan here: https://the-guardian-os.vercel.app`;
+              window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+            }}
+            variant="outline" 
+            className="rounded-full border-blue-500/20 bg-blue-500/5 text-blue-400 text-[9px] font-mono tracking-widest uppercase hover:bg-blue-500 hover:text-white transition-all"
+          >
+            Broadcast Strategy <Radio className="ml-2 w-3 h-3 animate-pulse" />
+          </Button>
         </div>
       </motion.div>
 
@@ -161,7 +174,7 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
               {/* AI THREAT RADAR - GRID ROW 2 (Strict Safari Stretch) */}
               <motion.div variants={item} className="h-full min-h-0 flex flex-col">
                  <div className="flex-1 h-full min-h-full">
-                   <AIThreatRadar jobTitle={assessment.job_title} />
+                   <AIThreatRadar jobTitle={assessment.job_title} report={report} />
                  </div>
               </motion.div>
            </div>
@@ -268,15 +281,13 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
                 <div className="space-y-2">
                   <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">Region_Status</div>
                   <h3 className="text-3xl font-black italic uppercase tracking-tighter">
-                    {assessment.location.toLowerCase().includes('london') || assessment.location.toLowerCase().includes('new york') || assessment.location.toLowerCase().includes('san francisco') 
-                      ? 'High Exposure Zone' 
-                      : 'Active Transition Zone'}
+                    {report.geospatial_metrics?.region_status || 'Active Transition Zone'}
                   </h3>
                 </div>
                 <div className="flex flex-col items-end">
                    <div className="text-[10px] font-mono text-blue-400 uppercase tracking-widest mb-1">Exposure_Rating</div>
                    <div className="text-4xl font-black italic text-blue-500">
-                     {assessment.location.toLowerCase().includes('london') || assessment.location.toLowerCase().includes('new york') ? '88.4%' : '64.2%'}
+                     {report.geospatial_metrics?.exposure_rating || '64.2'}%
                    </div>
                 </div>
               </div>
@@ -286,18 +297,18 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
                    <AlertTriangle className="w-3 h-3" /> Tactical_Insight
                  </div>
                  <p className="text-sm text-white/60 leading-relaxed font-light">
-                   Based on your location in <span className="text-white font-bold">{assessment.location}</span>, you are in a high-density AI integration hub. Local firms are projected to integrate LLM-based automation for 30-38% of your core tasks by Q3 2026.
+                   {report.geospatial_metrics?.local_insight || `Based on your location in ${assessment.location}, you are in a high-density AI integration hub.`}
                  </p>
               </div>
 
               <div className="grid grid-cols-2 gap-6 pt-4">
                  <div className="space-y-1">
                    <div className="text-[9px] font-mono text-white/20 uppercase tracking-widest">Pivot_Window</div>
-                   <div className="text-xl font-bold uppercase italic tracking-tight">08-12 Months</div>
+                   <div className="text-xl font-bold uppercase italic tracking-tight">{report.geospatial_metrics?.pivot_window || '08-12 Months'}</div>
                  </div>
                  <div className="space-y-1">
                    <div className="text-[9px] font-mono text-white/20 uppercase tracking-widest">Market_Volatility</div>
-                   <div className="text-xl font-bold uppercase italic tracking-tight text-red-500">Critical</div>
+                   <div className="text-xl font-bold uppercase italic tracking-tight text-red-500">{report.geospatial_metrics?.market_volatility || 'Critical'}</div>
                  </div>
               </div>
             </CardContent>
@@ -368,7 +379,7 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
   );
 }
 
-function AIThreatRadar({ jobTitle }: { jobTitle: string }) {
+function AIThreatRadar({ jobTitle, report }: { jobTitle: string; report: ReportData }) {
   const [logIndex, setLogIndex] = useState(0);
   const logs = [
     `SCANNING: ${jobTitle.toUpperCase()} VULNERABILITIES`,
@@ -410,7 +421,7 @@ function AIThreatRadar({ jobTitle }: { jobTitle: string }) {
               animate={{ opacity: 1 }}
               className="text-[10px] font-mono text-white font-black uppercase italic tracking-tighter"
             >
-              {logs[logIndex]}
+              {report.radar_metrics?.logs?.[logIndex] || logs[logIndex]}
             </motion.div>
           </div>
         </div>
@@ -436,21 +447,23 @@ function AIThreatRadar({ jobTitle }: { jobTitle: string }) {
            </div>
 
            {/* Metrics Grid Overlay */}
-           <div className="w-full grid grid-cols-2 gap-4">
-              <div className="space-y-1 border-l-2 border-green-500/30 pl-3">
-                 <div className="text-[8px] font-mono text-white/30 uppercase tracking-widest flex items-center gap-1.5">
-                   <TrendingUp className="w-3 h-3 text-green-500" /> SAFE
-                 </div>
-                 <div className="text-lg font-black italic text-green-500 leading-none">98.4%</div>
-              </div>
+            <div className="w-full grid grid-cols-2 gap-4">
+               <div className="space-y-1 border-l-2 border-green-500/30 pl-3">
+                  <div className="text-[8px] font-mono text-white/30 uppercase tracking-widest flex items-center gap-1.5">
+                    <TrendingUp className="w-3 h-3 text-green-500" /> SAFE
+                  </div>
+                  <div className="text-lg font-black italic text-green-500 leading-none">
+                    {report.radar_metrics?.safe_percentage || '98.4'}%
+                  </div>
+               </div>
 
-              <div className="space-y-1 border-r-2 border-red-500/30 pr-3 text-right">
-                 <div className="text-[8px] font-mono text-white/30 uppercase tracking-widest flex items-center justify-end gap-1.5">
-                   CRITICAL <TrendingDown className="w-3 h-3 text-red-500" />
-                 </div>
-                 <div className="text-lg font-black italic text-red-500 leading-none uppercase">THREAT</div>
-              </div>
-           </div>
+               <div className="space-y-1 border-r-2 border-red-500/30 pr-3 text-right">
+                  <div className="text-[8px] font-mono text-white/30 uppercase tracking-widest flex items-center justify-end gap-1.5">
+                    {report.radar_metrics?.threat_level?.toUpperCase() || 'CRITICAL'} <TrendingDown className="w-3 h-3 text-red-500" />
+                  </div>
+                  <div className="text-lg font-black italic text-red-500 leading-none uppercase">THREAT</div>
+               </div>
+            </div>
         </div>
 
         {/* Command Footer */}

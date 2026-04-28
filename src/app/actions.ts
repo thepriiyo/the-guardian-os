@@ -3,7 +3,9 @@
 import { getRiskReport, getRoleSuggestions, getSkillSuggestions } from '@/lib/ai';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { supabase } from '@/lib/supabase';
+import { headers } from 'next/headers';
+import { supabase, supabaseAdmin } from '@/lib/supabase';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export async function submitAssessment(formData: {
   jobTitle: string;
@@ -11,6 +13,10 @@ export async function submitAssessment(formData: {
   location: string;
   incomeTarget: string;
 }) {
+  const rateLimit = await checkRateLimit('assessment', 3);
+  if (!rateLimit.allowed) {
+    throw new Error(rateLimit.message);
+  }
   console.log('STEP 1: Starting AI Generation with Gemma 3...');
   const report = await getRiskReport(
     formData.jobTitle,
@@ -51,25 +57,38 @@ export async function submitAssessment(formData: {
 }
 
 export async function validateAccessCode(code: string) {
-  const codes: Record<string, { type: 'percentage' | 'fixed', value: number }> = {
-    'GUARDIAN20': { type: 'percentage', value: 20 },
-    'SECURITY40': { type: 'percentage', value: 40 },
-    'NEURAL50': { type: 'percentage', value: 50 },
-    'TACTICAL80': { type: 'percentage', value: 80 },
-    'SURVIVAL90': { type: 'percentage', value: 90 },
-    'ABSOLUTE100': { type: 'percentage', value: 100 },
-    'LOYALTY199': { type: 'fixed', value: 199 }
-  };
+  const { data, error } = await supabase
+    .from('discount_codes')
+    .select('discount_type, value, is_active, usage_limit, usage_count')
+    .eq('code', code.toUpperCase())
+    .eq('is_active', true)
+    .single();
 
-  const codeData = codes[code.toUpperCase()];
-  if (codeData) {
-    return { 
-      success: true, 
-      discount: codeData.value,
-      discountType: codeData.type 
-    };
+  if (error || !data) {
+    return { success: false, message: 'Invalid or Expired Intelligence Access Code' };
   }
-  return { success: false, message: 'Invalid Intelligence Access Code' };
+
+  if (data.usage_limit && data.usage_count >= data.usage_limit) {
+    return { success: false, message: 'Tactical Authorization Limit Reached' };
+  }
+
+  return { 
+    success: true, 
+    discount: data.value,
+    discountType: data.discount_type 
+  };
+}
+
+export async function captureLead(email: string, assessmentId?: string) {
+  const { error } = await supabase
+    .from('crm_leads')
+    .insert([{ email, assessment_id: assessmentId }]);
+
+  if (error && error.code !== '23505') { // Ignore duplicate emails
+    console.error('CRM_LEAD_CAPTURE_ERROR:', error);
+    return { success: false };
+  }
+  return { success: true };
 }
 
 export async function checkUnlockStatus(id: string) {
@@ -84,9 +103,22 @@ export async function checkUnlockStatus(id: string) {
 }
 
 export async function fetchRoleSuggestions(query: string) {
+  const rateLimit = await checkRateLimit('role_suggestions', 50);
+  if (!rateLimit.allowed) return [];
   return await getRoleSuggestions(query);
 }
 
 export async function fetchSkillSuggestions(role: string) {
+  const rateLimit = await checkRateLimit('skill_suggestions', 50);
+  if (!rateLimit.allowed) return [];
   return await getSkillSuggestions(role);
+}
+
+export async function getAssessmentCount() {
+  const { count, error } = await supabase
+    .from('assessments')
+    .select('*', { count: 'exact', head: true });
+
+  if (error) return 127; // Default fallback for museum-tier aesthetic
+  return (count || 0) + 127; // Adding base seed for social proof
 }

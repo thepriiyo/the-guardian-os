@@ -42,6 +42,18 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
           {"subject": "Strategy", "A": number, "fullMark": 100, "tag": "REINFORCED/VULNERABLE", "insight": "1-sentence Delta Insight"},
           {"subject": "Empathy", "A": number, "fullMark": 100, "tag": "REINFORCED/VULNERABLE", "insight": "1-sentence Delta Insight"}
         ],
+        "geospatial_metrics": {
+          "exposure_rating": number,
+          "region_status": "string (High Exposure / Active Transition / Stable Node)",
+          "pivot_window": "string (e.g. 06-12 Months)",
+          "market_volatility": "string (Critical / Moderate / Low)",
+          "local_insight": "string (2-sentence specific local economic insight)"
+        },
+        "radar_metrics": {
+          "safe_percentage": number,
+          "threat_level": "string (Critical / Elevated / Low)",
+          "logs": ["string (4 tactical scan messages)"]
+        },
         "pivot_paths": [
           {"title": "string", "min_salary": number, "max_salary": number, "demand": "High/Medium/Low"}
         ],
@@ -175,6 +187,7 @@ export async function getMarketPulse(location: string, role: string) {
     {
       "sentiment": "string (Caution/Bullish/Volatile/Stable)",
       "sentiment_summary": "string",
+      "stability_warning": "string (1-sentence warning about local volatility)",
       "news": [
         {
           "title": "string", 

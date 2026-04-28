@@ -13,28 +13,84 @@
 - Environments: .env.local
 
   Creating an optimized production build ...
-✓ Compiled successfully in 5.9s
-  Running TypeScript ...
-Failed to type check.
 
-./src/components/dashboard-client.tsx:87:19
-Type error: Type '{ hidden: { opacity: number; y: number; }; show: { opacity: number; y: number; transition: { duration: number; ease: string; }; }; }' is not assignable to type 'Variants'.
-  Property 'show' is incompatible with index signature.
-    Type '{ opacity: number; y: number; transition: { duration: number; ease: string; }; }' is not assignable to type 'Variant'.
-      Type '{ opacity: number; y: number; transition: { duration: number; ease: string; }; }' is not assignable to type 'TargetAndTransition'.
-        Type '{ opacity: number; y: number; transition: { duration: number; ease: string; }; }' is not assignable to type '{ transition?: Transition<any> | undefined; transitionEnd?: ResolvedValues$1 | undefined; }'.
-          Types of property 'transition' are incompatible.
-            Type '{ duration: number; ease: string; }' is not assignable to type 'Transition<any> | undefined'.
-              Type '{ duration: number; ease: string; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
-                Type '{ duration: number; ease: string; }' is not assignable to type 'ValueAnimationTransition<any>'.
-                  Types of property 'ease' are incompatible.
-                    Type 'string' is not assignable to type 'Easing | Easing[] | undefined'.
+> Build error occurred
+Error: Turbopack build failed with 3 errors:
+./.gemini/antigravity/scratch/the-guardian/src/app/layout.tsx:9:15
+`ssr: false` is not allowed with `next/dynamic` in Server Components. Please move it into a Client Component.
+  [90m 7 |[0m [36mimport[0m dynamic [36mfrom[0m [32m'next/dynamic'[0m;
+  [90m 8 |[0m
+[31m[1m>[0m [90m 9 |[0m [36mconst[0m [33mScene[0m = dynamic(() => [36mimport[0m([32m"@/components/canvas/Scene"[0m), { 
+  [90m   |[0m               [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m10 |[0m   ssr: [36mfalse[0m,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m11 |[0m   loading: () => <div className=[32m"fixed inset-0 bg-[#020617]"[0m />
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m12 |[0m });
+  [90m   |[0m [31m[1m^^[0m
+  [90m13 |[0m
+  [90m14 |[0m [36mconst[0m geistSans = [33mGeist[0m({
+  [90m15 |[0m   variable: [32m"--font-geist-sans"[0m,
 
-  [90m85 |[0m     >
-  [90m86 |[0m       {[90m/* HUD Header */[0m}
-[31m[1m>[0m [90m87 |[0m       <motion.div variants={item} className=[32m"flex flex-col md:flex-row md:items-center jus...[0m
-  [90m   |[0m                   [31m[1m^[0m
-  [90m88 |[0m         <div className=[32m"space-y-1"[0m>
-  [90m89 |[0m           <div className=[32m"inline-flex items-center gap-2 text-[10px] font-mono text-blue-4...[0m
-  [90m90 |[0m             <span className=[32m"w-2 h-2 rounded-full bg-blue-500 animate-pulse"[0m /> [33mDiagnostic.[0m..
-Next.js build worker exited with code: 1 and signal: null
+Ecmascript file had an error
+
+
+./.gemini/antigravity/scratch/the-guardian/src/components/assessment-form.tsx:26:1
+Export fetchSkillSuggestions doesn't exist in target module
+  [90m24 |[0m ...[33mCard[0m, [33mCardContent[0m, [33mCardDescription[0m, [33mCardHeader[0m, [33mCardTitle[0m } [36mfrom[0m [32m'@...[0m
+  [90m25 |[0m ...[33mMapPin[0m, [33mBriefcase[0m, [33mTarget[0m, [33mArrowRight[0m, [33mLoader2[0m, [33mBanknote[0m, [33mSparkles[0m ..[36m.[0m
+[31m[1m>[0m [90m26 |[0m ...submitAssessment, fetchSkillSuggestions, captureLead } [36mfrom[0m [32m'@/app/...[0m
+  [90m   |[0m    [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m27 |[0m ...[33mInputGroup[0m, [33mInputGroupAddon[0m, [33mInputGroupInput[0m, [33mInputGroupText[0m } [36mfrom[0m.[32m..[0m
+  [90m28 |[0m ...cn } [36mfrom[0m [32m'@/lib/utils'[0m;
+  [90m29 |[0m ...
+
+The export fetchSkillSuggestions was not found in module [project]/.gemini/antigravity/scratch/the-guardian/src/app/actions.ts [app-client] (ecmascript).
+Did you mean to import fetchRoleSuggestions?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./.gemini/antigravity/scratch/the-guardian/src/components/assessment-form.tsx [Client Component Browser]
+    ./.gemini/antigravity/scratch/the-guardian/src/components/home-client.tsx [Client Component Browser]
+    ./.gemini/antigravity/scratch/the-guardian/src/components/home-client.tsx [Server Component]
+    ./.gemini/antigravity/scratch/the-guardian/src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./.gemini/antigravity/scratch/the-guardian/src/components/assessment-form.tsx [Client Component SSR]
+    ./.gemini/antigravity/scratch/the-guardian/src/components/home-client.tsx [Client Component SSR]
+    ./.gemini/antigravity/scratch/the-guardian/src/components/home-client.tsx [Server Component]
+    ./.gemini/antigravity/scratch/the-guardian/src/app/page.tsx [Server Component]
+
+
+./.gemini/antigravity/scratch/the-guardian/src/components/assessment-form.tsx:26:1
+Export fetchSkillSuggestions doesn't exist in target module
+  [90m24 |[0m ...[33mCard[0m, [33mCardContent[0m, [33mCardDescription[0m, [33mCardHeader[0m, [33mCardTitle[0m } [36mfrom[0m [32m'@...[0m
+  [90m25 |[0m ...[33mMapPin[0m, [33mBriefcase[0m, [33mTarget[0m, [33mArrowRight[0m, [33mLoader2[0m, [33mBanknote[0m, [33mSparkles[0m ..[36m.[0m
+[31m[1m>[0m [90m26 |[0m ...submitAssessment, fetchSkillSuggestions, captureLead } [36mfrom[0m [32m'@/app/...[0m
+  [90m   |[0m    [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m27 |[0m ...[33mInputGroup[0m, [33mInputGroupAddon[0m, [33mInputGroupInput[0m, [33mInputGroupText[0m } [36mfrom[0m.[32m..[0m
+  [90m28 |[0m ...cn } [36mfrom[0m [32m'@/lib/utils'[0m;
+  [90m29 |[0m ...
+
+The export fetchSkillSuggestions was not found in module [project]/.gemini/antigravity/scratch/the-guardian/src/app/actions.ts [app-ssr] (ecmascript).
+Did you mean to import fetchRoleSuggestions?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./.gemini/antigravity/scratch/the-guardian/src/components/assessment-form.tsx [Client Component Browser]
+    ./.gemini/antigravity/scratch/the-guardian/src/components/home-client.tsx [Client Component Browser]
+    ./.gemini/antigravity/scratch/the-guardian/src/components/home-client.tsx [Server Component]
+    ./.gemini/antigravity/scratch/the-guardian/src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./.gemini/antigravity/scratch/the-guardian/src/components/assessment-form.tsx [Client Component SSR]
+    ./.gemini/antigravity/scratch/the-guardian/src/components/home-client.tsx [Client Component SSR]
+    ./.gemini/antigravity/scratch/the-guardian/src/components/home-client.tsx [Server Component]
+    ./.gemini/antigravity/scratch/the-guardian/src/app/page.tsx [Server Component]
+
+
+    at <unknown> (./.gemini/antigravity/scratch/the-guardian/src/app/layout.tsx:9:15)
+    at <unknown> (./.gemini/antigravity/scratch/the-guardian/src/components/assessment-form.tsx:26:1)
+    at <unknown> (./.gemini/antigravity/scratch/the-guardian/src/components/assessment-form.tsx:26:1)
