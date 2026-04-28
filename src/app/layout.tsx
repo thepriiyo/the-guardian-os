@@ -121,9 +121,13 @@ export default function RootLayout({
               <Shield className="w-6 h-6 text-blue-500" />
               <span className="font-black tracking-tighter text-xl uppercase italic">THE GUARDIAN</span>
             </Link>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
+              <nav className="hidden md:flex items-center gap-6 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+                <Link href="/blog" className="hover:text-blue-500 transition-colors">Briefings</Link>
+                <Link href="/legal" className="hover:text-blue-500 transition-colors">Legal</Link>
+              </nav>
               <div className="text-[10px] px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono uppercase tracking-widest">
-                GUARDIAN_OS v1.2
+                GUARDIAN_OS v6.0
               </div>
             </div>
           </div>
