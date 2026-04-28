@@ -23,7 +23,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin, Briefcase, Target, ArrowRight, Loader2, Banknote, Sparkles } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { submitAssessment } from '@/app/actions';
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/components/ui/input-group';
 import { cn } from '@/lib/utils';

@@ -302,7 +302,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                       </p>
                     </div>
                  </div>
-              </div>v>
+              </div>
 
               <div className="space-y-4 max-w-xs mx-auto">
                 <div className="flex justify-between text-[9px] font-mono text-white/30 uppercase tracking-widest mb-1">
