@@ -87,6 +87,20 @@ export function AssessmentForm() {
     return () => clearTimeout(timer);
   }, [jobTitle]);
 
+  const refreshSkills = async () => {
+    if (jobTitle && jobTitle.length > 2) {
+      setIsSkillsLoading(true);
+      try {
+        const skills = await fetchSkillSuggestions(jobTitle);
+        setSuggestedSkills(skills);
+      } catch (error) {
+        console.error('Manual fetch failed:', error);
+      } finally {
+        setIsSkillsLoading(false);
+      }
+    }
+  };
+
   const toggleSkill = (skill: string) => {
     const currentSkills = form.getValues('skills');
     const skillList = currentSkills.split(',').map(s => s.trim()).filter(s => s !== '');
@@ -240,8 +254,18 @@ export function AssessmentForm() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground flex items-center justify-between">
-                          <span>Core Competencies</span>
-                          {isSkillsLoading && <Loader2 className="w-3 h-3 animate-spin text-blue-500" />}
+                          <div className="flex items-center gap-2">
+                            <span>Core Competencies</span>
+                            <button 
+                              type="button" 
+                              onClick={refreshSkills}
+                              className="p-1 rounded-md hover:bg-blue-500/10 transition-colors group"
+                              title="Re-scan for high-authority skills"
+                            >
+                              <Sparkles className={cn("w-3.5 h-3.5 text-blue-500 transition-all", isSkillsLoading ? "animate-spin opacity-50" : "group-hover:scale-125")} />
+                            </button>
+                          </div>
+                          {isSkillsLoading && <span className="text-[8px] animate-pulse">Scanning_Neural_Nodes...</span>}
                         </FormLabel>
                         <FormControl>
                           <div className="space-y-4">

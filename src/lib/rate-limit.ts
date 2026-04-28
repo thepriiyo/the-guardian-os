@@ -11,12 +11,17 @@ export async function checkRateLimit(action: string, limit: number = 3) {
   // ARCHITECT BYPASS: Explicit Admin IP exemption
   if (process.env.ADMIN_IP && ip === process.env.ADMIN_IP) return { allowed: true };
   
-  const { data, error } = await supabaseAdmin
-    .from('rate_limits')
-    .select('count, last_request')
-    .eq('ip', ip)
-    .eq('action', action)
-    .single();
+  try {
+    // Standard tactical timeout for DB check
+    const { data, error } = await Promise.race([
+      supabaseAdmin
+        .from('rate_limits')
+        .select('count, last_request')
+        .eq('ip', ip)
+        .eq('action', action)
+        .single(),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('DB_TIMEOUT')), 5000))
+    ]) as any;
 
   const now = new Date();
   const windowMs = 3600000; // 1 hour window
@@ -47,4 +52,8 @@ export async function checkRateLimit(action: string, limit: number = 3) {
   }
 
   return { allowed: true };
+  } catch (e) {
+    console.error('Rate Limit Shield Failure:', e);
+    return { allowed: true }; // Fallback to allow if DB fails
+  }
 }

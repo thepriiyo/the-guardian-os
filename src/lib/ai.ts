@@ -143,10 +143,13 @@ export async function getSkillSuggestions(role: string) {
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
       prompt: prompt,
+      abortSignal: AbortSignal.timeout(30000), // 30s timeout
     });
-    return JSON.parse(text.replace(/```json|```/g, '').trim());
+    const cleanedText = text.replace(/```json|```/g, '').trim();
+    return JSON.parse(cleanedText);
   } catch (e) {
-    return ["AI Collaboration", "Strategic Logic", "Neural Data Analysis"];
+    console.error('Skill Suggestions Error:', e);
+    return ["AI Collaboration", "Strategic Logic", "Neural Data Analysis", "Crisis Management", "System Architecture", "Ethical AI Governance"];
   }
 }
 
