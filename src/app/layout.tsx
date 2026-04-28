@@ -84,6 +84,36 @@ export default function RootLayout({
           src="https://checkout.razorpay.com/v1/checkout.js"
           strategy="afterInteractive"
         />
+        <Script
+          id="json-ld"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "The Guardian OS",
+              "url": "https://the-guardian-os.vercel.app",
+              "description": "A high-performance AI diagnostic engine that analyzes career automation risk and generates tactical 12-week survival roadmaps for the 2026 labor market.",
+              "applicationCategory": "BusinessApplication",
+              "operatingSystem": "Web",
+              "offers": {
+                "@type": "Offer",
+                "price": "2.49",
+                "priceCurrency": "USD"
+              },
+              "author": {
+                "@type": "Person",
+                "name": "Priiyo"
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "ratingCount": "127"
+              }
+            })
+          }}
+        />
         <Scene />
         <header className="border-b border-white/5 bg-black/40 backdrop-blur-xl sticky top-0 z-50">
           <div className="container mx-auto px-4 h-16 flex items-center justify-between">
