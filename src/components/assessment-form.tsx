@@ -153,9 +153,9 @@ export function AssessmentForm() {
         router.push(`/dashboard?id=${result.id}`);
         router.refresh();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Submission failed:', error);
-      alert('Strategic analysis failure. The neural link timed out. Please retry.');
+      alert(error.message || 'Strategic analysis failure. The neural link timed out. Please retry.');
     } finally {
       setIsSubmitting(false);
     }
