@@ -86,25 +86,55 @@ export default async function PulsePage({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Sentiment Analysis Card */}
-        <Card className="lg:col-span-1 glass border-white/10 overflow-hidden group">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-mono uppercase tracking-[0.3em] text-blue-400">Survival Summary</CardTitle>
-          </CardHeader>
-          <CardContent className="p-8">
-            <div className="relative p-6 rounded-2xl bg-blue-500/5 border border-blue-500/10 mb-8 italic font-light text-lg leading-relaxed">
-              "{pulse.sentiment_summary || pulse.local_sentiment_summary}"
-            </div>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center text-xs font-mono text-muted-foreground uppercase">
-                <span>Volatility Index</span>
-                <span className="text-blue-400">High // Stable</span>
+        <div className="lg:col-span-1 space-y-8">
+          <Card className="glass border-white/10 overflow-hidden group">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs font-mono uppercase tracking-[0.3em] text-blue-400">Survival Summary</CardTitle>
+            </CardHeader>
+            <CardContent className="p-8">
+              <div className="relative p-6 rounded-2xl bg-blue-500/5 border border-blue-500/10 mb-8 italic font-light text-lg leading-relaxed">
+                "{pulse.sentiment_summary || pulse.local_sentiment_summary}"
               </div>
-              <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500 w-2/3 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+              <div className="space-y-4">
+                <div className="flex justify-between items-center text-xs font-mono text-muted-foreground uppercase">
+                  <span>Volatility Index</span>
+                  <span className="text-blue-400">High // Stable</span>
+                </div>
+                <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-500 w-2/3 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          {/* Strategic Hiring Nodes */}
+          {pulse.hiring_firms && pulse.hiring_firms.length > 0 && (
+            <Card className="glass border-white/10 overflow-hidden group">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-xs font-mono uppercase tracking-[0.3em] text-blue-400">Strategic Nodes</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                {pulse.hiring_firms.map((firm: any, i: number) => (
+                  <a 
+                    key={i} 
+                    href={firm.link || firm.url || '#'} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/30 transition-all group/node"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                        <Target className="w-4 h-4 text-blue-400" />
+                      </div>
+                      <span className="text-sm font-bold tracking-tight">{firm.name}</span>
+                    </div>
+                    <ArrowUpRight className="w-4 h-4 opacity-0 group-hover/node:opacity-100 group-hover/node:translate-x-0.5 group-hover/node:-translate-y-0.5 transition-all text-blue-400" />
+                  </a>
+                ))}
+              </CardContent>
+            </Card>
+          )}
+        </div>
 
         {/* Intelligence Feed */}
         <div className="lg:col-span-2 space-y-6">
@@ -117,21 +147,29 @@ export default async function PulsePage({
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {(pulse.news || pulse.breaking_news).map((news: any, i: number) => (
-              <Card key={i} className="glass border-white/10 hover:border-blue-500/30 transition-all duration-500 group cursor-pointer">
-                <CardContent className="p-8">
-                  <Badge variant="outline" className="mb-4 border-blue-500/20 text-blue-400 font-mono text-[10px] uppercase">
-                    Alert // {i + 1}
-                  </Badge>
-                  <h4 className="text-2xl font-bold tracking-tight mb-4 group-hover:text-blue-400 transition-colors leading-tight">{news.title}</h4>
-                  <p className="text-muted-foreground text-sm leading-relaxed font-light mb-6">
-                    {news.summary}
-                  </p>
-                  <div className="flex items-center justify-between pt-4 border-t border-white/5 opacity-50 text-[10px] font-mono uppercase tracking-widest">
-                    <span>{news.source || "Guardian Intel"}</span>
-                    <ArrowUpRight className="w-3 h-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                  </div>
-                </CardContent>
-              </Card>
+              <a 
+                key={i} 
+                href={news.url || '#'} 
+                target={news.url ? "_blank" : undefined}
+                rel={news.url ? "noopener noreferrer" : undefined}
+                className="block group h-full"
+              >
+                <Card className="glass border-white/10 hover:border-blue-500/30 transition-all duration-500 cursor-pointer h-full flex flex-col">
+                  <CardContent className="p-8 flex-1 flex flex-col">
+                    <Badge variant="outline" className="mb-4 border-blue-500/20 text-blue-400 font-mono text-[10px] uppercase w-fit">
+                      Alert // {i + 1}
+                    </Badge>
+                    <h4 className="text-2xl font-bold tracking-tight mb-4 group-hover:text-blue-400 transition-colors leading-tight">{news.title}</h4>
+                    <p className="text-muted-foreground text-sm leading-relaxed font-light mb-6 flex-1">
+                      {news.summary}
+                    </p>
+                    <div className="flex items-center justify-between pt-4 border-t border-white/5 opacity-50 text-[10px] font-mono uppercase tracking-widest mt-auto">
+                      <span>{news.source || "Guardian Intel"}</span>
+                      <ArrowUpRight className="w-3 h-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </a>
             ))}
           </div>
         </div>
