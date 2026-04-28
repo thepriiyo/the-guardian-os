@@ -42,18 +42,6 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
           {"subject": "Strategy", "A": number, "fullMark": 100, "tag": "REINFORCED/VULNERABLE", "insight": "1-sentence Delta Insight"},
           {"subject": "Empathy", "A": number, "fullMark": 100, "tag": "REINFORCED/VULNERABLE", "insight": "1-sentence Delta Insight"}
         ],
-        "geospatial_metrics": {
-          "exposure_rating": number,
-          "region_status": "string (High Exposure / Active Transition / Stable Node)",
-          "pivot_window": "string (e.g. 06-12 Months)",
-          "market_volatility": "string (Critical / Moderate / Low)",
-          "local_insight": "string (2-sentence specific local economic insight)"
-        },
-        "radar_metrics": {
-          "safe_percentage": number,
-          "threat_level": "string (Critical / Elevated / Low)",
-          "logs": ["string (4 tactical scan messages)"]
-        },
         "pivot_paths": [
           {"title": "string", "min_salary": number, "max_salary": number, "demand": "High/Medium/Low"}
         ],
@@ -84,71 +72,29 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
   `;
 
   console.log('Generating risk report for:', { jobTitle, location });
-  
+
   try {
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
       prompt: prompt,
-      abortSignal: AbortSignal.timeout(60000), // 60s tactical timeout
+      abortSignal: AbortSignal.timeout(90000), // 90s timeout
     });
 
-    if (!text) throw new Error('EMPTY_NEURAL_RESPONSE');
+    console.log('AI Response received length:', text.length);
 
     try {
       const cleanedText = text.replace(/```json|```/g, '').trim();
-      const parsed = JSON.parse(cleanedText);
-      if (!parsed.risk_score) throw new Error('INVALID_PAYLOAD_STRUCTURE');
-      return parsed;
+      return JSON.parse(cleanedText);
     } catch (parseError) {
-      console.error('AI JSON Parse Error:', text.slice(0, 500));
-      throw new Error('Intelligence payload was malformed. Please retry.');
+      console.error('AI JSON Parse Error. Raw text snippet:', text.slice(0, 500));
+      throw new Error('Intelligence payload was malformed. Please retry the scan.');
     }
   } catch (e: any) {
     console.error('AI Generation Error:', e);
-    throw new Error(e.message || 'Strategic analysis failure. The neural link timed out.');
-  }
-}
-
-export async function getRoleSuggestions(query: string) {
-  const prompt = `
-    [ROLE_IDENTIFICATION_HUD]
-    The user is typing: "${query}"
-    Suggest 5 professional, 2026-calibrated role titles that match this input.
-    Include a mix of traditional and AI-forward variations.
-    Return ONLY a JSON array of strings: ["Role 1", "Role 2", ...]
-  `;
-
-  try {
-    const { text } = await generateText({
-      model: google('gemma-3-27b-it'),
-      prompt: prompt,
-    });
-    return JSON.parse(text.replace(/```json|```/g, '').trim());
-  } catch (e) {
-    return [];
-  }
-}
-
-export async function getSkillSuggestions(role: string) {
-  const prompt = `
-    [NEURAL_SKILL_MAPPING]
-    Role: "${role}"
-    Suggest 6 high-authority, 2026-relevant hard skills for this role.
-    Focus on skills that provide the highest "Resilience Factor" against automation.
-    Return ONLY a JSON array of strings: ["Skill 1", "Skill 2", ...]
-  `;
-
-  try {
-    const { text } = await generateText({
-      model: google('gemma-3-27b-it'),
-      prompt: prompt,
-      abortSignal: AbortSignal.timeout(30000), // 30s timeout
-    });
-    const cleanedText = text.replace(/```json|```/g, '').trim();
-    return JSON.parse(cleanedText);
-  } catch (e) {
-    console.error('Skill Suggestions Error:', e);
-    return ["AI Collaboration", "Strategic Logic", "Neural Data Analysis", "Crisis Management", "System Architecture", "Ethical AI Governance"];
+    if (e.name === 'AbortError' || e.message?.includes('timeout')) {
+      throw new Error('The neural link timed out due to high complexity. Please try a simpler role or retry.');
+    }
+    throw e;
   }
 }
 
@@ -163,40 +109,24 @@ export async function getMarketPulse(location: string, role: string) {
   `;
 
   const prompt = `
-    [2026_REAL_TIME_INTEL_PROTOCOL] // TEMPORAL_LOCKDOWN_ACTIVE
-    You have access to Google Search. Use it to find the latest 2025-2026 breaking news and hiring trends for ${role} in ${location}.
+    [2026_REAL_TIME_INTEL_PROTOCOL]
+    You have access to Google Search. Use it to find the latest 2026 breaking news and hiring trends for ${role} in ${location}.
     
-    [SEARCH_VECTORS]
-    - Query 1: "${role} ${location} hiring trends news after:2025-01-01"
-    - Query 2: "${role} automation impact news 2026"
-    - Query 3: "${role} certifications 2026 ${location}"
-
     Tasks:
-    1. Scan for the most relevant and recent career news. 
-    2. STRICT_DATE_CONSTRAINT: Discard any result older than 2025. Every news item MUST be from 2025 or 2026.
-    3. Identify EXACTLY 5 high-authority "Breaking News" items.
-    4. Identify 3 real, active hiring firms or strategic nodes in ${location}.
-    5. Synthesize a high-density Market Pulse report.
+    1. Scan for the most recent career news (24h-7d) for ${role} in ${location}.
+    2. Identify 3 real, active hiring firms or strategic nodes in that region.
+    3. Synthesize a Market Pulse report based on these real-time search results.
 
     [STRICT_URL_PROTOCOL]
-    - EVERY URL MUST BE FUNCTIONAL. 
-    - [ZERO_HALLUCINATION_POLICY]: DO NOT invent, predict, or format URLs.
-    - COPY the direct URL exactly as returned by the search tool.
-    - If a specific article URL is missing or looks volatile, use a verified LinkedIn Job Search or Google News query URL instead.
+    - EVERY URL and link MUST be a direct result from your search.
     - NEVER use example.com.
 
     Return ONLY a JSON object:
     {
       "sentiment": "string (Caution/Bullish/Volatile/Stable)",
       "sentiment_summary": "string",
-      "stability_warning": "string (1-sentence warning about local volatility)",
       "news": [
-        {
-          "title": "string", 
-          "summary": "string", 
-          "date": "string (e.g. April 28, 2026)", 
-          "url": "string"
-        }
+        {"title": "string", "summary": "string", "time": "string", "url": "string"}
       ],
       "hiring_firms": [
         {"name": "string", "link": "string"}
@@ -211,7 +141,7 @@ export async function getMarketPulse(location: string, role: string) {
       tools: {
         googleSearch: google.tools.googleSearch({}),
       },
-      toolChoice: 'auto', 
+      toolChoice: 'required', // Force it to search for real news
       prompt: prompt,
       abortSignal: AbortSignal.timeout(90000), // 90s timeout
     });
@@ -226,7 +156,7 @@ export async function generateFullReport(jobTitle: string, location: string, ass
   // GEO_INTEL Mapping Layer
   const isHighIncomeHub = ['london', 'new york', 'ny', 'sf', 'san francisco', 'singapore', 'dubai'].some(h => location.toLowerCase().includes(h));
   const isIndianHub = location.toLowerCase().includes('india') || location.toLowerCase().includes('kolkata');
-  
+
   const geoIntel = {
     currencyLocale: isIndianHub ? 'en-IN' : 'en-US',
     currencySymbol: isIndianHub ? '₹' : '$',
@@ -238,13 +168,13 @@ export async function generateFullReport(jobTitle: string, location: string, ass
   const pivotMultipliers = { alpha: 1.45, beta: 1.65, gamma: 2.10 };
   const targetGamma = currentSalary * pivotMultipliers.gamma;
   const avgPivotSalary = (currentSalary * pivotMultipliers.alpha + currentSalary * pivotMultipliers.beta + currentSalary * pivotMultipliers.gamma) / 3;
-  
+
   const missionROI = (avgPivotSalary - currentSalary) * 3;
   const maxFinancialLoss = missionROI; // Synchronizing Penalty and ROI
-  
+
   const formattedLoss = `${geoIntel.currencySymbol}${new Intl.NumberFormat(geoIntel.currencyLocale).format(maxFinancialLoss)}`;
 
-  const getChapterBatch = async (batchId: number, chapters: {id: string, title: string}[]) => {
+  const getChapterBatch = async (batchId: number, chapters: { id: string, title: string }[]) => {
     const prompt = `
       [BATCH_PROTOCOL: ${batchId}]
       Generate 4 high-density chapters (500-600 words each) for a ${jobTitle} in ${location}.
@@ -303,12 +233,12 @@ export async function generateFullReport(jobTitle: string, location: string, ass
       temperature: 0.4,
       abortSignal: AbortSignal.timeout(120000),
     });
-    
+
     let parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-    
+
     // Sync-Gate Middleware: Length_Verification (12 Weeks)
     const isValid = (track: any[]) => track && track.length === 12 && track.every(w => w.tasks && w.tasks.length > 0);
-    
+
     if (!isValid(parsed.alpha) || !isValid(parsed.beta) || !isValid(parsed.gamma)) {
       console.warn('Roadmap desync detected or Length_Verification failed. Re-triggering recursive sub-agent...');
       const { text: retryText } = await generateText({
@@ -319,7 +249,7 @@ export async function generateFullReport(jobTitle: string, location: string, ass
       });
       parsed = JSON.parse(retryText.replace(/```json|```/g, '').trim());
     }
-    
+
     return parsed;
   };
 

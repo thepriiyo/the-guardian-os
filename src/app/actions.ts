@@ -46,12 +46,12 @@ export async function submitAssessment(formData: {
       throw new Error(`Intelligence storage failed: ${error.message}`);
     }
 
-    revalidatePath('/dashboard', 'layout');
+    // revalidatePath('/dashboard', 'layout'); // Bypassed: Can cause server render collisions during redirect
 
     return { success: true, id: newAssessment.id };
   } catch (e: any) {
     console.error('CRITICAL_ACTION_FAILURE:', e);
-    throw new Error(e.message || 'The neural link encountered a catastrophic error. Please retry.');
+    return { success: false, error: e.message || 'The neural link encountered a catastrophic error. Please retry.' };
   }
 }
 
