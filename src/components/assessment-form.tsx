@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -41,6 +42,39 @@ export function AssessmentForm() {
   const { location, loading: geoLoading } = useGeolocation();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(180);
+  const [statusIndex, setStatusIndex] = useState(0);
+
+  const statusMessages = [
+    "Establishing secure neural uplink...",
+    "Scanning regional geospatial labor nodes...",
+    "Parsing local industry volatility indices...",
+    "Calculating automation risk delta...",
+    "Generating multi-vector pivot roadmaps...",
+    "Hardening career survival strategy...",
+    "Decrypting industry benchmarks...",
+    "Optimizing income bridge logic..."
+  ];
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    let statusTimer: NodeJS.Timeout;
+
+    if (isSubmitting && timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft((prev) => Math.max(0, prev - 1));
+      }, 1000);
+
+      statusTimer = setInterval(() => {
+        setStatusIndex((prev) => (prev + 1) % statusMessages.length);
+      }, 4000);
+    }
+
+    return () => {
+      if (timer) clearInterval(timer);
+      if (statusTimer) clearInterval(statusTimer);
+    };
+  }, [isSubmitting, timeLeft]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -238,6 +272,73 @@ export function AssessmentForm() {
           </form>
         </Form>
       </CardContent>
+      <AnimatePresence>
+        {isSubmitting && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-[#020617]/98 backdrop-blur-3xl flex items-center justify-center p-6"
+          >
+            <div className="max-w-xl w-full space-y-12 text-center relative">
+              <div className="absolute -inset-40 bg-blue-500/10 blur-[160px] rounded-full animate-pulse pointer-events-none" />
+              
+              <div className="relative flex flex-col items-center">
+                 <div className="w-40 h-40 border border-blue-500/10 rounded-full flex items-center justify-center mb-10 relative">
+                    <motion.div 
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                      className="absolute inset-0 border-t border-blue-500/40 rounded-full"
+                    />
+                    <motion.div 
+                      animate={{ rotate: -360 }}
+                      transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                      className="absolute inset-4 border-b border-blue-500/20 rounded-full"
+                    />
+                    <Sparkles className="w-12 h-12 text-blue-500 animate-pulse" />
+                 </div>
+                 
+                 <div className="space-y-6">
+                    <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-blue-500/5 border border-blue-500/10">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping" />
+                      <span className="text-[10px] font-mono text-blue-400 uppercase tracking-[0.5em]">Initializing // Neural_Career_Scan</span>
+                    </div>
+                    <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-white">
+                      Analyzing <span className="text-blue-500">Market.</span>
+                    </h2>
+                    <div className="flex flex-col items-center gap-4">
+                      <p className="text-blue-400/80 font-mono text-xs tracking-widest uppercase h-4">
+                        {statusMessages[statusIndex]}
+                      </p>
+                      <div className="px-6 py-3 rounded-2xl bg-blue-500/10 border border-blue-500/20 inline-block">
+                        <span className="text-blue-400 font-mono text-sm tracking-widest uppercase">
+                          Est. Time: <span className="text-white font-bold">{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
+                        </span>
+                      </div>
+                      <p className="text-red-400/60 font-mono text-[10px] uppercase tracking-[0.2em] animate-pulse">
+                        Do not exit browser // Uplink Active
+                      </p>
+                    </div>
+                 </div>
+              </div>
+
+              <div className="space-y-4 max-w-xs mx-auto">
+                <div className="flex justify-between text-[9px] font-mono text-white/30 uppercase tracking-widest mb-1">
+                  <span>Processing Assessment</span>
+                  <span className="text-blue-500 animate-pulse">{Math.round(((180 - timeLeft) / 180) * 100)}% Complete</span>
+                </div>
+                <div className="h-0.5 bg-white/5 w-full rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: "0%" }}
+                    animate={{ width: `${((180 - timeLeft) / 180) * 100}%` }}
+                    className="h-full bg-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.5)]"
+                  />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Card>
   );
 }

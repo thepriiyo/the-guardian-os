@@ -47,7 +47,23 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
   
   // Intelligence Control States
   const [isGenerating, setIsGenerating] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(20);
+  const [timeLeft, setTimeLeft] = useState(600);
+  const [statusIndex, setStatusIndex] = useState(0);
+
+  const statusMessages = [
+    "Synthesizing 20-page tactical dossier...",
+    "Injecting stylized high-density intelligence...",
+    "Formatting geospatial risk maps...",
+    "Hardening document with cryptographic signatures...",
+    "Establishing secure neural uplink...",
+    "Scanning regional geospatial labor nodes...",
+    "Parsing local industry volatility indices...",
+    "Calculating automation risk delta...",
+    "Generating multi-vector pivot roadmaps...",
+    "Hardening career survival strategy...",
+    "Decrypting industry benchmarks...",
+    "Optimizing income bridge logic..."
+  ];
   
   // Monetization States
   const [accessCode, setAccessCode] = useState('');
@@ -61,14 +77,24 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
   // Timer Effect
   useEffect(() => {
     let timer: NodeJS.Timeout;
+    let statusTimer: NodeJS.Timeout;
+
     if (isGenerating && timeLeft > 0) {
       timer = setInterval(() => {
         setTimeLeft((prev) => Math.max(0, prev - 1));
       }, 1000);
+
+      statusTimer = setInterval(() => {
+        setStatusIndex((prev) => (prev + 1) % statusMessages.length);
+      }, 5000);
     } else if (!isGenerating) {
-      setTimeLeft(20);
+      setTimeLeft(600);
+      setStatusIndex(0);
     }
-    return () => clearInterval(timer);
+    return () => {
+      if (timer) clearInterval(timer);
+      if (statusTimer) clearInterval(statusTimer);
+    };
   }, [isGenerating, timeLeft]);
 
   // Monetization Logic
@@ -254,8 +280,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                     />
                     <Zap className="w-12 h-12 text-blue-500 animate-pulse" />
                  </div>
-                 
-                 <div className="space-y-6">
+                                  <div className="space-y-6">
                     <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-blue-500/5 border border-blue-500/10">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping" />
                       <span className="text-[10px] font-mono text-blue-400 uppercase tracking-[0.5em]">Establishing // Neural_Payload_Uplink</span>
@@ -263,29 +288,31 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                     <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-white">
                       Decrypting <span className="text-blue-500">Sector.</span>
                     </h2>
-                    <div className="flex flex-col items-center gap-2">
-                      <p className="text-muted-foreground font-light text-lg max-w-sm mx-auto leading-relaxed">
-                        Compiling 20-page tactical dossier using regional geospatial data.
+                    <div className="flex flex-col items-center gap-4">
+                      <p className="text-blue-400/80 font-mono text-xs tracking-widest uppercase h-4">
+                        {statusMessages[statusIndex]}
                       </p>
-                      <div className="px-4 py-2 rounded-xl bg-blue-500/10 border border-blue-500/20 inline-block">
+                      <div className="px-6 py-3 rounded-2xl bg-blue-500/10 border border-blue-500/20 inline-block">
                         <span className="text-blue-400 font-mono text-sm tracking-widest uppercase">
-                          Estimated Time Remaining: <span className="text-white font-bold">{timeLeft}s</span>
+                          Est. Time: <span className="text-white font-bold">{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
                         </span>
                       </div>
+                      <p className="text-red-400/60 font-mono text-[10px] uppercase tracking-[0.2em] animate-pulse">
+                        Do not close this page // Download in progress
+                      </p>
                     </div>
                  </div>
-              </div>
+              </div>v>
 
               <div className="space-y-4 max-w-xs mx-auto">
                 <div className="flex justify-between text-[9px] font-mono text-white/30 uppercase tracking-widest mb-1">
                   <span>Processing Dossier</span>
-                  <span className="text-blue-500 animate-pulse">Running Scan...</span>
+                  <span className="text-blue-500 animate-pulse">{Math.round(((600 - timeLeft) / 600) * 100)}% Complete</span>
                 </div>
                 <div className="h-0.5 bg-white/5 w-full rounded-full overflow-hidden">
                   <motion.div 
                     initial={{ width: "0%" }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 8, ease: "easeInOut" }}
+                    animate={{ width: `${((600 - timeLeft) / 600) * 100}%` }}
                     className="h-full bg-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.5)]"
                   />
                 </div>
