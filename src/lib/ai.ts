@@ -109,31 +109,27 @@ export async function getMarketPulse(location: string, role: string) {
   `;
 
   const prompt = `
-    Generate 3 "Breaking News" items and 3 "Strategic Hiring Nodes" (hiring_firms) for a career strategist dashboard.
-    [DYNAMIC_TARGET_PARAMETERS]
-    Location: ${location}
-    Role Context: ${role}
+    [2026_REAL_TIME_INTEL_PROTOCOL]
+    You have access to Google Search. Use it to find the latest 2026 breaking news and hiring trends for ${role} in ${location}.
     
-    [STRICT_URL_PROTOCOL]
-    - Use REAL, HIGH-AUTHORITY URLs from trusted news sources (Financial Express, Economic Times, LinkedIn, Reuters, etc.) relevant to ${location}.
-    - If a specific article URL is unknown for this region, construct a precise LinkedIn or Google News search URL for the user:
-      e.g., "https://www.linkedin.com/search/results/content/?keywords=AI+hiring+${location.replace(/\s+/g, '+')}+${role.replace(/\s+/g, '+')}"
-    - NEVER use "example.com" or generic placeholders. Every link MUST be a functional destination.
+    Tasks:
+    1. Scan for the most recent career news (24h-7d) for ${role} in ${location}.
+    2. Identify 3 real, active hiring firms or strategic nodes in that region.
+    3. Synthesize a Market Pulse report based on these real-time search results.
 
-    [INTELLIGENCE_CRITERIA]
-    - Analyze the unique intersection of ${role} and ${location}. 
-    - Report on specific AI adoption trends, local tech hub investments, or regulatory shifts in that exact region.
-    - If the user is in a non-tech hub, report on the nearest major tech influence or remote-hiring trends impacting that sector.
+    [STRICT_URL_PROTOCOL]
+    - EVERY URL and link MUST be a direct result from your search.
+    - NEVER use example.com.
 
     Return ONLY a JSON object:
     {
       "sentiment": "string (Caution/Bullish/Volatile/Stable)",
       "sentiment_summary": "string",
       "news": [
-        {"title": "string", "summary": "string", "time": "string", "url": "string (VALID URL)"}
+        {"title": "string", "summary": "string", "time": "string", "url": "string"}
       ],
       "hiring_firms": [
-        {"name": "string", "link": "string (VALID URL)"}
+        {"name": "string", "link": "string"}
       ],
       "growth_rate": "string"
     }
@@ -142,6 +138,10 @@ export async function getMarketPulse(location: string, role: string) {
   try {
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
+      tools: {
+        googleSearch: google.tools.googleSearch({}),
+      },
+      toolChoice: 'required', // Force it to search for real news
       prompt: prompt,
       abortSignal: AbortSignal.timeout(90000), // 90s timeout
     });
