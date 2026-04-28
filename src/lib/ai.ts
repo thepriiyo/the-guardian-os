@@ -98,6 +98,49 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
   }
 }
 
+export async function getRoleSuggestions(query: string) {
+  const prompt = `
+    [ROLE_IDENTIFICATION_HUD]
+    The user is typing: "${query}"
+    Suggest 5 professional, 2026-calibrated role titles that match this input.
+    Include a mix of traditional and AI-forward variations.
+    Return ONLY a JSON array of strings: ["Role 1", "Role 2", ...]
+  `;
+
+  try {
+    const { text } = await generateText({
+      model: google('gemma-3-27b-it'),
+      prompt: prompt,
+    });
+    return JSON.parse(text.replace(/```json|```/g, '').trim());
+  } catch (e) {
+    return [];
+  }
+}
+
+export async function getSkillSuggestions(role: string) {
+  const prompt = `
+    [NEURAL_SKILL_MAPPING]
+    Role: "${role}"
+    Suggest 6 high-authority, 2026-relevant hard skills for this role.
+    Focus on skills that provide the highest "Resilience Factor" against automation.
+    Return ONLY a JSON array of strings: ["Skill 1", "Skill 2", ...]
+  `;
+
+  try {
+    const { text } = await generateText({
+      model: google('gemma-3-27b-it'),
+      prompt: prompt,
+      abortSignal: AbortSignal.timeout(30000), // 30s timeout
+    });
+    const cleanedText = text.replace(/```json|```/g, '').trim();
+    return JSON.parse(cleanedText);
+  } catch (e) {
+    console.error('Skill Suggestions Error:', e);
+    return ["AI Collaboration", "Strategic Logic", "Neural Data Analysis", "Crisis Management", "System Architecture", "Ethical AI Governance"];
+  }
+}
+
 export async function getMarketPulse(location: string, role: string) {
   const groundingIntel = `
     [2026_MARKET_GROUNDING_DATA]
