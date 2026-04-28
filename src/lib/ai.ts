@@ -1,8 +1,6 @@
 import { generateText } from 'ai';
 import { google } from '@ai-sdk/google';
 
-// TACTICAL_HEARTBEAT: Re-triggering Vercel Build Pipeline
-
 export async function getRiskReport(jobTitle: string, skills: string, location: string) {
   const prompt = `
     Act as a Local Career Strategist. [Protocol_Time: ${new Date().toISOString()}]
@@ -86,7 +84,7 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
   `;
 
   console.log('Generating risk report for:', { jobTitle, location });
-
+  
   try {
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
@@ -145,13 +143,10 @@ export async function getSkillSuggestions(role: string) {
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
       prompt: prompt,
-      abortSignal: AbortSignal.timeout(30000), // 30s timeout
     });
-    const cleanedText = text.replace(/```json|```/g, '').trim();
-    return JSON.parse(cleanedText);
+    return JSON.parse(text.replace(/```json|```/g, '').trim());
   } catch (e) {
-    console.error('Skill Suggestions Error:', e);
-    return ["AI Collaboration", "Strategic Logic", "Neural Data Analysis", "Crisis Management", "System Architecture", "Ethical AI Governance"];
+    return ["AI Collaboration", "Strategic Logic", "Neural Data Analysis"];
   }
 }
 
@@ -166,8 +161,8 @@ export async function getMarketPulse(location: string, role: string) {
   `;
 
   const prompt = `
-    [2026_REAL_TIME_INTEL_PROTOCOL]
-    You have access to Google Search. Use it to find the latest 2026 breaking news and hiring trends for ${role} in ${location}.
+    [2026_REAL_TIME_INTEL_PROTOCOL] // TEMPORAL_LOCKDOWN_ACTIVE
+    You have access to Google Search. Use it to find the latest 2025-2026 breaking news and hiring trends for ${role} in ${location}.
     
     [SEARCH_VECTORS]
     - Query 1: "${role} ${location} hiring trends news after:2025-01-01"
@@ -213,7 +208,7 @@ export async function getMarketPulse(location: string, role: string) {
       tools: {
         googleSearch: google.tools.googleSearch({}),
       },
-      toolChoice: 'required', // Force it to search for real news
+      toolChoice: 'auto', 
       prompt: prompt,
       abortSignal: AbortSignal.timeout(90000), // 90s timeout
     });
@@ -228,7 +223,7 @@ export async function generateFullReport(jobTitle: string, location: string, ass
   // GEO_INTEL Mapping Layer
   const isHighIncomeHub = ['london', 'new york', 'ny', 'sf', 'san francisco', 'singapore', 'dubai'].some(h => location.toLowerCase().includes(h));
   const isIndianHub = location.toLowerCase().includes('india') || location.toLowerCase().includes('kolkata');
-
+  
   const geoIntel = {
     currencyLocale: isIndianHub ? 'en-IN' : 'en-US',
     currencySymbol: isIndianHub ? '₹' : '$',
@@ -240,13 +235,13 @@ export async function generateFullReport(jobTitle: string, location: string, ass
   const pivotMultipliers = { alpha: 1.45, beta: 1.65, gamma: 2.10 };
   const targetGamma = currentSalary * pivotMultipliers.gamma;
   const avgPivotSalary = (currentSalary * pivotMultipliers.alpha + currentSalary * pivotMultipliers.beta + currentSalary * pivotMultipliers.gamma) / 3;
-
+  
   const missionROI = (avgPivotSalary - currentSalary) * 3;
   const maxFinancialLoss = missionROI; // Synchronizing Penalty and ROI
-
+  
   const formattedLoss = `${geoIntel.currencySymbol}${new Intl.NumberFormat(geoIntel.currencyLocale).format(maxFinancialLoss)}`;
 
-  const getChapterBatch = async (batchId: number, chapters: { id: string, title: string }[]) => {
+  const getChapterBatch = async (batchId: number, chapters: {id: string, title: string}[]) => {
     const prompt = `
       [BATCH_PROTOCOL: ${batchId}]
       Generate 4 high-density chapters (500-600 words each) for a ${jobTitle} in ${location}.
@@ -305,12 +300,12 @@ export async function generateFullReport(jobTitle: string, location: string, ass
       temperature: 0.4,
       abortSignal: AbortSignal.timeout(120000),
     });
-
+    
     let parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-
+    
     // Sync-Gate Middleware: Length_Verification (12 Weeks)
     const isValid = (track: any[]) => track && track.length === 12 && track.every(w => w.tasks && w.tasks.length > 0);
-
+    
     if (!isValid(parsed.alpha) || !isValid(parsed.beta) || !isValid(parsed.gamma)) {
       console.warn('Roadmap desync detected or Length_Verification failed. Re-triggering recursive sub-agent...');
       const { text: retryText } = await generateText({
@@ -321,7 +316,7 @@ export async function generateFullReport(jobTitle: string, location: string, ass
       });
       parsed = JSON.parse(retryText.replace(/```json|```/g, '').trim());
     }
-
+    
     return parsed;
   };
 
