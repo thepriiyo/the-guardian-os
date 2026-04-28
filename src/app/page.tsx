@@ -115,14 +115,6 @@ export default function Home() {
               </p>
             </div>
             
-            <div className="space-y-6">
-              <h4 className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/30">System Sectors</h4>
-              <nav className="flex flex-col gap-3">
-                <Link href="/dashboard" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Operational Overview</Link>
-                <Link href="/dashboard/roadmap" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Tactical Roadmap</Link>
-                <Link href="/dashboard/pulse" className="text-sm text-white/60 hover:text-blue-400 transition-colors">Market Pulse</Link>
-              </nav>
-            </div>
 
             <div className="space-y-6">
               <h4 className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/30">Intelligence & Legal</h4>
