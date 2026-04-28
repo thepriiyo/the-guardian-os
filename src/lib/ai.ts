@@ -1,6 +1,8 @@
 import { generateText } from 'ai';
 import { google } from '@ai-sdk/google';
 
+// TACTICAL_HEARTBEAT: Re-triggering Vercel Build Pipeline
+
 export async function getRiskReport(jobTitle: string, skills: string, location: string) {
   const prompt = `
     Act as a Local Career Strategist. [Protocol_Time: ${new Date().toISOString()}]
