@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import crypto from 'crypto';
-import { sendAuthorizationEmail } from '@/lib/email';
 
 export async function POST(req: Request) {
   try {
@@ -37,21 +36,6 @@ export async function POST(req: Request) {
         if (error) {
           console.error('SUPABASE_UNLOCK_ERROR:', error);
           return NextResponse.json({ error: 'Payment verified but failed to unlock dossier' }, { status: 500 });
-        }
-
-        // TRIGGER AUTOMATED DISPATCH
-        try {
-          const { data: meta } = await supabaseAdmin
-            .from('assessments')
-            .select('email, job_title')
-            .eq('id', assessment_id)
-            .single();
-
-          if (meta?.email) {
-            await sendAuthorizationEmail(meta.email, assessment_id, meta.job_title);
-          }
-        } catch (emailErr) {
-          console.error('[EMAIL_TRIGGER_ERROR]:', emailErr);
         }
       }
 
