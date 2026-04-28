@@ -45,6 +45,7 @@ import { IntelligenceTooltip } from '@/components/ui/intelligence-tooltip';
 import { useState, useEffect } from 'react';
 import { IncomeBridgeChart } from '@/components/charts/income-bridge-chart';
 import { MarketPulseHUD } from '@/components/market-pulse-hud';
+import { GlobalPaywallCTA } from '@/components/global-paywall-cta';
 
 export default function DashboardClient({ assessment }: { assessment: Assessment }) {
   const [pulseSentiment, setPulseSentiment] = useState<string>('Stable');
@@ -105,6 +106,13 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
           <div className="text-6xl font-black italic text-red-500">{report.risk_score}%</div>
         </div>
       </motion.div>
+
+      {/* Top Paywall CTA */}
+      {!assessment.is_unlocked && (
+        <motion.div variants={item}>
+          <GlobalPaywallCTA assessmentId={assessment.id} />
+        </motion.div>
+      )}
 
       {/* Main Intelligence Grid - Safari Grid-Full Lock Pass */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
@@ -349,6 +357,13 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
           </div>
         </Card>
       </motion.div>
+
+      {/* Bottom Paywall CTA */}
+      {!assessment.is_unlocked && (
+        <motion.div variants={item} className="pt-8">
+          <GlobalPaywallCTA assessmentId={assessment.id} />
+        </motion.div>
+      )}
     </motion.div>
   );
 }
