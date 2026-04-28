@@ -98,28 +98,40 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
 }
 
 export async function getMarketPulse(location: string, role: string) {
+  const groundingIntel = `
+    [2026_MARKET_GROUNDING_DATA]
+    - AI Hiring in India: LinkedIn reports 59.5% YoY growth in AI engineering.
+    - Kolkata Hub: Bengal Silicon Valley (₹30,000 Cr investment) for AI/GCC expansion.
+    - Restructuring: IT firms (Oracle, Meta) shifting to AI-native models; high demand for AI agents and model deployment.
+    - Sources: Financial Express, Economic Times, LiveMint, LinkedIn Talent Insights.
+  `;
+
   const prompt = `
-    Generate 3 "Breaking News" items and a "Market Sentiment" summary for a career strategist dashboard.
+    Generate 3 "Breaking News" items and 3 "Strategic Hiring Nodes" (hiring_firms) for a career strategist dashboard.
     Location: ${location}
     Role Context: ${role}
+    
+    [GROUNDING_INTEL]
+    ${groundingIntel}
+
+    [STRICT_URL_PROTOCOL]
+    - Use REAL, HIGH-AUTHORITY URLs from trusted sources (Financial Express, Economic Times, LinkedIn).
+    - If a specific article URL is unknown, construct a precise LinkedIn or Google News search URL for the user:
+      e.g., "https://www.linkedin.com/search/results/content/?keywords=AI+hiring+${location}+${role}"
+    - NEVER use "example.com" or generic "news.com" placeholders.
+    - Every "link" and "url" MUST be a functional destination.
 
     Return ONLY a JSON object:
     {
       "sentiment": "string (Caution/Bullish/Volatile/Stable)",
       "sentiment_summary": "string",
-      "stability_warning": "string",
       "news": [
-        {"title": "string", "summary": "string", "time": "string (e.g. 2h ago)", "impact": "High/Medium/Positive", "url": "string (optional)"}
+        {"title": "string", "summary": "string", "time": "string", "url": "string (VALID URL)"}
       ],
       "hiring_firms": [
-        {"name": "string", "link": "string (url)"}
-      ]
-    }
-
-    [STRICT_SENTIMENT_LOGIC]
-    - If sentiment is 'Volatile' or 'Caution', prioritize reporting layoffs or regulatory hurdles in ${location}.
-    - If sentiment is 'Bullish', the "hiring_firms" array MUST include 3 real firms in ${location} actively recruiting for ${role}-related pivots.
-      "growth_rate": "string (e.g. +15% YoY)"
+        {"name": "string", "link": "string (VALID URL)"}
+      ],
+      "growth_rate": "string"
     }
   `;
 
