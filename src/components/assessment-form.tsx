@@ -23,7 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin, Briefcase, Target, ArrowRight, Loader2, Banknote, Sparkles } from 'lucide-react';
-import { submitAssessment } from '@/app/actions';
+import { submitAssessment, fetchSkillSuggestions } from '@/app/actions';
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/components/ui/input-group';
 import { cn } from '@/lib/utils';
 
@@ -43,6 +43,8 @@ export function AssessmentForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [timeLeft, setTimeLeft] = useState(180);
   const [statusIndex, setStatusIndex] = useState(0);
+  const [suggestedSkills, setSuggestedSkills] = useState<string[]>([]);
+  const [isSkillsLoading, setIsSkillsLoading] = useState(false);
 
   const statusMessages = [
     "Establishing secure neural uplink...",
@@ -54,6 +56,49 @@ export function AssessmentForm() {
     "Decrypting industry benchmarks...",
     "Optimizing income bridge logic..."
   ];
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    shouldUnregister: false,
+    defaultValues: {
+      jobTitle: '',
+      skills: '',
+      location: '',
+      incomeTarget: '',
+    },
+  });
+
+  const jobTitle = form.watch('jobTitle');
+
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (jobTitle && jobTitle.length > 2) {
+        setIsSkillsLoading(true);
+        try {
+          const skills = await fetchSkillSuggestions(jobTitle);
+          setSuggestedSkills(skills);
+        } catch (error) {
+          console.error('Failed to fetch skill suggestions:', error);
+        } finally {
+          setIsSkillsLoading(false);
+        }
+      }
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [jobTitle]);
+
+  const toggleSkill = (skill: string) => {
+    const currentSkills = form.getValues('skills');
+    const skillList = currentSkills.split(',').map(s => s.trim()).filter(s => s !== '');
+    
+    if (skillList.includes(skill)) {
+      const newSkills = skillList.filter(s => s !== skill).join(', ');
+      form.setValue('skills', newSkills);
+    } else {
+      const newSkills = [...skillList, skill].join(', ');
+      form.setValue('skills', newSkills);
+    }
+  };
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -74,17 +119,6 @@ export function AssessmentForm() {
       if (statusTimer) clearInterval(statusTimer);
     };
   }, [isSubmitting, timeLeft]);
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    shouldUnregister: false,
-    defaultValues: {
-      jobTitle: '',
-      skills: '',
-      location: '',
-      incomeTarget: '',
-    },
-  });
 
   useEffect(() => {
     if (location.detected && !form.getValues('location')) {
@@ -200,13 +234,46 @@ export function AssessmentForm() {
                     name="skills"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Core Competencies</FormLabel>
+                        <FormLabel className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground flex items-center justify-between">
+                          <span>Core Competencies</span>
+                          {isSkillsLoading && <Loader2 className="w-3 h-3 animate-spin text-blue-500" />}
+                        </FormLabel>
                         <FormControl>
-                          <textarea 
-                            className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-4 text-white placeholder:text-white/10 focus:outline-none focus:border-blue-500/50 transition-all text-sm font-light leading-relaxed"
-                            placeholder="e.g. LLM Integration, Strategic Forecasting, Full-Stack Engineering, Crisis Management..."
-                            {...field}
-                          />
+                          <div className="space-y-4">
+                            <textarea 
+                              className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-4 text-white placeholder:text-white/10 focus:outline-none focus:border-blue-500/50 transition-all text-sm font-light leading-relaxed"
+                              placeholder="e.g. LLM Integration, Strategic Forecasting, Full-Stack Engineering, Crisis Management..."
+                              {...field}
+                            />
+                            
+                            {suggestedSkills.length > 0 && (
+                              <div className="space-y-3 p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                <div className="text-[9px] font-mono uppercase tracking-widest text-blue-400/60 mb-2 flex items-center gap-2">
+                                  <Sparkles className="w-3 h-3" /> Neural Suggestions // 2026_Calibrated
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  {suggestedSkills.map((skill) => {
+                                    const isSelected = form.watch('skills').split(',').map(s => s.trim()).includes(skill);
+                                    return (
+                                      <button
+                                        key={skill}
+                                        type="button"
+                                        onClick={() => toggleSkill(skill)}
+                                        className={cn(
+                                          "px-3 py-1.5 rounded-full text-[10px] font-medium transition-all border",
+                                          isSelected 
+                                            ? "bg-blue-500 text-white border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.3)]" 
+                                            : "bg-white/5 text-white/40 border-white/5 hover:bg-white/10 hover:text-white/60"
+                                        )}
+                                      >
+                                        {skill}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </FormControl>
                         <FormDescription className="text-[10px] italic opacity-40">List the high-leverage tools and methodologies you deploy daily.</FormDescription>
                         <FormMessage className="text-xs italic text-red-400" />

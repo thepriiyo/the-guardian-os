@@ -1,6 +1,6 @@
 'use server';
 
-import { getRiskReport } from '@/lib/ai';
+import { getRiskReport, getRoleSuggestions, getSkillSuggestions } from '@/lib/ai';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { supabase } from '@/lib/supabase';
@@ -81,4 +81,12 @@ export async function checkUnlockStatus(id: string) {
 
   if (error || !data) return false;
   return data.is_unlocked;
+}
+
+export async function fetchRoleSuggestions(query: string) {
+  return await getRoleSuggestions(query);
+}
+
+export async function fetchSkillSuggestions(role: string) {
+  return await getSkillSuggestions(role);
 }

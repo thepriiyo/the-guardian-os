@@ -98,6 +98,46 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
   }
 }
 
+export async function getRoleSuggestions(query: string) {
+  const prompt = `
+    [ROLE_IDENTIFICATION_HUD]
+    The user is typing: "${query}"
+    Suggest 5 professional, 2026-calibrated role titles that match this input.
+    Include a mix of traditional and AI-forward variations.
+    Return ONLY a JSON array of strings: ["Role 1", "Role 2", ...]
+  `;
+
+  try {
+    const { text } = await generateText({
+      model: google('gemma-3-27b-it'),
+      prompt: prompt,
+    });
+    return JSON.parse(text.replace(/```json|```/g, '').trim());
+  } catch (e) {
+    return [];
+  }
+}
+
+export async function getSkillSuggestions(role: string) {
+  const prompt = `
+    [NEURAL_SKILL_MAPPING]
+    Role: "${role}"
+    Suggest 6 high-authority, 2026-relevant hard skills for this role.
+    Focus on skills that provide the highest "Resilience Factor" against automation.
+    Return ONLY a JSON array of strings: ["Skill 1", "Skill 2", ...]
+  `;
+
+  try {
+    const { text } = await generateText({
+      model: google('gemma-3-27b-it'),
+      prompt: prompt,
+    });
+    return JSON.parse(text.replace(/```json|```/g, '').trim());
+  } catch (e) {
+    return ["AI Collaboration", "Strategic Logic", "Neural Data Analysis"];
+  }
+}
+
 export async function getMarketPulse(location: string, role: string) {
   const groundingIntel = `
     [2026_MARKET_GROUNDING_DATA]
@@ -125,7 +165,10 @@ export async function getMarketPulse(location: string, role: string) {
     5. Synthesize a high-density Market Pulse report.
 
     [STRICT_URL_PROTOCOL]
-    - EVERY URL and link MUST be a direct, functional result.
+    - EVERY URL MUST BE FUNCTIONAL. 
+    - [ZERO_HALLUCINATION_POLICY]: DO NOT invent, predict, or format URLs.
+    - COPY the direct URL exactly as returned by the search tool.
+    - If a specific article URL is missing or looks volatile, use a verified LinkedIn Job Search or Google News query URL instead.
     - NEVER use example.com.
 
     Return ONLY a JSON object:

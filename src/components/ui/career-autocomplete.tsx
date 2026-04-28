@@ -13,23 +13,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const commonCareers = [
-  "Paralegal",
-  "Accountant",
-  "Creative Director",
-  "Software Engineer",
-  "Customer Support",
-  "Data Entry Specialist",
-  "Legal Secretary",
-  "Content Writer",
-  "Graphic Designer",
-  "Project Manager",
-  "Financial Analyst",
-  "HR Specialist",
-  "Logistics Coordinator",
-  "Sales Representative",
-  "Marketing Strategist"
-];
+import { fetchRoleSuggestions } from '@/app/actions';
+import { Loader2 } from 'lucide-react';
 
 export function CareerAutocomplete({ 
   value, 
@@ -41,11 +26,26 @@ export function CareerAutocomplete({
   placeholder?: string;
 }) {
   const [open, setOpen] = React.useState(false);
-  const [searchQuery, setSearchQuery] = React.useState("");
+  const [searchQuery, setSearchQuery] = React.useState(value);
+  const [suggestions, setSuggestions] = React.useState<string[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const filteredCareers = commonCareers.filter(c => 
-    c.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  React.useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (searchQuery.length >= 2 && open) {
+        setIsLoading(true);
+        try {
+          const results = await fetchRoleSuggestions(searchQuery);
+          setSuggestions(results);
+        } catch (error) {
+          console.error('Failed to fetch roles:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchQuery, open]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -106,13 +106,14 @@ export function CareerAutocomplete({
                 }
               }}
             />
+            {isLoading && <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-blue-500" />}
           </div>
         </div>
 
         <div className="max-h-[300px] overflow-y-auto px-2 pb-4 no-scrollbar">
           <div className="space-y-1">
-            {filteredCareers.length > 0 ? (
-              filteredCareers.map((career) => (
+            {suggestions.length > 0 ? (
+              suggestions.map((career) => (
                 <div 
                   key={career}
                   onClick={() => {
@@ -139,7 +140,7 @@ export function CareerAutocomplete({
                   {value === career && <Check className="w-4 h-4 text-blue-500" />}
                 </div>
               ))
-            ) : searchQuery && (
+            ) : searchQuery && !isLoading ? (
               <div 
                 onClick={() => {
                   onChange(searchQuery);
@@ -149,6 +150,10 @@ export function CareerAutocomplete({
               >
                 <div className="text-blue-400 text-sm font-bold mb-1">DEPLOY CUSTOM ROLE</div>
                 <div className="text-white/40 text-xs font-mono uppercase tracking-widest">"{searchQuery}"</div>
+              </div>
+            ) : !isLoading && (
+              <div className="px-6 py-12 text-center text-xs text-white/20 uppercase tracking-[0.3em] font-mono italic">
+                Awaiting neural role identification...
               </div>
             )}
           </div>
@@ -166,4 +171,5 @@ export function CareerAutocomplete({
     </Dialog>
   );
 }
+
 
