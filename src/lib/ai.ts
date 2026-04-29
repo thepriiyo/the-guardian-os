@@ -64,9 +64,9 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
           }
         ],
         "metrics": {
-          "capability_growth": "string (e.g. +12%/Mo)",
-          "certainty_score": number (0-100),
-          "demand_growth": "string (e.g. +24% YoY)"
+          "capability_growth": "string (e.g. +X%/Mo)",
+          "certainty_score": number,
+          "demand_growth": "string (e.g. +X% YoY)"
         },
         "geospatial_metrics": {
           "exposure_rating": number,
