@@ -467,5 +467,14 @@ export const generateTacticalPDF = async (assessment: Assessment, aiReport?: any
   drawFooter(pageCount++);
 
   // SAVE
-  doc.save(`Tactical_Dossier_V2_${assessment.job_title.replace(/\s+/g, '_')}.pdf`);
+  const safeJobTitle = (assessment.job_title || 'OPERATIVE')
+    .toUpperCase()
+    .trim()
+    .replace(/[^A-Z0-9]/g, '_')
+    .replace(/_+/g, '_')
+    .slice(0, 40);
+
+  const finalName = `Guardian_Dossier_${safeJobTitle}.pdf`;
+  console.log(`INITIATING_DOWNLOAD: ${finalName}`);
+  doc.save(finalName);
 };

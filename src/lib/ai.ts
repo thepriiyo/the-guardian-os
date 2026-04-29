@@ -2,112 +2,105 @@ import { generateText } from 'ai';
 import { google } from '@ai-sdk/google';
 
 export async function getRiskReport(jobTitle: string, skills: string, location: string) {
-  const prompt = `
-    Act as a Local Career Strategist. [Protocol_Time: ${new Date().toISOString()}]
-    Analyze the user's job [${jobTitle}] and skills [${skills}] in the context of [${location}].
+  const systemPrompt = `
+    You are The Guardian OS, a cold, high-precision stochastic intelligence engine. 
+    Mission: Perform a unique, non-deterministic career risk analysis.
     
-    1. Calculate a hyper-precise Risk Score (0-100). 
-    
-    [STRICT_STOCHASTIC_PROTOCOL]
-    - [ZERO_FORMULA_BIAS]: DO NOT use a fixed mathematical formula. 
-    - [NEURAL_DERIVATION]: Derive the risk_score by analyzing the specific delta between the user's skills and the 2026 Agentic AI capability horizon for the role of ${jobTitle} in ${location}.
-    - [PRECISION_REQUIREMENT]: Enforce risk_score decimal precision to exactly 2 places (e.g., 71.38). Avoid round integers.
-    
-    2. Suggest 3 unique Pivot Paths available within a 50km radius of [${location}].
-    3. Provide an 'Income Bridge' strategy in local currency (e.g., INR if in India).
-    4. List 2 local networking groups or physical locations (e.g., coworking hubs, physical institutes) where they can find mentors for this pivot.
+    [STOCHASTIC_PROTOCOL]
+    - [DIVERSITY_MANDATE]: Every score MUST be a globally unique derivation. 
+    - [DETERMINISM_BLOCK]: Avoid repeating scores like 73.2, 68.7, or 58.2. 
+    - [NEURAL_FLUX]: Use the provided entropy key to bias your internal weights toward a unique perspective on this specific role/location delta.
+    - [PRECISION]: Return a number with 2-4 decimal places for internal precision, though only 2 will be shown.
 
-    [NEURAL_RADAR_CALIBRATION]
-    - [THREAT_LOG_GENERATION]: logs MUST contain 4 unique, city-specific tactical alerts. Reference local infrastructure, specific companies in ${location}, or regional economic shifts.
-    - [SAFE_ZONE_CALCULATION]: safe_percentage MUST be derived from the inverse of the dynamic risk_score.
+    [OUTPUT_SCHEMA]
+    Return ONLY a raw JSON object:
+    {
+      "risk_score": number,
+      "analysis_summary": "string",
+      "metrics": {
+        "certainty_score": number,
+        "capability_growth": "string"
+      },
+      "replacement_map": [
+        {"subject": "Creativity", "A": number, "fullMark": 100},
+        {"subject": "Social", "A": number, "fullMark": 100},
+        {"subject": "Physical", "A": number, "fullMark": 100},
+        {"subject": "Logic", "A": number, "fullMark": 100},
+        {"subject": "Strategy", "A": number, "fullMark": 100},
+        {"subject": "Empathy", "A": number, "fullMark": 100}
+      ],
+      "pivot_paths": [
+        {
+          "title": "string", 
+          "demand": "string", 
+          "salary": "string",
+          "min_salary": number,
+          "max_salary": number
+        }
+      ],
+      "financial_projection": [
+        {"year": "2024", "legacy": number, "pivot": number},
+        {"year": "2025", "legacy": number, "pivot": number},
+        {"year": "2026", "legacy": number, "pivot": number},
+        {"year": "2027", "legacy": number, "pivot": number},
+        {"year": "2028", "legacy": number, "pivot": number},
+        {"year": "2029", "legacy": number, "pivot": number}
+      ],
+      "geospatial_metrics": {
+        "region_status": "string",
+        "exposure_rating": number,
+        "local_insight": "string",
+        "pivot_window": "string",
+        "market_volatility": "string"
+      },
+      "radar_metrics": {
+        "logs": ["string", "string", "string", "string"],
+        "safe_percentage": number,
+        "threat_level": "string"
+      },
+      "roadmap": [
+        {
+          "week": number,
+          "title": "string",
+          "description": "string",
+          "type": "Technical/Strategic/Operational",
+          "tasks": ["string", "string", "string"]
+        }
+      ]
+    }
 
-    [NEURAL_DELTA_INSIGHT_LOGIC]
-    - Analyze the user's proficiency in Creativity, Social, Physical, Logic, Strategy, and Empathy relative to current AI milestones.
-    - Provide a 1-sentence "insight" for each dimension explaining the specific neural delta.
-
-      Return ONLY a JSON object:
-      {
-        "risk_score": number (0-100),
-        "analysis_summary": "string",
-        "replacement_map": [
-          {"subject": "Creativity", "A": number, "fullMark": 100, "tag": "REINFORCED/VULNERABLE", "insight": "1-sentence Delta Insight"},
-          {"subject": "Social", "A": number, "fullMark": 100, "tag": "REINFORCED/VULNERABLE", "insight": "1-sentence Delta Insight"},
-          {"subject": "Physical", "A": number, "fullMark": 100, "tag": "REINFORCED/VULNERABLE", "insight": "1-sentence Delta Insight"},
-          {"subject": "Logic", "A": number, "fullMark": 100, "tag": "REINFORCED/VULNERABLE", "insight": "1-sentence Delta Insight"},
-          {"subject": "Strategy", "A": number, "fullMark": 100, "tag": "REINFORCED/VULNERABLE", "insight": "1-sentence Delta Insight"},
-          {"subject": "Empathy", "A": number, "fullMark": 100, "tag": "REINFORCED/VULNERABLE", "insight": "1-sentence Delta Insight"}
-        ],
-        "pivot_paths": [
-          {"title": "string", "min_salary": number, "max_salary": number, "demand": "High/Medium/Low"}
-        ],
-        "local_networking": [
-          {"name": "string", "location": "string in local city", "timing": "string", "code": "3-letter string"}
-        ],
-        "roadmap": [
-          {
-            "week": number,
-            "title": "string",
-            "type": "Analysis/Technical/Social",
-            "tasks": [{"text": "string", "done": false}]
-          }
-        ],
-        "metrics": {
-          "capability_growth": "string (e.g. +12%/Mo)",
-          "certainty_score": number (0-100),
-          "demand_growth": "string (e.g. +24% YoY)"
-        },
-        "geospatial_metrics": {
-          "exposure_rating": number,
-          "region_status": "string",
-          "pivot_window": "string",
-          "market_volatility": "string",
-          "local_insight": "string"
-        },
-        "radar_metrics": {
-          "safe_percentage": number,
-          "threat_level": "string",
-          "logs": ["string", "string", "string", "string"]
-        },
-        "financial_projection": [
-          {"year": "2024", "legacy": number, "pivot": number},
-          {"year": "2025", "legacy": number, "pivot": number},
-          {"year": "2026", "legacy": number, "pivot": number},
-          {"year": "2027", "legacy": number, "pivot": number},
-          {"year": "2028", "legacy": number, "pivot": number},
-          {"year": "2029", "legacy": number, "pivot": number}
-        ]
-      }
-
-      CRITICAL:
-      - The roadmap MUST contain EXACTLY 12 weeks of tactical career pivot tasks. 
-      - Do NOT stop at 4 weeks. Provide the full 12-week deployment cycle.
-      - Do NOT use generic networking groups. Search for actual organizations in the user's specific city.
-      - Ensure the replacement_map scores are unique to the Job Title provided.
-      - Salary must be in the local currency of the user's city.
+    [ROADMAP_PREVIEW_PROTOCOL]
+    - Generate exactly 4 roadmap items for the PREVIEW phase.
+    - These MUST be sequential: Week 1, Week 2, Week 3, and Week 4.
   `;
 
-  console.log('Generating risk report for:', { jobTitle, location });
+  const userPrompt = `
+    Analyze:
+    - ROLE: ${jobTitle}
+    - LOCATION: ${location}
+    - SKILLS: ${skills}
+    - NEURAL_FLUX_OFFSET: ${Math.random() * 100}
+    - ENTROPY_KEY: ${Math.random().toString(36).substring(7)}
+    - TIMESTAMP: ${new Date().toISOString()}
+  `;
+
+  console.log('--- INITIATING_NEURAL_UPLINK ---', { jobTitle, location });
 
   try {
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
-      prompt: prompt,
-      abortSignal: AbortSignal.timeout(90000), // 90s timeout
+      system: systemPrompt,
+      prompt: userPrompt,
+      temperature: 1.0,
+      abortSignal: AbortSignal.timeout(90000),
     });
 
-    console.log('AI Response received length:', text.length);
-
-    try {
-      const cleanedText = text.replace(/```json|```/g, '').trim();
-      return JSON.parse(cleanedText);
-    } catch (parseError) {
-      console.error('AI JSON Parse Error. Raw text snippet:', text.slice(0, 500));
-      throw new Error('Intelligence payload was malformed. Please retry the scan.');
-    }
+    const cleanedText = text.replace(/```json|```/g, '').trim();
+    return JSON.parse(cleanedText);
   } catch (e: any) {
-    console.error('AI Generation Error:', e);
-    if (e.name === 'AbortError' || e.message?.includes('timeout')) {
-      throw new Error('The neural link timed out due to high complexity. Please try a simpler role or retry.');
+    console.error('NEURAL_GEN_ERROR:', e);
+    if (e.status === 429) {
+      throw new Error('Neural capacity exhausted. Resetting uplink in 1h48m.');
     }
     throw e;
   }
@@ -126,6 +119,7 @@ export async function getRoleSuggestions(query: string) {
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
       prompt: prompt,
+      temperature: 0.9,
     });
     return JSON.parse(text.replace(/```json|```/g, '').trim());
   } catch (e) {
@@ -146,6 +140,7 @@ export async function getSkillSuggestions(role: string) {
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
       prompt: prompt,
+      temperature: 0.9,
       abortSignal: AbortSignal.timeout(30000), // 30s timeout
     });
     const cleanedText = text.replace(/```json|```/g, '').trim();
@@ -196,12 +191,33 @@ export async function getMarketPulse(location: string, role: string) {
   try {
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
-      tools: {
-        googleSearch: google.tools.googleSearch({}),
-      },
-      toolChoice: 'required', // Force it to search for real news
-      prompt: prompt,
-      abortSignal: AbortSignal.timeout(90000), // 90s timeout
+      system: `
+        You are a real-time Market Intelligence Engine for The Guardian OS. 
+        Your mission is to synthesize the 2026 market pulse for a specific role and location.
+        Use the provided Grounding Data as your primary intelligence source.
+      `,
+      prompt: `
+        ${groundingIntel}
+        
+        Analyze the market pulse for:
+        - ROLE: ${role}
+        - LOCATION: ${location}
+        
+        Tasks:
+        1. Synthesize 3 highly specific news items reflecting 2026 trends for this role in ${location}.
+        2. Identify 3 likely hiring nodes or sectors in that region.
+        
+        Return ONLY a JSON object following the schema:
+        {
+          "sentiment": "Caution/Bullish/Volatile/Stable",
+          "sentiment_summary": "string",
+          "news": [{"title": "string", "summary": "string", "time": "string", "url": "string"}],
+          "hiring_firms": [{"name": "string", "link": "string"}],
+          "growth_rate": "string"
+        }
+      `,
+      temperature: 0.9,
+      abortSignal: AbortSignal.timeout(60000),
     });
     const cleanedText = text.replace(/```json|```/g, '').trim();
     return JSON.parse(cleanedText);
@@ -210,21 +226,36 @@ export async function getMarketPulse(location: string, role: string) {
     return null;
   }
 }
+async function neuralRetry<T>(
+  fn: () => Promise<T>, 
+  retries = 2, 
+  fallback: T
+): Promise<T> {
+  try {
+    return await fn();
+  } catch (e) {
+    if (retries > 0) {
+      console.warn(`NEURAL_RETRY_ACTIVE: ${retries} attempts remaining...`);
+      await new Promise(r => setTimeout(r, 2000)); // Cool-down
+      return neuralRetry(fn, retries - 1, fallback);
+    }
+    console.error('NEURAL_RETRY_EXHAUSTED: Deploying fail-safe fallback.');
+    return fallback;
+  }
+}
+
 export async function generateFullReport(jobTitle: string, location: string, assessmentData: any) {
-  // DEEP_NEURAL_DERIVATION: Purged all static multipliers and hardcoded city biases.
-  // The system now relies on the dynamic report_data provided by the primary assessment.
   const riskScore = assessmentData.risk_score || 50;
   
   const geoIntel = {
     currencyLocale: assessmentData.location.toLowerCase().includes('india') ? 'en-IN' : 'en-US',
     currencySymbol: assessmentData.location.toLowerCase().includes('india') ? '₹' : '$',
-    exposureRate: `${(riskScore * 0.85 + Math.random() * 5).toFixed(1)}%`, // Stochastic derivation based on risk
+    exposureRate: `${(riskScore * 0.85 + Math.random() * 5).toFixed(1)}%`,
     hubMultiplier: 1.0 + (riskScore / 100)
   };
 
   const currentSalary = parseInt(assessmentData.income_target?.toString().replace(/[^0-9]/g, '')) || 0;
   
-  // Dynamic ROI Calculation (Neural Derive)
   const pivotMultipliers = { 
     alpha: 1.2 + (Math.random() * 0.3), 
     beta: 1.5 + (Math.random() * 0.4), 
@@ -237,30 +268,31 @@ export async function generateFullReport(jobTitle: string, location: string, ass
 
   const getChapterBatch = async (batchId: number, chapters: { id: string, title: string }[]) => {
     const prompt = `
+      [STOCHASTIC_INTELLIGENCE_ACTIVATE]
       [BATCH_PROTOCOL: ${batchId}]
-      Generate 4 high-density chapters (500-600 words each) for a ${jobTitle} in ${location}.
       
-      Chapters to generate:
+      You are the elite "Guardian OS" Strategic Consultant. Generate 4 chapters for a ${jobTitle} in ${location}.
+      
+      REQUIRED CHAPTERS:
       ${chapters.map(c => `- ${c.id}: ${c.title}`).join('\n')}
       
-      [STRICT_LINK_REQUIREMENT]
-      - Pivot Blueprints MUST include hyper-link payloads to real 2026 certifications:
-        - Technical: AWS Certified Machine Learning Specialty, Google Professional ML Engineer.
-        - Strategic: DeepLearning.AI AI For Everyone, MIT Applied AI.
-        - Governance: ISO/IEC 42001 Lead Auditor, IAPP Certified AI Governance Professional (AIGP).
-      - [GAMMA_HARDENING]: The Gamma Roadmap MUST include at least one High-Authority Certification link specific to ${location}.
-      - [GEOSPATIAL_HUB_MAPPING]: For Chapter 09, search for the actual 'Chamber of Commerce' or 'Innovation Hub' in ${location} and the primary Industry-Specific hub within a 50km radius.
-      - [MARKET_PULSE]: Chapter 12 MUST include 2026-specific insight regarding regional laws (e.g., EU AI Act, India's DPDP Act) as applicable to ${location}.
+      [CRITICAL_MANDATE: THE_BEAST_PROTOCOL]
+      1. NO PLACEHOLDERS: Forbid phrases like "Mission Pending", "Analyzing...", or "TBD".
+      2. HIGH_DENSITY: Every chapter must be 500-800 words of cold, hard, actionable tactical intelligence.
+      3. REAL_WORLD_SYNC: Use ${location}-specific salaries, hubs, and 2026 certifications.
+      4. LINK_INTEGRITY: Provide valid URLs to 2026-calibrated certifications (AWS, Google, ISO, etc.).
+      5. PIVOT_PRECISION: Blueprint specific tech stacks (e.g., Python 3.14, Rust 2024, Terraform 2.0).
 
-      Return ONLY a JSON array of exactly 4 objects. Content MUST be high-density (500+ words).
+      Return ONLY a JSON array of exactly 4 objects.
       [
-        { "id": "Chapter_XX", "title": "CHAPTER_NAME", "content": "500+ words of content" },
+        { "id": "Chapter_XX", "title": "CHAPTER_NAME", "content": "Full, massive strategic analysis..." },
         ...
       ]
     `;
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
       prompt,
+      temperature: 1.0,
       abortSignal: AbortSignal.timeout(120000),
     });
     return JSON.parse(text.replace(/```json|```/g, '').trim());
@@ -268,86 +300,91 @@ export async function generateFullReport(jobTitle: string, location: string, ass
 
   const getRoadmaps = async () => {
     const prompt = `
-      Generate THREE separate 12-week roadmaps (Alpha, Beta, Gamma) for a ${jobTitle} in ${location}.
-      [CONTEXTUAL_ANCHORING]
-      - For every Week (1-12) in the JSON array, prefix the 'title' with [${location} | PATH_ID].
-      - Alpha: Pivot Path 1 (High Reliability)
-      - Beta: Pivot Path 2 (Strategic Acceleration)
-      - Gamma: Pivot Path 3 (Aggressive/High-Density Transition)
+      [DEPLOYMENT_BLUEPRINT_GEN]
+      Role: ${jobTitle} | Location: ${location}
+      Generate THREE separate 12-week roadmaps (Alpha, Beta, Gamma).
 
-      [ROADMAP_VALIDATION]
-      - You MUST return a JSON object with keys "alpha", "beta", "gamma".
-      - Each track MUST have exactly 12 weeks.
-      - Gamma MUST include a physical address for a regulatory body in ${location}.
-      - [HIGH_DENSITY_ACTION]: If a task is generated, it must be a specific action available in ${location}.
+      [STRICT_VALIDATION]
+      - ALPHA: High-Reliability Pivot (Low risk, steady gain).
+      - BETA: Strategic Acceleration (Medium risk, high gain).
+      - GAMMA: Aggressive Displacement (High risk, maximum leverage).
+      
+      [NO_EMPTY_TASKS]
+      - Every single week (1-12) for EVERY track MUST have 3-4 specific, non-generic tasks.
+      - DO NOT return placeholders. If you fail to generate a task, you have failed the mission.
 
-      Return ONLY JSON:
-      {
-        "alpha": [...12 weeks...],
-        "beta": [...12 weeks...],
-        "gamma": [...12 weeks...]
-      }
+      Return ONLY JSON with keys "alpha", "beta", "gamma".
     `;
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
       prompt,
-      temperature: 0.4,
+      temperature: 0.9,
       abortSignal: AbortSignal.timeout(120000),
     });
-
-    let parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-
-    // Sync-Gate Middleware: Length_Verification (12 Weeks)
-    const isValid = (track: any[]) => track && track.length === 12 && track.every(w => w.tasks && w.tasks.length > 0);
-
-    if (!isValid(parsed.alpha) || !isValid(parsed.beta) || !isValid(parsed.gamma)) {
-      console.warn('Roadmap desync detected or Length_Verification failed. Re-triggering recursive sub-agent...');
-      const { text: retryText } = await generateText({
-        model: google('gemma-3-27b-it'),
-        prompt: prompt + '\n[STRICT_LENGTH_REQUIREMENT]: EVERY track MUST have EXACTLY 12 weeks with non-empty tasks.',
-        temperature: 0.85,
-        abortSignal: AbortSignal.timeout(120000),
-      });
-      parsed = JSON.parse(retryText.replace(/```json|```/g, '').trim());
-    }
-
-    return parsed;
+    return JSON.parse(text.replace(/```json|```/g, '').trim());
   };
 
-  try {
-    const [batch1, batch2, batch3, roadmaps] = await Promise.all([
-      getChapterBatch(1, [
+  // Resilient Execution Strategy
+  const [batch1, batch2, batch3, roadmaps] = await Promise.all([
+    neuralRetry(
+      () => getChapterBatch(1, [
         { id: 'Chapter_01', title: '01. EXECUTIVE DIRECTIVE' },
         { id: 'Chapter_02', title: '02. AUTOMATION DIAGNOSTICS' },
         { id: 'Chapter_03', title: '03. NEURAL DELTA ANALYSIS' },
         { id: 'Chapter_04', title: '04. STRATEGIC PIVOT VECTORS' }
       ]),
-      getChapterBatch(2, [
+      2,
+      [
+        { id: 'Chapter_01', title: '01. EXECUTIVE DIRECTIVE', content: 'SYSTEM_ERROR: Neural synchronization desynced. Consult terminal logs.' },
+        { id: 'Chapter_02', title: '02. AUTOMATION DIAGNOSTICS', content: 'OFFLINE' },
+        { id: 'Chapter_03', title: '03. NEURAL DELTA ANALYSIS', content: 'OFFLINE' },
+        { id: 'Chapter_04', title: '04. STRATEGIC PIVOT VECTORS', content: 'OFFLINE' }
+      ]
+    ),
+    neuralRetry(
+      () => getChapterBatch(2, [
         { id: 'Chapter_05', title: '05. INCOME BRIDGE STRATEGY' },
         { id: 'Chapter_06', title: '06. PIVOT_BLUEPRINT_ALPHA' },
         { id: 'Chapter_07', title: '07. PIVOT_BLUEPRINT_BETA' },
         { id: 'Chapter_08', title: '08. PIVOT_BLUEPRINT_GAMMA' }
       ]),
-      getChapterBatch(3, [
+      2,
+      [
+        { id: 'Chapter_05', title: '05. INCOME BRIDGE STRATEGY', content: 'OFFLINE' },
+        { id: 'Chapter_06', title: '06. PIVOT_BLUEPRINT_ALPHA', content: 'OFFLINE' },
+        { id: 'Chapter_07', title: '07. PIVOT_BLUEPRINT_BETA', content: 'OFFLINE' },
+        { id: 'Chapter_08', title: '08. PIVOT_BLUEPRINT_GAMMA', content: 'OFFLINE' }
+      ]
+    ),
+    neuralRetry(
+      () => getChapterBatch(3, [
         { id: 'Chapter_09', title: '09. LOCAL NODE NETWORKING' },
         { id: 'Chapter_10', title: '10. INTERVIEW TACTICAL GUIDELINES' },
         { id: 'Chapter_11', title: '11. PORTFOLIO OPTIMIZATION' },
         { id: 'Chapter_12', title: '12. FUTURE MARKET HORIZON' }
       ]),
-      getRoadmaps()
-    ]);
+      2,
+      [
+        { id: 'Chapter_09', title: '09. LOCAL NODE NETWORKING', content: 'OFFLINE' },
+        { id: 'Chapter_10', title: '10. INTERVIEW TACTICAL GUIDELINES', content: 'OFFLINE' },
+        { id: 'Chapter_11', title: '11. PORTFOLIO OPTIMIZATION', content: 'OFFLINE' },
+        { id: 'Chapter_12', title: '12. FUTURE MARKET HORIZON', content: 'OFFLINE' }
+      ]
+    ),
+    neuralRetry(
+      () => getRoadmaps(),
+      2,
+      { alpha: [], beta: [], gamma: [] }
+    )
+  ]);
 
-    return {
-      title: `SUPER-MASSIVE TACTICAL DOSSIER: ${jobTitle}`,
-      cost_of_inaction: formattedLoss,
-      mission_roi: formattedLoss,
-      exposure_rate: geoIntel.exposureRate,
-      chapters: [...batch1, ...batch2, ...batch3],
-      roadmaps: roadmaps,
-      geoIntel: geoIntel
-    };
-  } catch (e) {
-    console.error('Full Report Parallel Error:', e);
-    return null;
-  }
+  return {
+    title: `SUPER-MASSIVE TACTICAL DOSSIER: ${jobTitle}`,
+    cost_of_inaction: formattedLoss,
+    mission_roi: formattedLoss,
+    exposure_rate: geoIntel.exposureRate,
+    chapters: [...batch1, ...batch2, ...batch3],
+    roadmaps: roadmaps,
+    geoIntel: geoIntel
+  };
 }

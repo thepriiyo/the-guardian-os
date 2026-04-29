@@ -164,17 +164,13 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
     return isIndia ? { symbol: '₹', amount: 200, code: 'INR' } : { symbol: '$', amount: 2.49, code: 'USD' };
   };
 
-  const pricing = getCurrencyData(assessment.location);
-  const baseAmount = pricing.amount;
+  const baseAmount = 200; // Anchor on INR
   
-  // Hard-coded conversion for fixed discounts: 199 INR = ~2.48 USD
-  const fixedDiscount = discountType === 'fixed' 
-    ? (pricing.code === 'INR' ? discount : 2.48) 
-    : 0;
+  const finalAmountINR = discountType === 'percentage' 
+    ? Math.max(1, baseAmount * (1 - discount / 100))
+    : Math.max(1, baseAmount - discount);
 
-  const finalAmount = discountType === 'percentage' 
-    ? Math.max(0.01, baseAmount * (1 - discount / 100))
-    : Math.max(0.01, baseAmount - fixedDiscount);
+  const finalAmountUSD = finalAmountINR / 80.3;
 
   const container = {
     hidden: { opacity: 0 },
@@ -339,7 +335,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
 
       {/* Roadmap Content */}
       <div className="max-w-4xl mx-auto space-y-6">
-        {visibleRoadmap.length > 0 ? (
+        {(visibleRoadmap.length > 0 || showPaywall) ? (
           <>
             {visibleRoadmap.map((week, i) => (
               <motion.div key={i} variants={item}>
@@ -465,7 +461,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                       <div className="flex items-center justify-between px-2 text-[10px] font-mono uppercase tracking-widest">
                         <span className="text-white/40">Authorization Fee</span>
                         <span className="text-white text-lg font-black italic">
-                          {pricing.symbol}{finalAmount.toFixed(2)}
+                          ₹{finalAmountINR.toFixed(2)} / ${finalAmountUSD.toFixed(2)} USD
                         </span>
                       </div>
 
@@ -473,7 +469,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                         <Button 
                           className="w-full rounded-2xl py-6 bg-blue-600 hover:bg-blue-500 font-black text-lg shadow-[0_0_50px_-15px_rgba(59,130,246,0.5)] group flex flex-col items-center h-auto"
                           onClick={async () => {
-                            if (finalAmount <= 0) {
+                            if (finalAmountINR <= 0) {
                               setIsUnlocked(true);
                               return;
                             }
@@ -488,8 +484,8 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
-                                  amount: Math.round(finalAmount * (pricing.code === 'INR' ? 100 : 83)), // Rough conversion if USD
-                                  currency: pricing.code,
+                                  amount: Math.round(finalAmountINR * 100),
+                                  currency: 'INR',
                                   receipt: `rcpt_${assessment.id.slice(0, 10)}`
                                 }),
                               });
@@ -535,7 +531,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                           variant="outline"
                           className="w-full rounded-2xl py-6 border-white/10 bg-white/5 hover:bg-white/10 font-black text-lg group flex flex-col items-center h-auto"
                           onClick={() => {
-                            if (finalAmount <= 0) {
+                            if (finalAmountUSD <= 0) {
                               setIsUnlocked(true);
                               return;
                             }
