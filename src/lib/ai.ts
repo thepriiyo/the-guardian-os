@@ -21,12 +21,11 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
     2. Suggest 3 unique Pivot Paths available within a 50km radius of [${location}].
     3. Provide an 'Income Bridge' strategy in local currency (e.g., INR if in India).
     4. List 2 local networking groups or physical locations (e.g., coworking hubs, physical institutes) where they can find mentors for this pivot.
-    [STRICT_MATH_PROTOCOL]
-    - Automation Risk = (Neural Delta / Human Resilience Factor) * Geospatial Exposure Multiplier.
-    - Neural Delta = AI_2026_Enterprise_Benchmark (Logic: 92, Strategy: 88, Creativity: 65) - User_Logic_Score.
-    - Human Resilience Factor = (User_Empathy_Score + User_Adaptability_Score) / 200.
-    - Resulting risk_score MUST be linked to these 2026-calibrated variables.
-    - [EFFICIENCY_PARADOX_WEIGHT]: If the role involves high data-repetition, add 8.5% to risk_score to account for Agentic AI workflow automation.
+    [NEURAL_CALIBRATION_PROTOCOL]
+    - [ZERO_FORMULA_BIAS]: DO NOT use a fixed formula. Derive the risk_score dynamically by analyzing the gap between ${jobTitle} functions and current 2026 Agentic AI capabilities.
+    - [STOCHASTIC_DIVERSITY]: The risk_score, certainty_score, and capability_growth MUST reflect the specific volatility of ${location}.
+    - [RANGE_UTILIZATION]: Utilize the entire spectrum (0.01 - 99.99). Avoid clustering around 60-70%.
+    - [DYNAMIC_BENCHMARKING]: Calibrate your analysis against real-time search results for ${jobTitle} automation.
 
     [NEURAL_DELTA_INSIGHT_LOGIC]
     - Compare User_Score against the dynamic benchmark of AI capabilities in 2026 for this specific role.

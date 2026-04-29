@@ -104,7 +104,7 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
         <div className="flex flex-col items-end gap-4">
           <div className="flex flex-col items-end gap-1">
             <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest opacity-50">Local_Risk_Index</div>
-            <div className="text-6xl font-black italic text-red-500">{Math.round(report.risk_score)}%</div>
+            <div className="text-6xl font-black italic text-red-500">{Number(report.risk_score).toFixed(1)}%</div>
           </div>
           
           <Button 

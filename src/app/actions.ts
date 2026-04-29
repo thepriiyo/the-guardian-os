@@ -35,7 +35,7 @@ export async function submitAssessment(formData: {
       job_title: formData.jobTitle,
       skills: formData.skills,
       location: formData.location,
-      risk_score: Math.round(Number(report.risk_score)),
+      risk_score: Number(report.risk_score),
       report_data: report
     }])
     .select()
