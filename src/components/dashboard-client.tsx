@@ -50,9 +50,10 @@ import { GlobalPaywallCTA } from '@/components/global-paywall-cta';
 export default function DashboardClient({ assessment }: { assessment: Assessment }) {
   const [pulseSentiment, setPulseSentiment] = useState<string>('Stable');
   const report = assessment.report_data;
-  const replacementMap = useMemo(() => Array.isArray(report.replacement_map) ? report.replacement_map : [], [report.replacement_map]);
-  const pivotPaths = useMemo(() => Array.isArray(report.pivot_paths) ? report.pivot_paths : [], [report.pivot_paths]);
-  const financialProjection = useMemo(() => Array.isArray(report.financial_projection) ? report.financial_projection : [], [report.financial_projection]);
+  const replacementMap = useMemo(() => Array.isArray(report?.replacement_map) ? report.replacement_map : [], [report?.replacement_map]);
+  const pivotPaths = useMemo(() => Array.isArray(report?.pivot_paths) ? report.pivot_paths : [], [report?.pivot_paths]);
+  const financialProjection = useMemo(() => Array.isArray(report?.financial_projection) ? report.financial_projection : [], [report?.financial_projection]);
+  const localNetworking = useMemo(() => Array.isArray(report?.local_networking) ? report.local_networking : [], [report?.local_networking]);
   
   if (!report) {
     return (
@@ -365,7 +366,7 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-               <IncomeBridgeChart currentSalary={assessment.report_data.risk_score ? (assessment as any).income_target : undefined} projection={financialProjection} />
+             <IncomeBridgeChart currentSalary={report.income_target || report.current_income} projection={financialProjection} />
             </CardContent>
           </Card>
         </motion.div>

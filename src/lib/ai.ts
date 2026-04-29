@@ -55,7 +55,27 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
           "capability_growth": "string (e.g. +12%/Mo)",
           "certainty_score": number (0-100),
           "demand_growth": "string (e.g. +24% YoY)"
-        }
+        },
+        "geospatial_metrics": {
+          "exposure_rating": number,
+          "region_status": "string",
+          "pivot_window": "string",
+          "market_volatility": "string",
+          "local_insight": "string"
+        },
+        "radar_metrics": {
+          "safe_percentage": number,
+          "threat_level": "string",
+          "logs": ["string", "string", "string", "string"]
+        },
+        "financial_projection": [
+          {"year": "2024", "legacy": number, "pivot": number},
+          {"year": "2025", "legacy": number, "pivot": number},
+          {"year": "2026", "legacy": number, "pivot": number},
+          {"year": "2027", "legacy": number, "pivot": number},
+          {"year": "2028", "legacy": number, "pivot": number},
+          {"year": "2029", "legacy": number, "pivot": number}
+        ]
       }
 
       CRITICAL:

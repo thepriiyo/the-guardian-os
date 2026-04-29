@@ -11,20 +11,25 @@ import {
   Area,
   AreaChart
 } from 'recharts';
+import { Activity } from 'lucide-react';
 
 export function IncomeBridgeChart({ currentSalary, projection }: { currentSalary?: string; projection?: { year: string; legacy: number; pivot: number; }[] }) {
   // Parse base salary with safety fallback
   const salaryStr = currentSalary || "80000";
   const base = parseInt(salaryStr.toString().replace(/[^0-9]/g, '')) || 80000;
   
-  const data = projection || [
-    { year: '2024', legacy: base, pivot: base },
-    { year: '2025', legacy: base * 1.03, pivot: base * 1.10 },
-    { year: '2026', legacy: base * 0.98, pivot: base * 1.25 },
-    { year: '2027', legacy: base * 0.90, pivot: base * 1.45 },
-    { year: '2028', legacy: base * 0.82, pivot: base * 1.70 },
-    { year: '2029', legacy: base * 0.75, pivot: base * 2.10 },
-  ];
+  const data = projection || [];
+
+  if (data.length === 0) {
+    return (
+      <div className="h-full flex items-center justify-center p-8 text-center flex-col space-y-4">
+        <div className="w-12 h-12 rounded-full border-2 border-blue-500/20 flex items-center justify-center animate-pulse">
+           <Activity className="w-6 h-6 text-blue-500" />
+        </div>
+        <div className="text-[10px] font-mono text-blue-400 uppercase tracking-widest">Neural_Projection_Syncing...</div>
+      </div>
+    );
+  }
 
   const formatValue = (val: number) => {
     return new Intl.NumberFormat('en-US', {
