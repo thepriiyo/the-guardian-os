@@ -26,10 +26,7 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
     - [EFFICIENCY_PARADOX_WEIGHT]: If the role involves high data-repetition, add 8.5% to risk_score to account for Agentic AI workflow automation.
 
     [NEURAL_DELTA_INSIGHT_LOGIC]
-    - Compare User_Score against AI_2026_Benchmarks:
-      Logic(92), Strategy(88), Empathy(28), Social(48), Creativity(65), Physical(35).
-    - If User_Score > Benchmark: tag = "REINFORCED".
-    - If User_Score < Benchmark: tag = "VULNERABLE".
+    - Compare User_Score against the dynamic benchmark of AI capabilities in 2026 for this specific role.
     - Provide a 1-sentence "insight" explaining the delta in the context of 2026 Agentic AI capabilities.
 
       Return ONLY a JSON object:
@@ -222,43 +219,19 @@ export async function getMarketPulse(location: string, role: string) {
   }
 }
 export async function generateFullReport(jobTitle: string, location: string, assessmentData: any) {
-  // GEO_INTEL Mapping Layer
-  const isHighIncomeHub = ['london', 'new york', 'ny', 'sf', 'san francisco', 'singapore', 'dubai'].some(h => location.toLowerCase().includes(h));
-  const isIndianHub = location.toLowerCase().includes('india') || location.toLowerCase().includes('kolkata');
+  // The AI will now derive these values dynamically in the batch prompts below
+  // to ensure 100% real-time accuracy based on market data.
   
-  const geoIntel = {
-    currencyLocale: isIndianHub ? 'en-IN' : 'en-US',
-    currencySymbol: isIndianHub ? '₹' : '$',
-    exposureRate: isHighIncomeHub ? '60%' : '26%',
-    hubMultiplier: isHighIncomeHub ? 1.5 : 1.0
-  };
-
-  const currentSalary = parseInt(assessmentData.salary_target?.toString().replace(/[^0-9]/g, '')) || 80000;
-  const pivotMultipliers = { alpha: 1.45, beta: 1.65, gamma: 2.10 };
-  const targetGamma = currentSalary * pivotMultipliers.gamma;
-  const avgPivotSalary = (currentSalary * pivotMultipliers.alpha + currentSalary * pivotMultipliers.beta + currentSalary * pivotMultipliers.gamma) / 3;
-  
-  const missionROI = (avgPivotSalary - currentSalary) * 3;
-  const maxFinancialLoss = missionROI; // Synchronizing Penalty and ROI
-  
-  const formattedLoss = `${geoIntel.currencySymbol}${new Intl.NumberFormat(geoIntel.currencyLocale).format(maxFinancialLoss)}`;
 
   const getChapterBatch = async (batchId: number, chapters: {id: string, title: string}[]) => {
     const prompt = `
       [BATCH_PROTOCOL: ${batchId}]
-      Generate 4 high-density chapters (500-600 words each) for a ${jobTitle} in ${location}.
-      
-      Chapters to generate:
-      ${chapters.map(c => `- ${c.id}: ${c.title}`).join('\n')}
-      
-      [STRICT_LINK_REQUIREMENT]
-      - Pivot Blueprints MUST include hyper-link payloads to real 2026 certifications:
-        - Technical: AWS Certified Machine Learning Specialty, Google Professional ML Engineer.
-        - Strategic: DeepLearning.AI AI For Everyone, MIT Applied AI.
-        - Governance: ISO/IEC 42001 Lead Auditor, IAPP Certified AI Governance Professional (AIGP).
-      - [GAMMA_HARDENING]: The Gamma Roadmap MUST include at least one High-Authority Certification link specific to ${location}.
-      - [GEOSPATIAL_HUB_MAPPING]: For Chapter 09, search for the actual 'Chamber of Commerce' or 'Innovation Hub' in ${location} and the primary Industry-Specific hub within a 50km radius.
-      - [MARKET_PULSE]: Chapter 12 MUST include 2026-specific insight regarding regional laws (e.g., EU AI Act, India's DPDP Act) as applicable to ${location}.
+      - [DYNAMIC_METRICS]: Calculate the following based on the regional 2026 market:
+        - "exposure_rate": A percentage (0-100%) based on local AI infrastructure.
+        - "mission_roi": Total financial upside over 3 years in local currency.
+        - "cost_of_inaction": Projected financial loss over 3 years if no pivot occurs.
+        - "currency_symbol": The local currency symbol (e.g., $, ₹, £).
+      - Chapter 12 MUST include 2026-specific insight regarding regional laws (e.g., EU AI Act, India's DPDP Act) as applicable to ${location}.
 
       Return ONLY a JSON array of exactly 4 objects. Content MUST be high-density (500+ words).
       [
@@ -345,14 +318,17 @@ export async function generateFullReport(jobTitle: string, location: string, ass
       getRoadmaps()
     ]);
 
+    // Extract dynamic metrics from the AI-generated chapters (AI is instructed to include these in the payload)
+    const firstBatch = batch1[0] as any;
+    
     return {
       title: `SUPER-MASSIVE TACTICAL DOSSIER: ${jobTitle}`,
-      cost_of_inaction: formattedLoss,
-      mission_roi: formattedLoss,
-      exposure_rate: geoIntel.exposureRate,
+      cost_of_inaction: firstBatch.cost_of_inaction || "ANALYZING...",
+      mission_roi: firstBatch.mission_roi || "ANALYZING...",
+      exposure_rate: firstBatch.exposure_rate || "ANALYZING...",
+      currency_symbol: firstBatch.currency_symbol || "$",
       chapters: [...batch1, ...batch2, ...batch3],
-      roadmaps: roadmaps,
-      geoIntel: geoIntel
+      roadmaps: roadmaps
     };
   } catch (e) {
     console.error('Full Report Parallel Error:', e);

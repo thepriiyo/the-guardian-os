@@ -156,11 +156,11 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
                     <div className="w-full grid grid-cols-2 gap-6 pt-6 border-t border-white/5">
                       <div className="space-y-2">
                         <div className="text-[9px] font-mono text-white/30 uppercase tracking-[0.3em]">Certainty</div>
-                        <div className="text-4xl font-black italic tracking-tighter">{report.metrics?.certainty_score || 85}%</div>
+                        <div className="text-4xl font-black italic tracking-tighter">{report.metrics?.certainty_score}%</div>
                       </div>
                       <div className="space-y-2">
                         <div className="text-[9px] font-mono text-white/30 uppercase tracking-[0.3em]">Growth</div>
-                        <div className="text-xl font-black text-blue-400 italic uppercase leading-none">{report.metrics?.capability_growth || '+15%'}</div>
+                        <div className="text-xl font-black text-blue-400 italic uppercase leading-none">{report.metrics?.capability_growth}</div>
                       </div>
 
                     </div>
@@ -319,7 +319,7 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
                 <div className="flex flex-col items-end">
                    <div className="text-[10px] font-mono text-blue-400 uppercase tracking-widest mb-1">Exposure_Rating</div>
                    <div className="text-4xl font-black italic text-blue-500">
-                     {report.geospatial_metrics?.exposure_rating || '64.2'}%
+                     {report.geospatial_metrics?.exposure_rating}%
                    </div>
                 </div>
               </div>
@@ -485,7 +485,7 @@ function AIThreatRadar({ jobTitle, report }: { jobTitle: string; report: ReportD
                     <TrendingUp className="w-3 h-3 text-green-500" /> SAFE
                   </div>
                   <div className="text-lg font-black italic text-green-500 leading-none">
-                    {report.radar_metrics?.safe_percentage || '98.4'}%
+                    {report.radar_metrics?.safe_percentage}%
                   </div>
                </div>
 
