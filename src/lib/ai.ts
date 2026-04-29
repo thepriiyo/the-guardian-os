@@ -3,7 +3,7 @@ import { google } from '@ai-sdk/google';
 
 export async function getRiskReport(jobTitle: string, skills: string, location: string) {
   const prompt = `
-    Act as a Local Career Strategist. [Protocol_Time: ${new Date().toISOString()}]
+    Act as a Local Career Strategist. [Protocol_Time: ${new Date().toISOString()}] [SESSION_ENTROPY_NONCE: ${Math.random()}]
     Analyze the user's job [${jobTitle}] and skills [${skills}] in the context of [${location}].
     
     1. Calculate a hyper-precise Risk Score (0-100). 
