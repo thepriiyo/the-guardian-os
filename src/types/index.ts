@@ -56,6 +56,8 @@ export interface ReportData {
   local_networking: NetworkingGroup[];
   roadmap: RoadmapWeek[];
   metrics?: MarketMetrics;
+  income_target?: string | number;
+  current_income?: string | number;
   financial_projection?: {
     year: string;
     legacy: number;

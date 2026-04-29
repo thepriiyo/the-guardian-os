@@ -13,7 +13,7 @@ import {
 } from 'recharts';
 import { Activity } from 'lucide-react';
 
-export function IncomeBridgeChart({ currentSalary, projection }: { currentSalary?: string; projection?: { year: string; legacy: number; pivot: number; }[] }) {
+export function IncomeBridgeChart({ currentSalary, projection }: { currentSalary?: string | number; projection?: { year: string; legacy: number; pivot: number; }[] }) {
   // Parse base salary with safety fallback
   const salaryStr = currentSalary || "80000";
   const base = parseInt(salaryStr.toString().replace(/[^0-9]/g, '')) || 80000;
