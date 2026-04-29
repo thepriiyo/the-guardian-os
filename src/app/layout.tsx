@@ -143,8 +143,14 @@ export default function RootLayout({
           {children}
         </main>
         <footer className="border-t border-white/5 py-12 bg-black/60 backdrop-blur-md relative z-10">
-          <div className="container mx-auto px-4 text-center text-[10px] font-mono tracking-[0.4em] uppercase opacity-40 text-white">
-            &copy; 2026 THE_GUARDIAN // AI_CAREER_SURVIVAL_ENGINE
+          <div className="container mx-auto px-4 text-center space-y-4">
+            <div className="flex items-center justify-center gap-6 text-[10px] font-mono tracking-[0.2em] uppercase opacity-60">
+              <Link href="/contact" className="hover:text-blue-500 transition-colors">Contact Command</Link>
+              <Link href="/legal" className="hover:text-blue-500 transition-colors">Legal Protocol</Link>
+            </div>
+            <div className="text-[10px] font-mono tracking-[0.4em] uppercase opacity-20 text-white">
+              &copy; 2026 THE_GUARDIAN // AI_CAREER_SURVIVAL_ENGINE
+            </div>
           </div>
         </footer>
       </body>
