@@ -441,7 +441,7 @@ export const generateTacticalPDF = async (assessment: Assessment, aiReport?: any
   drawHeader('Mission Conclusion', 'Tactical_Outro');
   
   // Tactical Gain HUD
-  const currentSal = parseInt((assessment as any).salary_target?.toString().replace(/[^0-9]/g, '') || '0') || 80000;
+  const currentSal = parseInt((assessment as any).income_target?.toString().replace(/[^0-9]/g, '') || '0') || 0;
   const bestPivot = Math.max(...report.pivot_paths.map((p: any) => p.max_salary || 0));
   const threeYearGain = (bestPivot - currentSal) * 3;
 

@@ -422,10 +422,10 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
 function AIThreatRadar({ jobTitle, report }: { jobTitle: string; report: ReportData }) {
   const [logIndex, setLogIndex] = useState(0);
   const logs = [
-    `SCANNING: ${jobTitle.toUpperCase()} VULNERABILITIES`,
-    "ANALYZING: GLOBAL DISPLACEMENT VECTORS",
-    "STATUS: CRITICAL PENETRATION DETECTED",
-    "ACTION: CALIBRATION REQUIRED"
+    `SCANNING: ${jobTitle.toUpperCase()} VULNERABILITIES...`,
+    "ANALYZING: REGIONAL DISPLACEMENT VECTORS...",
+    "DETECTING: AGENTIC AI PENETRATION NODES...",
+    "CALIBRATING: TACTICAL SURVIVAL RESPONSE..."
   ];
 
   useEffect(() => {
