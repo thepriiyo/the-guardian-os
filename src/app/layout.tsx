@@ -17,8 +17,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "The Guardian OS // 2026 AI Career Survival & Risk Analysis",
-  description: "Protect your professional future from the curve of AI automation. Get high-density tactical roadmaps, real-time 2026 market intelligence, and stylized career survival dossiers engineered by Priiyo.",
+  title: {
+    default: "GUARDIAN OS",
+    template: "%s // GUARDIAN OS",
+  },
+  description: "The Guardian OS // 2026 AI Career Survival & Risk Analysis. Protect your professional future from the curve of AI automation.",
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
   keywords: ["AI Career Risk", "Job Automation 2026", "Career Pivot Strategy", "Google Gemma 3", "Tactical Dossier", "Career Resilience", "Priiyo"],
   authors: [{ name: "Priiyo", url: "https://the-guardian-os.vercel.app" }],
   openGraph: {
