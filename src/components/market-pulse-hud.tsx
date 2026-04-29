@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Radio, Activity, TrendingUp, TrendingDown, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getMarketPulseAction } from '@/app/actions/report';
+import { getMarketPulseAction } from '@/app/actions';
 
 interface MarketPulseData {
   sentiment: string;
