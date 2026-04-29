@@ -45,8 +45,8 @@ export async function submitAssessment(formData: {
         job_title: formData.jobTitle,
         skills: formData.skills,
         location: formData.location,
-        risk_score: report.risk_score,
-        report_data: report
+        risk_score: Math.round(report.risk_score), // Database column is INTEGER
+        report_data: report // JSON payload preserves precision
       }])
       .select('id')
       .single();
