@@ -3,39 +3,27 @@ import { google } from '@ai-sdk/google';
 
 export async function getRiskReport(jobTitle: string, skills: string, location: string) {
   const prompt = `
-    Act as a Local Career Strategist. [Protocol_Time: ${new Date().toISOString()}] [SESSION_ENTROPY_NONCE: ${Math.random()}]
+    Act as a Local Career Strategist. [Protocol_Time: ${new Date().toISOString()}]
     Analyze the user's job [${jobTitle}] and skills [${skills}] in the context of [${location}].
     
     1. Calculate a hyper-precise Risk Score (0-100). 
     
-    [STRICT_MATH_CONSTRAINT]
-    - Enforce risk_score decimal precision to exactly 2 places (e.g., 71.38). 
-    - DO NOT use round numbers (avoid 65, 75, 80).
-    - [STOCHASTIC_REQUIREMENT]: The risk_score MUST be unique to this specific combination of job, skills, and location. Use the FULL 0-100 range. Avoid common baseline numbers (like 68.73 or 64.0) unless the specific math dictates it.
-    - [FINANCIAL_NEURAL_PROJECTION]: Calculate a 6-year financial projection (2024-2029) for the current role vs the recommended pivot.
-      - stagnation_vector: Projected income if the user stays in the current role (account for AI-driven wage stagnation or job loss).
-      - acceleration_vector: Projected income if the user completes the recommended pivot.
-
+    [STRICT_STOCHASTIC_PROTOCOL]
+    - [ZERO_FORMULA_BIAS]: DO NOT use a fixed mathematical formula. 
+    - [NEURAL_DERIVATION]: Derive the risk_score by analyzing the specific delta between the user's skills and the 2026 Agentic AI capability horizon for the role of ${jobTitle} in ${location}.
+    - [PRECISION_REQUIREMENT]: Enforce risk_score decimal precision to exactly 2 places (e.g., 71.38). Avoid round integers.
     
     2. Suggest 3 unique Pivot Paths available within a 50km radius of [${location}].
     3. Provide an 'Income Bridge' strategy in local currency (e.g., INR if in India).
     4. List 2 local networking groups or physical locations (e.g., coworking hubs, physical institutes) where they can find mentors for this pivot.
-    [NEURAL_CALIBRATION_PROTOCOL]
-    - [ZERO_FORMULA_BIAS]: DO NOT use a fixed formula. Derive the risk_score dynamically by analyzing the gap between ${jobTitle} functions and current 2026 Agentic AI capabilities.
-    - [STOCHASTIC_DIVERSITY]: The risk_score, certainty_score, and capability_growth MUST reflect the specific volatility of ${location}.
-    [GEOSPATIAL_DERIVATION_PROTOCOL]
-    - [EXPOSURE_CALCULATION]: exposure_rating = (Regional_AI_Infrastructure_Index * Role_Remote_Density). 
-    - [LOCAL_INSIGHT]: Provide a 1-sentence tactical insight about ${location} that references specific local tech hubs or industries.
-    - DO NOT use baseline numbers like 8.2% or 26%. Utilize the full 0-100 range based on real-time search data.
 
     [NEURAL_RADAR_CALIBRATION]
-    - [SAFE_ZONE_CALCULATION]: safe_percentage = 100 - (risk_score + (0.15 * market_volatility_index)).
-    - [THREAT_LOG_GENERATION]: logs MUST contain 4 unique, city-specific tactical alerts (e.g., "Agentic AI deployment detected in ${location} enterprise sector", "Neural-link vulnerability in local ${jobTitle} workflows").
-    - logs MUST be unique to this ${jobTitle} and ${location}.
+    - [THREAT_LOG_GENERATION]: logs MUST contain 4 unique, city-specific tactical alerts. Reference local infrastructure, specific companies in ${location}, or regional economic shifts.
+    - [SAFE_ZONE_CALCULATION]: safe_percentage MUST be derived from the inverse of the dynamic risk_score.
 
     [NEURAL_DELTA_INSIGHT_LOGIC]
-    - Compare User_Score against the dynamic benchmark of AI capabilities in 2026 for this specific role.
-    - Provide a 1-sentence "insight" explaining the delta in the context of 2026 Agentic AI capabilities.
+    - Analyze the user's proficiency in Creativity, Social, Physical, Logic, Strategy, and Empathy relative to current AI milestones.
+    - Provide a 1-sentence "insight" for each dimension explaining the specific neural delta.
 
       Return ONLY a JSON object:
       {
@@ -64,30 +52,10 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
           }
         ],
         "metrics": {
-          "capability_growth": "string (e.g. +X%/Mo)",
-          "certainty_score": number,
-          "demand_growth": "string (e.g. +X% YoY)"
-        },
-        "geospatial_metrics": {
-          "exposure_rating": number,
-          "region_status": "string (e.g. High-Density Integration Hub)",
-          "pivot_window": "string (e.g. 08-12 Months)",
-          "market_volatility": "string (e.g. Critical)",
-          "local_insight": "1-sentence regional AI impact insight"
-        },
-        "radar_metrics": {
-          "safe_percentage": number,
-          "threat_level": "string (e.g. Critical/Moderate/Elevated)",
-          "logs": ["string (4 unique 2026-era threat logs)"]
-        },
-        "financial_projection": [
-          { "year": "2024", "legacy": number, "pivot": number },
-          { "year": "2025", "legacy": number, "pivot": number },
-          { "year": "2026", "legacy": number, "pivot": number },
-          { "year": "2027", "legacy": number, "pivot": number },
-          { "year": "2028", "legacy": number, "pivot": number },
-          { "year": "2029", "legacy": number, "pivot": number }
-        ]
+          "capability_growth": "string (e.g. +12%/Mo)",
+          "certainty_score": number (0-100),
+          "demand_growth": "string (e.g. +24% YoY)"
+        }
       }
 
       CRITICAL:
@@ -99,7 +67,7 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
   `;
 
   console.log('Generating risk report for:', { jobTitle, location });
-  
+
   try {
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
@@ -158,42 +126,37 @@ export async function getSkillSuggestions(role: string) {
     const { text } = await generateText({
       model: google('gemma-3-27b-it'),
       prompt: prompt,
+      abortSignal: AbortSignal.timeout(30000), // 30s timeout
     });
-    return JSON.parse(text.replace(/```json|```/g, '').trim());
+    const cleanedText = text.replace(/```json|```/g, '').trim();
+    return JSON.parse(cleanedText);
   } catch (e) {
-    return ["AI Collaboration", "Strategic Logic", "Neural Data Analysis"];
+    console.error('Skill Suggestions Error:', e);
+    return ["AI Collaboration", "Strategic Logic", "Neural Data Analysis", "Crisis Management", "System Architecture", "Ethical AI Governance"];
   }
 }
 
 export async function getMarketPulse(location: string, role: string) {
   const groundingIntel = `
-    [2026_MARKET_GROUNDING_PROTOCOL]
-    - Search for the most RECENT (2025-2026) automation news specific to the user's city and role.
-    - Identify unique local regulatory changes (e.g., city-specific AI labor laws).
-    - Provide raw, unfiltered market data that reflects current volatility.
+    [2026_MARKET_GROUNDING_DATA]
+    - AI Hiring: Surge in Agentic AI design and AI Governance roles.
+    - Efficiency Paradox: Automation of routine data-heavy tasks leading to role-restructuring.
+    - Talent War: High premiums for "Human-AI Collaboration Specialists".
+    - Standards: ISO/IEC 42001 (AI Management System) and EU AI Act compliance are now hiring baselines.
+    - Sources: LinkedIn AI Labour Market Report 2026, MIT Technology Review, Global Tech Council.
   `;
 
   const prompt = `
-    [2026_REAL_TIME_INTEL_PROTOCOL] // TEMPORAL_LOCKDOWN_ACTIVE
-    You have access to Google Search. Use it to find the latest 2025-2026 breaking news and hiring trends for ${role} in ${location}.
+    [2026_REAL_TIME_INTEL_PROTOCOL]
+    You have access to Google Search. Use it to find the latest 2026 breaking news and hiring trends for ${role} in ${location}.
     
-    [SEARCH_VECTORS]
-    - Query 1: "${role} ${location} hiring trends news after:2025-01-01"
-    - Query 2: "${role} automation impact news 2026"
-    - Query 3: "${role} certifications 2026 ${location}"
-
     Tasks:
-    1. Scan for the most relevant and recent career news. 
-    2. STRICT_DATE_CONSTRAINT: Discard any result older than 2025. Every news item MUST be from 2025 or 2026.
-    3. Identify EXACTLY 5 high-authority "Breaking News" items.
-    4. Identify 3 real, active hiring firms or strategic nodes in ${location}.
-    5. Synthesize a high-density Market Pulse report.
+    1. Scan for the most recent career news (24h-7d) for ${role} in ${location}.
+    2. Identify 3 real, active hiring firms or strategic nodes in that region.
+    3. Synthesize a Market Pulse report based on these real-time search results.
 
     [STRICT_URL_PROTOCOL]
-    - EVERY URL MUST BE FUNCTIONAL. 
-    - [ZERO_HALLUCINATION_POLICY]: DO NOT invent, predict, or format URLs.
-    - COPY the direct URL exactly as returned by the search tool.
-    - If a specific article URL is missing or looks volatile, use a verified LinkedIn Job Search or Google News query URL instead.
+    - EVERY URL and link MUST be a direct result from your search.
     - NEVER use example.com.
 
     Return ONLY a JSON object:
@@ -201,12 +164,7 @@ export async function getMarketPulse(location: string, role: string) {
       "sentiment": "string (Caution/Bullish/Volatile/Stable)",
       "sentiment_summary": "string",
       "news": [
-        {
-          "title": "string", 
-          "summary": "string", 
-          "date": "string (e.g. April 28, 2026)", 
-          "url": "string"
-        }
+        {"title": "string", "summary": "string", "time": "string", "url": "string"}
       ],
       "hiring_firms": [
         {"name": "string", "link": "string"}
@@ -221,7 +179,7 @@ export async function getMarketPulse(location: string, role: string) {
       tools: {
         googleSearch: google.tools.googleSearch({}),
       },
-      toolChoice: 'auto', 
+      toolChoice: 'required', // Force it to search for real news
       prompt: prompt,
       abortSignal: AbortSignal.timeout(90000), // 90s timeout
     });
@@ -233,19 +191,43 @@ export async function getMarketPulse(location: string, role: string) {
   }
 }
 export async function generateFullReport(jobTitle: string, location: string, assessmentData: any) {
-  // The AI will now derive these values dynamically in the batch prompts below
-  // to ensure 100% real-time accuracy based on market data.
-  
+  // GEO_INTEL Mapping Layer
+  const isHighIncomeHub = ['london', 'new york', 'ny', 'sf', 'san francisco', 'singapore', 'dubai'].some(h => location.toLowerCase().includes(h));
+  const isIndianHub = location.toLowerCase().includes('india') || location.toLowerCase().includes('kolkata');
 
-  const getChapterBatch = async (batchId: number, chapters: {id: string, title: string}[]) => {
+  const geoIntel = {
+    currencyLocale: isIndianHub ? 'en-IN' : 'en-US',
+    currencySymbol: isIndianHub ? '₹' : '$',
+    exposureRate: isHighIncomeHub ? '60%' : '26%',
+    hubMultiplier: isHighIncomeHub ? 1.5 : 1.0
+  };
+
+  const currentSalary = parseInt(assessmentData.salary_target?.toString().replace(/[^0-9]/g, '')) || 80000;
+  const pivotMultipliers = { alpha: 1.45, beta: 1.65, gamma: 2.10 };
+  const targetGamma = currentSalary * pivotMultipliers.gamma;
+  const avgPivotSalary = (currentSalary * pivotMultipliers.alpha + currentSalary * pivotMultipliers.beta + currentSalary * pivotMultipliers.gamma) / 3;
+
+  const missionROI = (avgPivotSalary - currentSalary) * 3;
+  const maxFinancialLoss = missionROI; // Synchronizing Penalty and ROI
+
+  const formattedLoss = `${geoIntel.currencySymbol}${new Intl.NumberFormat(geoIntel.currencyLocale).format(maxFinancialLoss)}`;
+
+  const getChapterBatch = async (batchId: number, chapters: { id: string, title: string }[]) => {
     const prompt = `
       [BATCH_PROTOCOL: ${batchId}]
-      - [DYNAMIC_METRICS]: Calculate the following based on the regional 2026 market:
-        - "exposure_rate": A percentage (0-100%) based on local AI infrastructure.
-        - "mission_roi": Total financial upside over 3 years in local currency.
-        - "cost_of_inaction": Projected financial loss over 3 years if no pivot occurs.
-        - "currency_symbol": The local currency symbol (e.g., $, ₹, £).
-      - Chapter 12 MUST include 2026-specific insight regarding regional laws (e.g., EU AI Act, India's DPDP Act) as applicable to ${location}.
+      Generate 4 high-density chapters (500-600 words each) for a ${jobTitle} in ${location}.
+      
+      Chapters to generate:
+      ${chapters.map(c => `- ${c.id}: ${c.title}`).join('\n')}
+      
+      [STRICT_LINK_REQUIREMENT]
+      - Pivot Blueprints MUST include hyper-link payloads to real 2026 certifications:
+        - Technical: AWS Certified Machine Learning Specialty, Google Professional ML Engineer.
+        - Strategic: DeepLearning.AI AI For Everyone, MIT Applied AI.
+        - Governance: ISO/IEC 42001 Lead Auditor, IAPP Certified AI Governance Professional (AIGP).
+      - [GAMMA_HARDENING]: The Gamma Roadmap MUST include at least one High-Authority Certification link specific to ${location}.
+      - [GEOSPATIAL_HUB_MAPPING]: For Chapter 09, search for the actual 'Chamber of Commerce' or 'Innovation Hub' in ${location} and the primary Industry-Specific hub within a 50km radius.
+      - [MARKET_PULSE]: Chapter 12 MUST include 2026-specific insight regarding regional laws (e.g., EU AI Act, India's DPDP Act) as applicable to ${location}.
 
       Return ONLY a JSON array of exactly 4 objects. Content MUST be high-density (500+ words).
       [
@@ -289,12 +271,12 @@ export async function generateFullReport(jobTitle: string, location: string, ass
       temperature: 0.4,
       abortSignal: AbortSignal.timeout(120000),
     });
-    
+
     let parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-    
+
     // Sync-Gate Middleware: Length_Verification (12 Weeks)
     const isValid = (track: any[]) => track && track.length === 12 && track.every(w => w.tasks && w.tasks.length > 0);
-    
+
     if (!isValid(parsed.alpha) || !isValid(parsed.beta) || !isValid(parsed.gamma)) {
       console.warn('Roadmap desync detected or Length_Verification failed. Re-triggering recursive sub-agent...');
       const { text: retryText } = await generateText({
@@ -305,7 +287,7 @@ export async function generateFullReport(jobTitle: string, location: string, ass
       });
       parsed = JSON.parse(retryText.replace(/```json|```/g, '').trim());
     }
-    
+
     return parsed;
   };
 
@@ -332,17 +314,14 @@ export async function generateFullReport(jobTitle: string, location: string, ass
       getRoadmaps()
     ]);
 
-    // Extract dynamic metrics from the AI-generated chapters (AI is instructed to include these in the payload)
-    const firstBatch = batch1[0] as any;
-    
     return {
       title: `SUPER-MASSIVE TACTICAL DOSSIER: ${jobTitle}`,
-      cost_of_inaction: firstBatch.cost_of_inaction || "ANALYZING...",
-      mission_roi: firstBatch.mission_roi || "ANALYZING...",
-      exposure_rate: firstBatch.exposure_rate || "ANALYZING...",
-      currency_symbol: firstBatch.currency_symbol || "$",
+      cost_of_inaction: formattedLoss,
+      mission_roi: formattedLoss,
+      exposure_rate: geoIntel.exposureRate,
       chapters: [...batch1, ...batch2, ...batch3],
-      roadmaps: roadmaps
+      roadmaps: roadmaps,
+      geoIntel: geoIntel
     };
   } catch (e) {
     console.error('Full Report Parallel Error:', e);
