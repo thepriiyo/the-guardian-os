@@ -357,7 +357,7 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-               <IncomeBridgeChart currentSalary={(assessment as any).salary_target} />
+               <IncomeBridgeChart currentSalary={(assessment as any).salary_target} projection={report.financial_projection} />
             </CardContent>
           </Card>
         </motion.div>

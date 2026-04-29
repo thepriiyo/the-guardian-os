@@ -12,18 +12,18 @@ import {
   AreaChart
 } from 'recharts';
 
-export function IncomeBridgeChart({ currentSalary }: { currentSalary?: string }) {
+export function IncomeBridgeChart({ currentSalary, projection }: { currentSalary?: string; projection?: { year: string; legacy: number; pivot: number; }[] }) {
   // Parse base salary with safety fallback
   const salaryStr = currentSalary || "80000";
   const base = parseInt(salaryStr.toString().replace(/[^0-9]/g, '')) || 80000;
   
-  const data = [
-    { year: '2024', current: base, pivot: base },
-    { year: '2025', current: base * 1.03, pivot: base * 1.10 },
-    { year: '2026', current: base * 0.98, pivot: base * 1.25 },
-    { year: '2027', current: base * 0.90, pivot: base * 1.45 },
-    { year: '2028', current: base * 0.82, pivot: base * 1.70 },
-    { year: '2029', current: base * 0.75, pivot: base * 2.10 },
+  const data = projection || [
+    { year: '2024', legacy: base, pivot: base },
+    { year: '2025', legacy: base * 1.03, pivot: base * 1.10 },
+    { year: '2026', legacy: base * 0.98, pivot: base * 1.25 },
+    { year: '2027', legacy: base * 0.90, pivot: base * 1.45 },
+    { year: '2028', legacy: base * 0.82, pivot: base * 1.70 },
+    { year: '2029', legacy: base * 0.75, pivot: base * 2.10 },
   ];
 
   const formatValue = (val: number) => {
@@ -43,7 +43,7 @@ export function IncomeBridgeChart({ currentSalary }: { currentSalary?: string })
         </div>
         <div className="text-right">
           <div className="text-[9px] font-mono text-red-500 uppercase tracking-widest mb-1">Projected_Loss_2029</div>
-          <div className="text-2xl font-black text-red-500 italic">-{formatValue(data[5].pivot - data[5].current)}</div>
+          <div className="text-2xl font-black text-red-500 italic">-{formatValue(data[5].pivot - data[5].legacy)}</div>
         </div>
       </div>
 
@@ -92,7 +92,7 @@ export function IncomeBridgeChart({ currentSalary }: { currentSalary?: string })
             />
             <Area 
               type="monotone" 
-              dataKey="current" 
+              dataKey="legacy" 
               stroke="#ef4444" 
               strokeWidth={2} 
               strokeDasharray="5 5"

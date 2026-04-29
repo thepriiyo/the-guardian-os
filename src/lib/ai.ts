@@ -11,7 +11,10 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
     [STRICT_MATH_CONSTRAINT]
     - Enforce risk_score decimal precision to exactly 2 places (e.g., 71.38). 
     - DO NOT use round numbers (avoid 65, 75, 80).
-    - [STOCHASTIC_REQUIREMENT]: The risk_score MUST be unique to this specific combination of job, skills, and location. Avoid common baseline numbers (like 68.73 or 72.41) unless the specific math dictates it.
+    - [STOCHASTIC_REQUIREMENT]: The risk_score MUST be unique to this specific combination of job, skills, and location. Use the FULL 0-100 range. Avoid common baseline numbers (like 68.73 or 64.0) unless the specific math dictates it.
+    - [FINANCIAL_NEURAL_PROJECTION]: Calculate a 6-year financial projection (2024-2029) for the current role vs the recommended pivot.
+      - stagnation_vector: Projected income if the user stays in the current role (account for AI-driven wage stagnation or job loss).
+      - acceleration_vector: Projected income if the user completes the recommended pivot.
     - [GEOSPATIAL_WEIGHTING]: If ${location} density > 5000/km², increase automation risk by 4.2% to account for rapid tech infrastructure adoption.
 
     
@@ -71,7 +74,15 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
           "safe_percentage": number,
           "threat_level": "string (e.g. Critical/Moderate/Elevated)",
           "logs": ["string (4 unique 2026-era threat logs)"]
-        }
+        },
+        "financial_projection": [
+          { "year": "2024", "legacy": number, "pivot": number },
+          { "year": "2025", "legacy": number, "pivot": number },
+          { "year": "2026", "legacy": number, "pivot": number },
+          { "year": "2027", "legacy": number, "pivot": number },
+          { "year": "2028", "legacy": number, "pivot": number },
+          { "year": "2029", "legacy": number, "pivot": number }
+        ]
       }
 
       CRITICAL:
@@ -151,12 +162,10 @@ export async function getSkillSuggestions(role: string) {
 
 export async function getMarketPulse(location: string, role: string) {
   const groundingIntel = `
-    [2026_MARKET_GROUNDING_DATA]
-    - AI Hiring: Surge in Agentic AI design and AI Governance roles.
-    - Efficiency Paradox: Automation of routine data-heavy tasks leading to role-restructuring.
-    - Talent War: High premiums for "Human-AI Collaboration Specialists".
-    - Standards: ISO/IEC 42001 (AI Management System) and EU AI Act compliance are now hiring baselines.
-    - Sources: LinkedIn AI Labour Market Report 2026, MIT Technology Review, Global Tech Council.
+    [2026_MARKET_GROUNDING_PROTOCOL]
+    - Search for the most RECENT (2025-2026) automation news specific to the user's city and role.
+    - Identify unique local regulatory changes (e.g., city-specific AI labor laws).
+    - Provide raw, unfiltered market data that reflects current volatility.
   `;
 
   const prompt = `

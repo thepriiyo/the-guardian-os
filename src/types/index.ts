@@ -56,6 +56,11 @@ export interface ReportData {
   local_networking: NetworkingGroup[];
   roadmap: RoadmapWeek[];
   metrics?: MarketMetrics;
+  financial_projection?: {
+    year: string;
+    legacy: number;
+    pivot: number;
+  }[];
 }
 
 export interface Assessment {
