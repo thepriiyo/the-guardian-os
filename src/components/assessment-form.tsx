@@ -151,10 +151,12 @@ export function AssessmentForm() {
       }
     } catch (error: any) {
       console.error('Submission failed:', error);
-      alert('Strategic analysis failure. The neural link timed out. Please retry.');
+      alert(error.message || 'Strategic analysis failure. The neural link timed out. Please retry.');
+
       setIsSubmitting(false);
     }
   }
+
 
   const validateStep = async (currentStep: number) => {
     let fields: (keyof FormValues)[] = [];

@@ -11,9 +11,7 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
     [STRICT_MATH_CONSTRAINT]
     - Enforce risk_score decimal precision to exactly 2 places (e.g., 71.38). 
     - DO NOT use round numbers (avoid 65, 75, 80).
-    - [STOCHASTIC_REQUIREMENT]: The risk_score MUST be unique to this specific combination of job, skills, and location. Avoid common baseline numbers (like 68.73 or 72.41) unless the specific math dictates it.
     - [GEOSPATIAL_WEIGHTING]: If ${location} density > 5000/km², increase automation risk by 4.2% to account for rapid tech infrastructure adoption.
-
     
     2. Suggest 3 unique Pivot Paths available within a 50km radius of [${location}].
     3. Provide an 'Income Bridge' strategy in local currency (e.g., INR if in India).
@@ -62,18 +60,6 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
           "capability_growth": "string (e.g. +12%/Mo)",
           "certainty_score": number (0-100),
           "demand_growth": "string (e.g. +24% YoY)"
-        },
-        "geospatial_metrics": {
-          "exposure_rating": number,
-          "region_status": "string (e.g. High-Density Integration Hub)",
-          "pivot_window": "string (e.g. 08-12 Months)",
-          "market_volatility": "string (e.g. Critical)",
-          "local_insight": "1-sentence regional AI impact insight"
-        },
-        "radar_metrics": {
-          "safe_percentage": number,
-          "threat_level": "string (e.g. Critical/Moderate/Elevated)",
-          "logs": ["string (4 unique 2026-era threat logs)"]
         }
       }
 

@@ -1,0 +1,74 @@
+3a4,5
+> // TACTICAL_HEARTBEAT: Re-triggering Vercel Build Pipeline
+> 
+62a65,76
+>         },
+>         "geospatial_metrics": {
+>           "exposure_rating": number,
+>           "region_status": "string (e.g. High-Density Integration Hub)",
+>           "pivot_window": "string (e.g. 08-12 Months)",
+>           "market_volatility": "string (e.g. Critical)",
+>           "local_insight": "1-sentence regional AI impact insight"
+>         },
+>         "radar_metrics": {
+>           "safe_percentage": number,
+>           "threat_level": "string (e.g. Critical/Moderate/Elevated)",
+>           "logs": ["string (4 unique 2026-era threat logs)"]
+75c89
+<   
+---
+> 
+133a148
+>       abortSignal: AbortSignal.timeout(30000), // 30s timeout
+135c150,151
+<     return JSON.parse(text.replace(/```json|```/g, '').trim());
+---
+>     const cleanedText = text.replace(/```json|```/g, '').trim();
+>     return JSON.parse(cleanedText);
+137c153,154
+<     return ["AI Collaboration", "Strategic Logic", "Neural Data Analysis"];
+---
+>     console.error('Skill Suggestions Error:', e);
+>     return ["AI Collaboration", "Strategic Logic", "Neural Data Analysis", "Crisis Management", "System Architecture", "Ethical AI Governance"];
+152,153c169,170
+<     [2026_REAL_TIME_INTEL_PROTOCOL] // TEMPORAL_LOCKDOWN_ACTIVE
+<     You have access to Google Search. Use it to find the latest 2025-2026 breaking news and hiring trends for ${role} in ${location}.
+---
+>     [2026_REAL_TIME_INTEL_PROTOCOL]
+>     You have access to Google Search. Use it to find the latest 2026 breaking news and hiring trends for ${role} in ${location}.
+199c216
+<       toolChoice: 'auto', 
+---
+>       toolChoice: 'required', // Force it to search for real news
+214c231
+<   
+---
+> 
+226c243
+<   
+---
+> 
+229c246
+<   
+---
+> 
+232c249
+<   const getChapterBatch = async (batchId: number, chapters: {id: string, title: string}[]) => {
+---
+>   const getChapterBatch = async (batchId: number, chapters: { id: string, title: string }[]) => {
+291c308
+<     
+---
+> 
+293c310
+<     
+---
+> 
+296c313
+<     
+---
+> 
+307c324
+<     
+---
+> 

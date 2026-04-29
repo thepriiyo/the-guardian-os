@@ -104,12 +104,13 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
         <div className="flex flex-col items-end gap-4">
           <div className="flex flex-col items-end gap-1">
             <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest opacity-50">Local_Risk_Index</div>
-            <div className="text-6xl font-black italic text-red-500">{report.risk_score}%</div>
+            <div className="text-6xl font-black italic text-red-500">{Math.round(report.risk_score)}%</div>
           </div>
           
           <Button 
             onClick={() => {
-              const text = `My AI Career Risk Score is ${report.risk_score}% on The Guardian OS. 🛰️\n\nInitialize your tactical survival scan here: https://the-guardian-os.vercel.app`;
+              const text = `My AI Career Risk Score is ${Math.round(report.risk_score)}% on The Guardian OS. 🛰️\n\nInitialize your tactical survival scan here: https://the-guardian-os.vercel.app`;
+
               window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
             }}
             variant="outline" 
@@ -161,6 +162,7 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
                         <div className="text-[9px] font-mono text-white/30 uppercase tracking-[0.3em]">Growth</div>
                         <div className="text-xl font-black text-blue-400 italic uppercase leading-none">{report.metrics?.capability_growth || '+15%'}</div>
                       </div>
+
                     </div>
 
                     <div className="w-full space-y-4 pt-6 border-t border-white/5">

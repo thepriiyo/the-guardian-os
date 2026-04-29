@@ -23,6 +23,11 @@ export async function submitAssessment(formData: {
     throw new Error('Neural engine returned empty intelligence.');
   }
 
+  // Enforce integer risk score in the JSON data for UI consistency
+  if (report.risk_score) {
+    report.risk_score = Math.round(Number(report.risk_score));
+  }
+
   // Save to Supabase
   const { data: newAssessment, error } = await supabase
     .from('assessments')
@@ -44,6 +49,7 @@ export async function submitAssessment(formData: {
 
   return { success: true, id: newAssessment?.id };
 }
+
 
 export async function validateAccessCode(code: string) {
   const { data, error } = await supabase
