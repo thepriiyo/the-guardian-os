@@ -319,7 +319,7 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
                 <div className="flex flex-col items-end">
                    <div className="text-[10px] font-mono text-blue-400 uppercase tracking-widest mb-1">Exposure_Rating</div>
                    <div className="text-4xl font-black italic text-blue-500">
-                     {report.geospatial_metrics?.exposure_rating}%
+                     {Number(report.geospatial_metrics?.exposure_rating).toFixed(1)}%
                    </div>
                 </div>
               </div>

@@ -15,7 +15,6 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
     - [FINANCIAL_NEURAL_PROJECTION]: Calculate a 6-year financial projection (2024-2029) for the current role vs the recommended pivot.
       - stagnation_vector: Projected income if the user stays in the current role (account for AI-driven wage stagnation or job loss).
       - acceleration_vector: Projected income if the user completes the recommended pivot.
-    - [GEOSPATIAL_WEIGHTING]: If ${location} density > 5000/km², increase automation risk by 4.2% to account for rapid tech infrastructure adoption.
 
     
     2. Suggest 3 unique Pivot Paths available within a 50km radius of [${location}].
@@ -24,8 +23,15 @@ export async function getRiskReport(jobTitle: string, skills: string, location: 
     [NEURAL_CALIBRATION_PROTOCOL]
     - [ZERO_FORMULA_BIAS]: DO NOT use a fixed formula. Derive the risk_score dynamically by analyzing the gap between ${jobTitle} functions and current 2026 Agentic AI capabilities.
     - [STOCHASTIC_DIVERSITY]: The risk_score, certainty_score, and capability_growth MUST reflect the specific volatility of ${location}.
-    - [RANGE_UTILIZATION]: Utilize the entire spectrum (0.01 - 99.99). Avoid clustering around 60-70%.
-    - [DYNAMIC_BENCHMARKING]: Calibrate your analysis against real-time search results for ${jobTitle} automation.
+    [GEOSPATIAL_DERIVATION_PROTOCOL]
+    - [EXPOSURE_CALCULATION]: exposure_rating = (Regional_AI_Infrastructure_Index * Role_Remote_Density). 
+    - [LOCAL_INSIGHT]: Provide a 1-sentence tactical insight about ${location} that references specific local tech hubs or industries.
+    - DO NOT use baseline numbers like 8.2% or 26%. Utilize the full 0-100 range based on real-time search data.
+
+    [NEURAL_RADAR_CALIBRATION]
+    - [SAFE_ZONE_CALCULATION]: safe_percentage = 100 - (risk_score + (0.15 * market_volatility_index)).
+    - [THREAT_LOG_GENERATION]: logs MUST contain 4 unique, city-specific tactical alerts (e.g., "Agentic AI deployment detected in ${location} enterprise sector", "Neural-link vulnerability in local ${jobTitle} workflows").
+    - logs MUST be unique to this ${jobTitle} and ${location}.
 
     [NEURAL_DELTA_INSIGHT_LOGIC]
     - Compare User_Score against the dynamic benchmark of AI capabilities in 2026 for this specific role.
