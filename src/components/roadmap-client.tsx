@@ -51,7 +51,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
   const [statusIndex, setStatusIndex] = useState(0);
 
   const statusMessages = [
-    "Synthesizing 20-page tactical dossier...",
+    "Synthesizing tactical dossier...",
     "Injecting stylized high-density intelligence...",
     "Formatting geospatial risk maps...",
     "Hardening document with cryptographic signatures...",
@@ -323,10 +323,10 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                     <div className="text-[8px] font-mono text-white/20 uppercase tracking-widest">Neural_Sync</div>
                     <div className="text-lg font-bold italic">99.9%</div>
                  </div>
-                 <div className="space-y-1">
-                    <div className="text-[8px] font-mono text-white/20 uppercase tracking-widest">Payload</div>
-                    <div className="text-lg font-bold italic">20 PAGES</div>
-                 </div>
+                  <div className="space-y-1">
+                     <div className="text-[8px] font-mono text-white/20 uppercase tracking-widest">Payload</div>
+                     <div className="text-lg font-bold italic">COMPREHENSIVE</div>
+                  </div>
                  <div className="space-y-1">
                     <div className="text-[8px] font-mono text-white/20 uppercase tracking-widest">Status</div>
                     <div className="text-lg font-bold italic text-blue-500 animate-pulse uppercase">Active</div>
@@ -394,7 +394,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                     <div className="space-y-3">
                       <h3 className="text-3xl font-black tracking-tighter uppercase italic text-white leading-none">Unlock Tactical Access</h3>
                       <p className="text-muted-foreground max-w-sm mx-auto font-light leading-relaxed">
-                        Authorize intelligence transfer to reveal the full 12-week deployment strategy and download your 20-page dossier.
+                        Authorize intelligence transfer to reveal the full 12-week deployment strategy and download your tactical dossier.
                       </p>
                     </div>
 
@@ -465,7 +465,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                       <div className="flex items-center justify-between px-2 text-[10px] font-mono uppercase tracking-widest">
                         <span className="text-white/40">Authorization Fee</span>
                         <span className="text-white text-lg font-black italic">
-                          ₹{Math.max(1, 200 - (discountType === 'percentage' ? (200 * discount / 100) : (discount === 199 ? 199 : 0)))} / ${Math.max(0.01, 2.49 - (discountType === 'percentage' ? (2.49 * discount / 100) : (discount === 199 ? 2.48 : 0))).toFixed(2)}
+                          {pricing.symbol}{finalAmount.toFixed(2)}
                         </span>
                       </div>
 
@@ -484,18 +484,12 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                             }
 
                             try {
-                              const upiBase = 200;
-                              const upiDiscount = discountType === 'percentage' 
-                                ? upiBase * (discount / 100) 
-                                : (discount === 199 ? 199 : 0);
-                              const upiFinal = Math.max(1, upiBase - upiDiscount);
-
                               const orderResponse = await fetch('/api/razorpay/create-order', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
-                                  amount: Math.round(upiFinal) * 100,
-                                  currency: "INR",
+                                  amount: Math.round(finalAmount * (pricing.code === 'INR' ? 100 : 83)), // Rough conversion if USD
+                                  currency: pricing.code,
                                   receipt: `rcpt_${assessment.id.slice(0, 10)}`
                                 }),
                               });
@@ -507,7 +501,7 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                                 amount: orderData.amount,
                                 currency: orderData.currency,
                                 name: "The Guardian OS",
-                                description: "Tactical Dossier Authorization (UPI)",
+                                description: "Tactical Dossier Authorization",
                                 order_id: orderData.id,
                                 handler: async function(response: any) {
                                   try {
@@ -579,12 +573,12 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
                     <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center border border-green-500/20">
                       <Unlock className="w-6 h-6 text-green-400" />
                     </div>
-                    <div className="space-y-2">
-                      <h3 className="text-2xl font-black tracking-tighter uppercase italic text-white">Tactical Access Granted</h3>
-                      <p className="text-muted-foreground font-light max-w-md mx-auto">
-                        Your 12-week survival strategy is now fully decrypted. Download your complete 20-page tactical dossier for offline execution.
-                      </p>
-                    </div>
+                     <div className="space-y-2">
+                       <h3 className="text-2xl font-black tracking-tighter uppercase italic text-white">Tactical Access Granted</h3>
+                       <p className="text-muted-foreground font-light max-w-md mx-auto">
+                         Your 12-week survival strategy is now fully decrypted. Download your complete tactical dossier for offline execution.
+                       </p>
+                     </div>
                     <Button 
                       disabled={isGenerating}
                       className="rounded-full bg-blue-600 hover:bg-blue-500 px-10 py-8 font-black text-lg shadow-[0_0_30px_-10px_rgba(59,130,246,0.5)] flex items-center gap-3 group mt-4 w-full sm:w-auto"

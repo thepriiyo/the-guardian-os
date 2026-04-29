@@ -131,7 +131,7 @@ export const generateTacticalPDF = async (assessment: Assessment, aiReport?: any
   
   doc.setFontSize(10);
   doc.setTextColor(BLUE_TEXT[0], BLUE_TEXT[1], BLUE_TEXT[2]);
-  doc.text(`REGION: ${assessment.location.toUpperCase()} // 20-PAGE_INTEL_PAYLOAD`, 105, 210, { align: 'center' });
+  doc.text(`REGION: ${assessment.location.toUpperCase()} // STRATEGIC_INTEL_PAYLOAD`, 105, 210, { align: 'center' });
   drawFooter(pageCount++);
 
   // --- PAGE 2: TACTICAL INDEX (TOC) ---
@@ -218,7 +218,7 @@ export const generateTacticalPDF = async (assessment: Assessment, aiReport?: any
   doc.setFont(FONT_MONO, 'normal');
   doc.setFontSize(8);
   doc.setTextColor(SLATE_TEXT[0], SLATE_TEXT[1], SLATE_TEXT[2]);
-  const formattedExposure = Sanitize(aiReport?.exposure_rate || (['london', 'new york', 'ny', 'sf', 'san francisco', 'singapore', 'dubai'].some(h => assessment.location.toLowerCase().includes(h)) ? '60%' : '26%'));
+  const formattedExposure = Sanitize(aiReport?.exposure_rate || 'ANALYZING...');
   doc.text(`EXPOSURE RATE: ${formattedExposure}`, centerX, centerY + 72, { align: 'center' });
   drawFooter(pageCount++);
 
@@ -253,10 +253,7 @@ export const generateTacticalPDF = async (assessment: Assessment, aiReport?: any
     doc.line(radarX + Math.cos(a1) * radarSize * val1, radarY + Math.sin(a1) * radarSize * val1, radarX + Math.cos(a2) * radarSize * val2, radarY + Math.sin(a2) * radarSize * val2);
     const subject = report.replacement_map[i].subject;
     const score = report.replacement_map[i].A;
-    const benchmarks: Record<string, number> = {
-      'Logic': 88, 'Strategy': 80, 'Empathy': 25, 'Social': 45, 'Creativity': 55, 'Physical': 30
-    };
-    const isExceeding = score > (benchmarks[subject] || 80);
+    const isExceeding = (report.replacement_map[i] as any).tag === 'REINFORCED';
 
     doc.setFontSize(8);
     if (isExceeding) {
@@ -293,16 +290,13 @@ export const generateTacticalPDF = async (assessment: Assessment, aiReport?: any
   doc.text(insights, 35, 230);
 
   // Logic vs AI Benchmark 2026
-  const logicScore = report.replacement_map.find((m: any) => m.subject === 'Logic')?.A || 0;
-  const aiLogicBenchmark = 88; 
-
   doc.setFont(FONT_MONO, 'bold');
   doc.setFontSize(8);
   doc.setTextColor(239, 68, 68);
   doc.text('// NEURAL_BENCHMARK: LOGIC_CORE_V_AI_2026', 105, 260, { align: 'center' });
   doc.setFont(FONT_MONO, 'normal');
   doc.setTextColor(WHITE_TEXT[0], WHITE_TEXT[1], WHITE_TEXT[2]);
-  const logicText = `Logic Delta: ${logicScore}% (Human) vs ${aiLogicBenchmark}% (AI_2026). Your current Logic score of ${logicScore}% indicates a significant vulnerability to direct LLM displacement. Your strategic survival depends on pivoting toward Empathy-heavy dimensions where the AI benchmark remains < 25%.`;
+  const logicText = (report.replacement_map.find((m: any) => m.subject === 'Logic') as any)?.insight || `Logic Delta detected. Direct LLM displacement vulnerability is high. Your strategic survival depends on pivoting toward Empathy-heavy dimensions.`;
   const logicLines = doc.splitTextToSize(logicText, 140);
   doc.text(logicLines, 105, 266, { align: 'center' });
   
