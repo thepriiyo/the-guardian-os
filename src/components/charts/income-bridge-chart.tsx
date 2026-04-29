@@ -43,7 +43,7 @@ export function IncomeBridgeChart({ currentSalary, projection }: { currentSalary
         </div>
         <div className="text-right">
           <div className="text-[9px] font-mono text-red-500 uppercase tracking-widest mb-1">Projected_Loss_2029</div>
-          <div className="text-2xl font-black text-red-500 italic">-{formatValue(data[5].pivot - data[5].legacy)}</div>
+          <div className="text-2xl font-black text-red-500 italic">-{formatValue((data[5]?.pivot || 0) - (data[5]?.legacy || 0))}</div>
         </div>
       </div>
 

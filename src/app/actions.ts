@@ -23,37 +23,41 @@ export async function submitAssessment(formData: {
     throw new Error('Neural engine returned empty intelligence.');
   }
 
-  // Neural Precision Sanitization
+  // Neural Precision Sanitization (Rounding to Integer for DB Compatibility)
   const rawRisk = report.risk_score;
   const parsedRisk = parseFloat(String(rawRisk).replace(/[^0-9.]/g, ''));
-  report.risk_score = isNaN(parsedRisk) ? 47.32 : parsedRisk;
+  report.risk_score = Math.round(isNaN(parsedRisk) ? 47.32 : parsedRisk);
 
   if (report.metrics) {
     const rawCertainty = report.metrics.certainty_score;
     const parsedCertainty = parseFloat(String(rawCertainty).replace(/[^0-9.]/g, ''));
-    report.metrics.certainty_score = isNaN(parsedCertainty) ? 82.45 : parsedCertainty;
+    report.metrics.certainty_score = Math.round(isNaN(parsedCertainty) ? 82.45 : parsedCertainty);
   }
 
-  // Save to Supabase
-  const { data: newAssessment, error } = await supabase
-    .from('assessments')
-    .insert([{
-      job_title: formData.jobTitle,
-      skills: formData.skills,
-      location: formData.location,
-      risk_score: report.risk_score,
-      report_data: report
-    }])
-    .select()
-    .single();
+  try {
+    // Save to Supabase
+    const { data: newAssessment, error } = await supabase
+      .from('assessments')
+      .insert([{
+        job_title: formData.jobTitle,
+        skills: formData.skills,
+        location: formData.location,
+        risk_score: report.risk_score,
+        report_data: report
+      }])
+      .select('id')
+      .single();
 
-  if (error) {
-    throw new Error(`Intelligence storage failed: ${error.message}`);
+    if (error || !newAssessment) {
+      throw new Error(error?.message || 'Assessment record creation failed.');
+    }
+
+    revalidatePath('/dashboard', 'layout');
+    return { success: true, id: newAssessment.id };
+  } catch (err: any) {
+    console.error('CRITICAL_DATABASE_ERROR:', err);
+    throw new Error(`Strategic analysis storage failure: ${err.message}`);
   }
-
-  revalidatePath('/dashboard', 'layout');
-
-  return { success: true, id: newAssessment?.id };
 }
 
 

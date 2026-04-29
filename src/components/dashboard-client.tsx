@@ -42,7 +42,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Assessment, ReportData } from '@/types';
 import { IntelligenceTooltip } from '@/components/ui/intelligence-tooltip';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { IncomeBridgeChart } from '@/components/charts/income-bridge-chart';
 import { MarketPulseHUD } from '@/components/market-pulse-hud';
 import { GlobalPaywallCTA } from '@/components/global-paywall-cta';
@@ -50,6 +50,9 @@ import { GlobalPaywallCTA } from '@/components/global-paywall-cta';
 export default function DashboardClient({ assessment }: { assessment: Assessment }) {
   const [pulseSentiment, setPulseSentiment] = useState<string>('Stable');
   const report = assessment.report_data;
+  const replacementMap = useMemo(() => Array.isArray(report.replacement_map) ? report.replacement_map : [], [report.replacement_map]);
+  const pivotPaths = useMemo(() => Array.isArray(report.pivot_paths) ? report.pivot_paths : [], [report.pivot_paths]);
+  const financialProjection = useMemo(() => Array.isArray(report.financial_projection) ? report.financial_projection : [], [report.financial_projection]);
   
   if (!report) {
     return (
@@ -202,7 +205,7 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
 
                 <IntelligenceTooltip content="Human vs. AI proficiency mapping">
                   <div className="relative z-10 flex items-center justify-center scale-90">
-                    <ReplacementMapChart chartData={report.replacement_map} />
+                    <ReplacementMapChart chartData={replacementMap} />
                   </div>
                 </IntelligenceTooltip>
               </div>
@@ -224,37 +227,37 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
                     icon={<Lightbulb className="w-4 h-4" />} 
                     title="Creativity" 
                     desc="Ideation & solving." 
-                    score={Array.isArray(report.replacement_map) ? (report.replacement_map.find(m => m.subject === 'Creativity')?.A || 50) : 50} 
+                    score={Array.isArray(replacementMap) ? (replacementMap.find(m => m.subject === 'Creativity')?.A || 50) : 50} 
                   />
                   <DimensionTile 
                     icon={<Users className="w-4 h-4" />} 
                     title="Social" 
                     desc="Negotiation." 
-                    score={Array.isArray(report.replacement_map) ? (report.replacement_map.find(m => m.subject === 'Social')?.A || 50) : 50} 
+                    score={Array.isArray(replacementMap) ? (replacementMap.find(m => m.subject === 'Social')?.A || 50) : 50} 
                   />
                   <DimensionTile 
                     icon={<Zap className="w-4 h-4" />} 
                     title="Physical" 
                     desc="Dexterity." 
-                    score={Array.isArray(report.replacement_map) ? (report.replacement_map.find(m => m.subject === 'Physical')?.A || 50) : 50} 
+                    score={Array.isArray(replacementMap) ? (replacementMap.find(m => m.subject === 'Physical')?.A || 50) : 50} 
                   />
                   <DimensionTile 
                     icon={<Target className="w-4 h-4" />} 
                     title="Strategy" 
                     desc="Decision-making." 
-                    score={Array.isArray(report.replacement_map) ? (report.replacement_map.find(m => m.subject === 'Strategy')?.A || 50) : 50} 
+                    score={Array.isArray(replacementMap) ? (replacementMap.find(m => m.subject === 'Strategy')?.A || 50) : 50} 
                   />
                   <DimensionTile 
                     icon={<FileCode className="w-4 h-4" />} 
                     title="Logic" 
                     desc="Automation." 
-                    score={Array.isArray(report.replacement_map) ? (report.replacement_map.find(m => m.subject === 'Logic')?.A || 50) : 50} 
+                    score={Array.isArray(replacementMap) ? (replacementMap.find(m => m.subject === 'Logic')?.A || 50) : 50} 
                   />
                   <DimensionTile 
                     icon={<Heart className="w-4 h-4" />} 
                     title="Empathy" 
                     desc="Intelligence." 
-                    score={Array.isArray(report.replacement_map) ? (report.replacement_map.find(m => m.subject === 'Empathy')?.A || 50) : 50} 
+                    score={Array.isArray(replacementMap) ? (replacementMap.find(m => m.subject === 'Empathy')?.A || 50) : 50} 
                   />
                 </div>
 
@@ -276,7 +279,7 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
 
       {/* Pivot Paths HUD */}
       <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-        {(report.pivot_paths || []).map((path, idx) => (
+        {pivotPaths.map((path, idx) => (
           <Card key={idx} className="glass border-white/5 hover:border-blue-500/30 transition-all duration-700 group cursor-pointer overflow-hidden rounded-[2rem]">
             <div className="absolute top-0 left-0 w-full h-1 bg-blue-500/10 group-hover:bg-blue-500 transition-colors" />
             <CardContent className="p-8">
@@ -357,7 +360,7 @@ export default function DashboardClient({ assessment }: { assessment: Assessment
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-               <IncomeBridgeChart currentSalary={(assessment as any).salary_target} projection={report.financial_projection} />
+               <IncomeBridgeChart currentSalary={assessment.report_data.risk_score ? (assessment as any).income_target : undefined} projection={financialProjection} />
             </CardContent>
           </Card>
         </motion.div>
