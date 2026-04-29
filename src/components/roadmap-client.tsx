@@ -160,11 +160,11 @@ export default function RoadmapClient({ assessment }: { assessment: Assessment }
 
   const getCurrencyData = (location: string) => {
     const isIndia = location.toLowerCase().includes('india') || location.toLowerCase().includes('in');
-    // Base Price Anchor: 200 INR / ~2.49 USD
-    return isIndia ? { symbol: '₹', amount: 200, code: 'INR' } : { symbol: '$', amount: 2.49, code: 'USD' };
+    // Base Price Anchor: 1111 INR / ~13.84 USD
+    return isIndia ? { symbol: '₹', amount: 1111, code: 'INR' } : { symbol: '$', amount: 13.84, code: 'USD' };
   };
 
-  const baseAmount = 200; // Anchor on INR
+  const baseAmount = 1111; // Anchor on INR (Elite Tier)
   
   const finalAmountINR = discountType === 'percentage' 
     ? Math.max(1, baseAmount * (1 - discount / 100))
