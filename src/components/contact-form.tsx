@@ -6,7 +6,7 @@ import { Mail, Send, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { submitContactForm } from '@/app/actions/contact';
+import { submitContactForm } from '@/app/actions';
 
 export function ContactForm() {
   const [email, setEmail] = useState('');
